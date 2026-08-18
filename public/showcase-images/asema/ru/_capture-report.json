@@ -1,0 +1,21 @@
+{
+  "base": "https://demo-trading-one.vercel.app",
+  "capturedAt": "2026-08-01T18:36:41.082Z",
+  "files": [
+    "auth-viewport.png",
+    "coord-alerts-viewport.png",
+    "coord-comms-viewport.png",
+    "coord-crm-viewport.png",
+    "coord-extra-чат-с-учениками-viewport.png",
+    "coord-homework-viewport.png",
+    "coord-landing-viewport.png",
+    "coord-radar-viewport.png",
+    "coordinator-viewport.png",
+    "home-viewport.png",
+    "student-chat-viewport.png",
+    "student-course-viewport.png",
+    "student-journal-viewport.png",
+    "student-landing-viewport.png",
+    "student-sim-viewport.png"
+  ]
+}

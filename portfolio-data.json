@@ -1,0 +1,350 @@
+{
+  "generatedAt": "2026-07-31",
+  "sourceRoots": {
+    "orbital": "C:\\Users\\bakuw\\Desktop\\проекты\\cosmo",
+    "asema": "C:\\Users\\bakuw\\Desktop\\проекты\\asema-trading",
+    "eyeMaster": "C:\\Users\\bakuw\\Desktop\\проекты\\eyemaster\\lash-site"
+  },
+  "projects": [
+    {
+      "id": "orbital",
+      "slug": "orbital-c2",
+      "title": {
+        "en": "Orbital C2 // HUD",
+        "ru": "Orbital C2 // HUD"
+      },
+      "nav": {
+        "en": "Orbital C2",
+        "ru": "Orbital C2"
+      },
+      "stack": [
+        "React 18",
+        "Vite",
+        "React Three Fiber",
+        "Drei / Three.js",
+        "satellite.js",
+        "Socket.IO",
+        "Zustand",
+        "Express",
+        "node-cron",
+        "SQLite"
+      ],
+      "localPath": "C:\\Users\\bakuw\\Desktop\\проекты\\cosmo",
+      "defaultPorts": {
+        "client": 5173,
+        "server": 4000
+      },
+      "architecture": {
+        "ru": "Двухконтурная система: Vite-клиент с WebGL-сценой Земли и Express/Socket.IO gateway, который непрерывно инжестит внешние эфемериды и телеметрию. Клиент не «рисует картинку» — он рендерит живой state graph: TLE → satellite.js propagation → R3F scene graph, параллельно потребляя DSN/solar/debris/conjunction потоки через Zustand.",
+        "en": "Dual-plane system: Vite client with a WebGL Earth scene and an Express/Socket.IO gateway that continuously ingests external ephemerides and telemetry. The client does not paint a static picture — it renders a live state graph: TLE → satellite.js propagation → R3F scene graph while consuming DSN/solar/debris/conjunction streams via Zustand."
+      },
+      "overview": {
+        "ru": "Командный HUD орбитального контроля. Не дашборд ради дашборда — flight deck, где каждый пиксель привязан к источнику данных: CelesTrak TLE, NASA DSN XML, NOAA GOES X-ray. Архитектура заточена под непрерывный апдейт без потери кадра и без блокировки UI-треда.",
+        "en": "An orbital command HUD. Not a dashboard for decoration — a flight deck where every pixel is wired to a data source: CelesTrak TLE, NASA DSN XML, NOAA GOES X-ray. Built for continuous updates without dropped frames or UI-thread stalls."
+      },
+      "sections": [
+        {
+          "id": "earth-scene",
+          "title": { "ru": "3D орбитальная сцена", "en": "3D orbital scene" },
+          "route": "/",
+          "selector": "canvas",
+          "waitFor": ["canvas", "networkidle"],
+          "description": {
+            "ru": "R3F-сцена с Earth textures, Stars и орбитальными траекториями. Позиции объектов считаются через satellite.js из живых TLE — не анимация «для красоты», а геометрическая проекция реальных эфемерид в viewport с OrbitControls и HTML-метками целей (ISS, Hubble, Starlink).",
+            "en": "R3F scene with Earth textures, Stars, and orbital paths. Object positions are computed via satellite.js from live TLEs — not cosmetic animation, but a geometric projection of real ephemerides into the viewport with OrbitControls and HTML target labels."
+          }
+        },
+        {
+          "id": "dsn-link",
+          "title": { "ru": "Наземный терминал DSN", "en": "Ground DSN terminal" },
+          "route": "/",
+          "description": {
+            "ru": "Парсинг NASA DSN XML каждые ~10с: dish name, azimuth/elevation, band, target. Socket.IO пушит снимки в клиент без polling-шторма. UI показывает синхронизацию GS-Link как статусный контур, а не как декоративный бейдж.",
+            "en": "NASA DSN XML parsed ~every 10s: dish name, azimuth/elevation, band, target. Socket.IO pushes snapshots to the client without a polling storm. The UI treats GS-Link sync as a status circuit, not a decorative badge."
+          }
+        },
+        {
+          "id": "pass-predictor",
+          "title": { "ru": "Предиктор орбитальных пролётов", "en": "Orbital pass predictor" },
+          "route": "/",
+          "description": {
+            "ru": "Модуль passService считает окна видимости и max elevation для выбранной цели. Это вычислительный слой поверх эфемерид — оператор получает числовую предсказуемость пролёта, а не «примерно скоро».",
+            "en": "passService computes visibility windows and max elevation for the selected target. A computational layer over ephemerides — the operator gets numeric pass predictability, not a vague 'soon'."
+          }
+        },
+        {
+          "id": "solar-matrix",
+          "title": { "ru": "Солнечная матрица / GOES", "en": "Solar matrix / GOES" },
+          "route": "/",
+          "description": {
+            "ru": "Интеграция NOAA GOES X-ray flare feed. Класс вспышки, локация, timestamp — в отдельном matrix-view с realtime-симуляцией солнечного ветра на Canvas. Критические события поднимают solar-alert и принудительно фокусируют оператора.",
+            "en": "NOAA GOES X-ray flare feed integration. Flare class, location, timestamp — in a dedicated matrix view with realtime solar-wind canvas simulation. Critical events raise a solar-alert and force operator focus."
+          }
+        },
+        {
+          "id": "debris-conjunction",
+          "title": { "ru": "Мусор и conjunction alerts", "en": "Debris and conjunction alerts" },
+          "route": "/",
+          "description": {
+            "ru": "debrisService + conjunctionService формируют контур риска: объекты мусора и сближения. Клиент переключает matrix-view (Debris / BlackHole / Realtime) без перезагрузки сцены — state isolation через Zustand, рендер остаётся непрерывным.",
+            "en": "debrisService + conjunctionService form the risk contour: debris objects and close approaches. The client switches matrix views without reloading the scene — Zustand state isolation keeps rendering continuous."
+          }
+        },
+        {
+          "id": "c2-stream",
+          "title": { "ru": "C2 command stream", "en": "C2 command stream" },
+          "route": "/",
+          "description": {
+            "ru": "Терминальный лог системных команд: handshake, ephemeris propagation, uplink readiness. Это audit surface для оператора — прозрачный след состояния контура управления в реальном времени.",
+            "en": "Terminal log of system commands: handshake, ephemeris propagation, uplink readiness. An operator audit surface — a transparent real-time trail of the control plane state."
+          }
+        }
+      ],
+      "screenshots": [
+        { "name": "page-01-hud", "type": "viewport", "route": "/", "selector": "canvas" },
+        { "name": "page-02-orbits", "type": "viewport", "route": "/", "tab": "ОРБИТЫ|ORBITS" },
+        { "name": "page-03-sensors", "type": "viewport", "route": "/", "tab": "СЕНСОРЫ|SENSORS" },
+        { "name": "page-04-solar", "type": "viewport", "route": "/", "tab": "СОЛНЦЕ|SOLAR", "selector": "canvas" },
+        { "name": "page-05-blackhole", "type": "viewport", "route": "/", "tab": "ДЫРА|BLACK", "selector": "canvas" },
+        { "name": "page-06-debris", "type": "viewport", "route": "/", "tab": "МУСОР \\[6\\]|DEBRIS \\[6\\]" }
+      ]
+    },
+    {
+      "id": "asema",
+      "slug": "asema-trading",
+      "title": {
+        "en": "Asema Trading",
+        "ru": "Asema Trading"
+      },
+      "nav": {
+        "en": "Asema-Trading",
+        "ru": "Asema-Trading"
+      },
+      "stack": [
+        "React 19",
+        "Vite",
+        "React Router",
+        "TanStack Query",
+        "Socket.IO",
+        "Express 5",
+        "Prisma",
+        "PostgreSQL",
+        "JWT + Refresh Tokens",
+        "Zod",
+        "Helmet / Rate Limit",
+        "Pino"
+      ],
+      "localPath": "C:\\Users\\bakuw\\Desktop\\проекты\\asema-trading",
+      "defaultPorts": {
+        "client": 5173,
+        "server": 4000
+      },
+      "auth": {
+        "loginPath": "/auth",
+        "coordinator": {
+          "email": "admin@asema.com",
+          "password": "Asema12345"
+        },
+        "student": {
+          "email": "Rauf.pashabayli@outlook.com",
+          "password": "12345678"
+        },
+        "selectors": {
+          "email": "input[type='email'], input[name='email'], input[placeholder*='mail' i]",
+          "password": "input[type='password']",
+          "submit": "button[type='submit']"
+        }
+      },
+      "architecture": {
+        "ru": "Монорепо клиент/сервер. API — Express 5 с JWT access + refresh rotation, Zod-валидацией, rate-limit и Helmet. Доменные сущности в Prisma (User, Trade, LedgerEntry, LessonProgress, HomeworkSubmission, Message, Notification). Realtime — Socket.IO gateway. Клиент разделён на role-scoped оболочки: StudentApp и CoordinatorApp, с ProtectedRoute как UX-слоем поверх серверной авторизации.",
+        "en": "Client/server monorepo. API is Express 5 with JWT access + refresh rotation, Zod validation, rate-limit and Helmet. Domain entities in Prisma (User, Trade, LedgerEntry, LessonProgress, HomeworkSubmission, Message, Notification). Realtime via Socket.IO. Client split into role-scoped shells: StudentApp and CoordinatorApp, with ProtectedRoute as a UX layer over server-side auth."
+      },
+      "overview": {
+        "ru": "Учебно-операционная платформа для трейдинга: курс, журнал сделок, ledger баланса, домашки, чат и coordinator review workflow в одном контуре. Не «лендинг с кнопками» — транзакционная система, где баланс меняется атомарно, роли enforced на каждом endpoint, а risk-алерты (tilt / drawdown / stale queue) поднимаются из реальных паттернов журнала.",
+        "en": "A trading education ops platform: course, trade journal, balance ledger, homework, chat and coordinator review in one contour. Not a landing with buttons — a transactional system where balance updates are atomic, roles are enforced on every endpoint, and risk alerts (tilt / drawdown / stale queue) rise from real journal patterns."
+      },
+      "sections": [
+        {
+          "id": "auth",
+          "title": { "ru": "Auth + role boundary", "en": "Auth + role boundary" },
+          "route": "/auth",
+          "description": {
+            "ru": "Login/register с жёсткой валидацией пароля, refresh-cookie контуром и запретом самоназначения COORDINATOR. Роль координатора — только allowlist COORDINATOR_EMAILS. Клиент никогда не доверяет UI-гарду: каждый API-запрос проверяет JWT и scope.",
+            "en": "Login/register with strict password validation, refresh-cookie contour, and no self-assignment of COORDINATOR. Coordinator role is allowlist-only. The client never trusts the UI guard: every API call checks JWT and scope."
+          }
+        },
+        {
+          "id": "course",
+          "title": { "ru": "Курс / модули / квизы", "en": "Course / modules / quizzes" },
+          "route": "/",
+          "role": "STUDENT",
+          "description": {
+            "ru": "Каталог уроков (catalog) + LessonProgress. Прохождение модулей, квизы с учётом провалов, homework submission pipeline. Прогресс — first-class сущность БД, а не localStorage-фантом.",
+            "en": "Lesson catalog + LessonProgress. Module completion, quizzes with failure tracking, homework submission pipeline. Progress is a first-class DB entity, not a localStorage phantom."
+          }
+        },
+        {
+          "id": "journal",
+          "title": { "ru": "Trade journal + ledger", "en": "Trade journal + ledger" },
+          "route": "/",
+          "role": "STUDENT",
+          "tab": "journal",
+          "description": {
+            "ru": "Сделки с pair/side/RR/PnL и статусами PENDING/APPROVED/REJECTED. LedgerEntry фиксирует денежные движения. Coordinator review меняет статус и баланс транзакционно — без «магии» в UI.",
+            "en": "Trades with pair/side/RR/PnL and PENDING/APPROVED/REJECTED statuses. LedgerEntry records monetary moves. Coordinator review changes status and balance transactionally — no UI magic."
+          }
+        },
+        {
+          "id": "simulator",
+          "title": { "ru": "Симулятор / TradingView контур", "en": "Simulator / TradingView contour" },
+          "route": "/",
+          "role": "STUDENT",
+          "tab": "simulator",
+          "description": {
+            "ru": "Песочница практики поверх учебной сессии. Баланс USDT, restart-контур, интеграция с образовательным workflow — студент тренирует входы в том же продукте, где проходит теорию и сдаёт журнал.",
+            "en": "Practice sandbox on top of the learning session. USDT balance, restart contour, integrated with the education workflow — the student trains entries in the same product where they study theory and submit the journal."
+          }
+        },
+        {
+          "id": "chat",
+          "title": { "ru": "Realtime chat", "en": "Realtime chat" },
+          "route": "/",
+          "role": "STUDENT",
+          "tab": "chat",
+          "description": {
+            "ru": "Socket.IO messaging между студентом и координатором. Сообщения — персистентная модель Message, доставка живая. Менторство внутри продукта, не в стороннем мессенджере.",
+            "en": "Socket.IO messaging between student and coordinator. Messages are a persistent Message model with live delivery. Mentorship stays inside the product, not a third-party messenger."
+          }
+        },
+        {
+          "id": "coordinator",
+          "title": { "ru": "Coordinator ops console", "en": "Coordinator ops console" },
+          "route": "/coordinator",
+          "role": "COORDINATOR",
+          "description": {
+            "ru": "Операционная оболочка координатора: очередь сделок на ревью, homework, алерты (серия лоссов / просадка / просроченный PENDING / провалы теории). Это control surface для дисциплины cohort, а не «админка ради CRUD».",
+            "en": "Coordinator ops shell: trade review queue, homework, alerts (loss streak / drawdown / stale PENDING / theory failures). A control surface for cohort discipline — not CRUD for its own sake."
+          }
+        }
+      ],
+      "screenshots": [
+        { "name": "auth", "type": "viewport", "route": "/auth" },
+        { "name": "student-course", "type": "viewport", "route": "/", "loginAs": "student", "tab": "Обучение" },
+        { "name": "student-journal", "type": "viewport", "route": "/", "loginAs": "student", "tab": "Дневник" },
+        { "name": "student-chat", "type": "viewport", "route": "/", "loginAs": "student", "tab": "Чат" },
+        { "name": "student-sim", "type": "viewport", "route": "/", "loginAs": "student", "tab": "Симулятор", "selector": "canvas" },
+        { "name": "coord-radar", "type": "viewport", "route": "/coordinator", "loginAs": "coordinator", "tab": "Проверка сделок" },
+        { "name": "coord-homework", "type": "viewport", "route": "/coordinator", "loginAs": "coordinator", "tab": "Проверка ДЗ" },
+        { "name": "coord-crm", "type": "viewport", "route": "/coordinator", "loginAs": "coordinator", "tab": "Досье учеников" },
+        { "name": "coord-comms", "type": "viewport", "route": "/coordinator", "loginAs": "coordinator", "tab": "Чат с учениками" },
+        { "name": "coord-alerts", "type": "viewport", "route": "/coordinator", "loginAs": "coordinator", "tab": "Риск-менеджер" }
+      ]
+    },
+    {
+      "id": "eye_master",
+      "slug": "eye-master",
+      "title": {
+        "en": "The Art of Look",
+        "ru": "Искусство Взгляда"
+      },
+      "nav": {
+        "en": "The Art of Look",
+        "ru": "Искусство Взгляда"
+      },
+      "stack": [
+        "Next.js 16 App Router",
+        "React 19",
+        "TypeScript",
+        "Supabase (Auth/DB/Storage)",
+        "Framer Motion",
+        "Zustand",
+        "Tailwind CSS 4"
+      ],
+      "localPath": "C:\\Users\\bakuw\\Desktop\\проекты\\eyemaster\\lash-site",
+      "defaultPorts": {
+        "client": 3000
+      },
+      "auth": {
+        "loginPath": "/admin",
+        "pin": "7777",
+        "selectors": {
+          "pin": "input[type='password'], input[type='text'], input",
+          "submit": "button[type='submit'], form button"
+        }
+      },
+      "architecture": {
+        "ru": "Next.js App Router: публичный booking funnel на `/` и операционный admin на `/admin`. Данные — Supabase tables (slots, bookings, portfolio) + Storage bucket `uploads`. Клиент держит лёгкий state (Zustand/local), тяжёлая персистентность — в Postgres через Supabase SDK. Motion-слой (Framer) обслуживает multi-step funnel без потери контекста формы.",
+        "en": "Next.js App Router: public booking funnel on `/` and ops admin on `/admin`. Data via Supabase tables (slots, bookings, portfolio) + Storage bucket `uploads`. Client keeps light state; persistence lives in Postgres through the Supabase SDK. Framer Motion drives the multi-step funnel without losing form context."
+      },
+      "overview": {
+        "ru": "Премиальный booking-контур для lash/brow мастера. Клиент проходит пошаговый сценарий: слот → референсы глаз → описание → подтверждение. Админ управляет слотами, заявками и портфолио через PIN-gated панель с polling обновлением. Ноль шаблонного «календаря из коробки» — продукт собран под конкретный бренд и операционный ритм салона.",
+        "en": "A premium booking contour for a lash/brow master. The client walks a stepped flow: slot → eye references → notes → confirm. Admin manages slots, bookings and portfolio through a PIN-gated panel with polling refresh. Zero template calendar — built for a specific brand and salon operating rhythm."
+      },
+      "sections": [
+        {
+          "id": "public-hero",
+          "title": { "ru": "Публичный hero / бренд", "en": "Public hero / brand" },
+          "route": "/",
+          "description": {
+            "ru": "Типографика и контактные capsules (телефон/адрес) как вход в воронку. Портфолио подтягивается из Supabase в realtime-порядки created_at — витрина всегда отражает актуальную галерею мастера.",
+            "en": "Typography and contact capsules (phone/address) as the funnel entry. Portfolio is pulled from Supabase ordered by created_at — the showcase always reflects the master's current gallery."
+          }
+        },
+        {
+          "id": "booking-funnel",
+          "title": { "ru": "Multi-step booking funnel", "en": "Multi-step booking funnel" },
+          "route": "/",
+          "description": {
+            "ru": "Step machine: выбор свободного slot → upload currentEyes/desiredLook в Storage → insert booking → mark slot booked. Загрузка файлов и запись брони атомарно связаны в одном submit-контуре с loading-state и error surface.",
+            "en": "Step machine: pick a free slot → upload currentEyes/desiredLook to Storage → insert booking → mark slot booked. File upload and booking write are bound in one submit contour with loading state and error surface."
+          }
+        },
+        {
+          "id": "admin-gate",
+          "title": { "ru": "PIN-шлюз мастера", "en": "Master PIN gate" },
+          "route": "/admin",
+          "description": {
+            "ru": "Клиентский PIN-gate (`7777`) перед кабинетом. Без серверной сессии — React state `authed`. Неверный PIN сбрасывает поле; верный открывает операционную оболочку без роутинга на другой URL.",
+            "en": "Client-side PIN gate (`7777`) before the cabinet. No server session — React `authed` state. Wrong PIN clears the field; correct PIN unlocks ops without changing the URL."
+          }
+        },
+        {
+          "id": "admin-schedule",
+          "title": { "ru": "Кабинет — расписание слотов", "en": "Cabinet — slot schedule" },
+          "route": "/admin",
+          "loginAs": "admin",
+          "description": {
+            "ru": "Панель «Мое расписание»: datetime-local → insert в `slots` (booked=false), список с индикатором занятости, delete слота. Забронированные слоты визуально вычёркиваются — мастер видит живой inventory времени.",
+            "en": "'My schedule' panel: datetime-local → insert into `slots` (booked=false), occupancy list, slot delete. Booked slots are struck through — the master sees live time inventory."
+          }
+        },
+        {
+          "id": "admin-bookings",
+          "title": { "ru": "Кабинет — входящие записи", "en": "Cabinet — inbound bookings" },
+          "route": "/admin",
+          "loginAs": "admin",
+          "description": {
+            "ru": "Очередь заявок: имя, время, description, превью «До» / «Референс» из Storage. Закрытие записи — delete booking. Polling 5с подтягивает новые клиентские submit без WebSocket.",
+            "en": "Booking queue: name, time, description, 'Before' / 'Reference' Storage previews. Closing a booking deletes the row. 5s polling pulls new client submits without WebSocket."
+          }
+        },
+        {
+          "id": "admin-portfolio",
+          "title": { "ru": "Кабинет — управление портфолио", "en": "Cabinet — portfolio ops" },
+          "route": "/admin",
+          "loginAs": "admin",
+          "description": {
+            "ru": "Upload title + image → Storage bucket `uploads` → insert `portfolio`. Inline rename, delete. Публичная витрина читает те же rows — один media plane для клиента и мастера.",
+            "en": "Upload title + image → Storage bucket `uploads` → insert `portfolio`. Inline rename, delete. Public showcase reads the same rows — one media plane for client and master."
+          }
+        }
+      ],
+      "screenshots": [
+        { "name": "public-hero", "type": "viewport", "route": "/" },
+        { "name": "admin-gate", "type": "viewport", "route": "/admin" },
+        { "name": "admin-cabinet", "type": "viewport", "route": "/admin", "loginAs": "admin" },
+        { "name": "admin-portfolio", "type": "viewport", "route": "/admin", "loginAs": "admin", "scrollTo": "Управление портфолио" }
+      ]
+    }
+  ]
+}

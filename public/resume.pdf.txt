@@ -1,0 +1,5 @@
+# Resume placeholder
+
+Replace this file with your real PDF resume, or update `links.resume` in `app/site.config.ts`.
+
+The Hire CTA on the homepage links to `/resume.pdf`.

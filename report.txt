@@ -1,0 +1,317 @@
+================================================================================
+REPORT — портфолио RJ + все демки
+Хост:      C:\Users\bakuw\Desktop\RJ
+Демки:     C:\Users\bakuw\Desktop\проекты\
+Дата:      2026-08-07
+================================================================================
+
+00 — сам сайт RJ (портфолио / recruiter portal).
+01–06 — featured-демки внутри него. У каждой: что делает, дизайн, стек, URL.
+
+
+--------------------------------------------------------------------------------
+00. RJ — CLASSIFIED OPS / RECRUITER PORTAL
+--------------------------------------------------------------------------------
+Папка:     C:\Users\bakuw\Desktop\RJ
+Бренд:     RJ (Rauf Pashabayli)
+Роль:      Creative Frontend Engineer · Product Systems & WebGL
+Статус:    Open to work · Remote / Hybrid · Reply < 24h
+
+ЧТО ДЕЛАЕТ
+  Ultra-premium личное портфолио и recruiter-портал: не лендинг-визитка,
+  а «classified ops» оболочка вокруг шести shipped product systems.
+
+  Главный поток:
+    1. Signal Lock intro — кинематографический вход / gate
+    2. Hero — neural 3D backdrop (NeuralCanvas / NeuralNetwork) + brand RJ,
+       role, tagline, stack, CTA
+    3. Production HUD — переключатель featured-кейсов (Orbital, Art of Look,
+       Trading, FOAMCORE, Lead Desk, Hire Desk): problem / build / result,
+       tech, live link, CSS 3D coverflow скриншотов (BlueprintViewer)
+    4. Recruiter mode — HireStrip → classified NDA / brief terminal
+       (RecruiterBrief, BriefOverlay, NdaRequestOverlay)
+    5. /projects — развёрнутый каталог кейсов
+    6. /brief — форма брифа для рекрутера / клиента
+    7. API /api/leads — приём лидов (Supabase / backend path)
+
+  Evidence pipeline:
+    projects/data.ts → shot() / resolveShot → public/showcase-images/...
+    → ProductionHUD / BlueprintViewer (реальные скрины, не мокапы).
+
+  Политика кода: GitHub публично не светится — доступ через NDA-flow.
+  Язык UI сейчас залочен на EN (LanguageProvider); i18n-структура en/ru/uk
+  в данных остаётся.
+
+ДИЗАЙН
+  Clinical aerospace / neural-synthesis lab (не «дешёвый sci-fi»):
+  - absolute dark #020202, cyan accents, custom cursor (mix-blend difference)
+  - типографика: Clash Display / Geist / Plus Jakarta Sans / Instrument Serif
+  - neural WebGL backdrop с vignette под copy/HUD
+  - Production HUD — brutalist engineering desk поверх нейронов
+  - motion: Framer Motion + GSAP + Lenis smooth scroll
+  - intro gates (SignalLock / epic/kin/iris), HyperWarp page transition
+  - magnetic buttons, premium loader, glass/HUD framing скриншотов
+
+СТЕК
+  Next.js 16 (App Router), React 19, TypeScript, Tailwind CSS 4
+  Three.js + @react-three/fiber + drei (NeuralCanvas)
+  Framer Motion, GSAP (@gsap/react), Lenis
+  Phosphor icons, clsx
+  Supabase (@supabase/supabase-js), Vercel Blob
+  Dev: localhost:3000
+
+СВЯЗЬ С ДЕМКАМИ
+  RJ — витрина и recruiter funnel; 01–06 — отдельные продукты со своими
+  репозиториями и live URL. Скриншоты и copy кейсов живут в
+  app/projects/data.ts + public/showcase-images/.
+
+
+--------------------------------------------------------------------------------
+01. ORBITAL C2
+--------------------------------------------------------------------------------
+Папка:     проекты\cosmo  (client/ + server/)
+Live:      https://demo-cosmo.vercel.app/
+
+ЧТО ДЕЛАЕТ
+  Командный flight deck для спутников: «как в кино», но с реальными данными.
+  Один продукт, шесть экранов (переключение без роутера):
+    1. Main     — 3D Земля, инспектор спутника, DSN, пролёты, командный лог,
+                  планировщик манёвров, спектрограмма / солнечные фиды
+    2. Orbits   — realtime-матрица 2×2 орбит
+    3. Sensors  — глубокая телеметрия
+    4. Solar    — солнечная активность
+    5. Black hole — визуальный/тематический экран
+    6. Debris   — космический мусор / угрозы
+  Realtime: Socket.IO с сервера; орбиты через satellite.js (TLE / пролёты).
+  Локализация RU / EN (i18next).
+
+ДИЗАЙН
+  Elite space HUD / «Stark ops»:
+  - фон void #020206
+  - акценты: ion cyan #00f0ff, plasma pink, signal green
+  - scanlines, glass-панели, titanium-обводки
+  - шрифты: Orbitron (display), Rajdhani (UI), Share Tech Mono
+  - motion: Framer Motion + GSAP, непрерывный 60fps motion на главном экране
+
+СТЕК
+  Client: React 18, Vite 5, Three.js + @react-three/fiber + drei,
+          Zustand, Framer Motion, GSAP, Tailwind 3, Socket.IO client,
+          satellite.js, i18next
+  Server: Node, Express 4, Socket.IO, satellite.js, sqlite3, axios, node-cron
+
+
+--------------------------------------------------------------------------------
+02. TRADING PLATFORM (Asema / DEMO TRADING)
+--------------------------------------------------------------------------------
+Папки:     проекты\asema-trading
+           проекты\demo_trading_platform  (тот же продукт, другой бренд)
+Live:      https://demo-trading-one.vercel.app/auth
+
+ЧТО ДЕЛАЕТ
+  SaaS-портал торговой школы: ученик + куратор в одном realtime-контуре.
+
+  Ученик:
+    - Course     — модули, интерактивные quiz по графикам, домашки
+    - Journal    — дневник сделок
+    - Chat       — чат с куратором (голос / скриншоты с аннотацией)
+    - Simulator  — TradingView iframe + демо-баланс
+
+  Куратор (/coordinator — «Asema CMD» / ops deck):
+    - Trade radar   — approve / reject сделок
+    - Homework board
+    - Student CRM / досье (freeze аккаунтов)
+    - Inbox / чаты
+    - Risk alerts
+
+  Auth + публичный /offer (оферта). Realtime: WebSocket / Socket.IO
+  (сделки, ДЗ, баланс, freeze, нотификации).
+
+ДИЗАЙН
+  Ученик: тёмный slate, логотип blue–purple gradient, light/dark toggle,
+          шрифт Manrope, «современный edtech».
+  Куратор: CMD ops deck — #090e17, glass-панели, цветные акценты вкладок
+           (purple / orange / blue / cyan / red) через cmdTheme.
+  Tailwind 4.
+
+СТЕК
+  Client: React 19, Vite 8, React Router 7, TanStack Query, Framer Motion,
+          Lucide, Socket.IO client, canvas-confetti, axios, Tailwind 4
+  Server: Node 20+, Express 5, Socket.IO, Prisma (SQLite local / Postgres prod),
+          JWT, Zod, Pino, multer, bcryptjs
+
+
+--------------------------------------------------------------------------------
+03. THE ART OF LOOK (Eye Master / eyemaster)
+--------------------------------------------------------------------------------
+Папка:     проекты\eyemaster\lash-site
+Live:      https://demo-beautymaster.vercel.app/
+
+ЧТО ДЕЛАЕТ
+  Вертикальный beauty SaaS для салона ресниц / бровей
+  («Искусство Взгляда»).
+
+  Публичка (/):
+    - витрина бренда + карусель портфолио
+    - multi-step запись: слот → фото текущих глаз → референс желаемого
+      образа → имя / заметки → submit в Supabase
+
+  Админка (/admin):
+    - PIN-gate (в демо pin 7777)
+    - слоты, заявки с фото, CRUD портфолио
+    - polling-обновление
+
+ДИЗАЙН
+  Luxury beauty / dark glass:
+  - фон #0a0a0a
+  - rose #fda4af + lavender #d8b4fe, liquid blur
+  - glass-панели, лёгкая Helvetica-подобная типографика
+  - градиентные заголовки rose → purple
+  - Framer Motion, Lucide
+  Demo-hardening: отключён context menu / часть DevTools-скриптов.
+
+СТЕК
+  Next.js 16 (App Router), React 19, Supabase (DB + storage),
+  Zustand, Framer Motion, Tailwind 4, TypeScript
+
+
+--------------------------------------------------------------------------------
+04. FOAMCORE PORTAL (poltava-foam-portal)
+--------------------------------------------------------------------------------
+Папка:     проекты\poltava-foam-portal
+Live:      https://demo-foamcore.vercel.app/
+Dev:       localhost:3005
+
+ЧТО ДЕЛАЕТ
+  B2B-портал завода пенополистирола: витрина → RFQ → производство → трек.
+
+  Публичка:
+    - лендинг (Hero, продукты PSB-S, лаборатория, преимущества, контакт)
+    - RFQ-форма
+    - /tracking и /tracking/[trackCode] без логина
+
+  Кабинеты по ролям (один заказ проходит всю цепочку):
+    Client   — заказы, карточка + чат
+    Executor — задачи цеха / шаги заказа
+    Manager  — сводка, kanban заказов, команда, клиенты
+    Admin    — аналитика, monitor/audit, юзеры, каталог цен / наличие
+
+  Realtime: Firebase Firestore onSnapshot (демо); также пути Socket.IO /
+  Drizzle+Postgres под prod-style.
+
+ДИЗАЙН
+  Industrial B2B:
+  - graphite #1A1A1A, оранжевый акцент #E85D04
+  - Geist Sans / Mono, noise overlay, mono eyebrows
+  - mobile-first, крупные touch-targets
+  - lab-секция может быть на светлом #F7F7F5
+  Tailwind 3 + расширенная тема.
+
+СТЕК
+  Next.js 14, React 18, Firebase, NextAuth, iron-session,
+  Drizzle + Postgres (опционально), @dnd-kit (kanban), Recharts,
+  react-hook-form + Zod, Framer Motion, GSAP, Three.js / R3F,
+  @react-pdf/renderer, Socket.IO, Sonner, Zustand
+
+
+--------------------------------------------------------------------------------
+05. LEAD DESK
+--------------------------------------------------------------------------------
+Папка:     проекты\lead-desk
+Live:      https://lead-desk-eta.vercel.app
+Dev:       port 3010
+
+ЧТО ДЕЛАЕТ
+  Ops-консоль аутрича (UA + US): не поиск работы, а сбор и обработка лидов.
+
+  Поток: harvest → buffer → promote → daily queue → outreach → статус.
+
+  Экраны / зоны:
+    - Access gate (код команды)
+    - Очередь дня (скор, гео, email, соцсети, статус, фильтры)
+    - Social / viewed
+    - Отраслевые markets (beauty, factories, education, space, startups…)
+    - Parser jobs (MAX LIVE)
+    - Reports, admin, CSV export
+
+  Parser MAX LIVE:
+    primary — OSM Overpass (micro-grid);
+    secondary — Google Places, каталоги, реестры, job-сигналы,
+    cert/tech/SSL, соц-гео и т.д.; buffer promote/purge; cron API.
+
+ДИЗАЙН
+  Ethereal glass Stark HUD:
+  - void #02040a, cyan #33e6ff, gold #f0b429
+  - Geist + Plus Jakarta Sans
+  - cinematic APEX boot, 3D HUD intro (Three.js HudScene), custom cursor
+  - GSAP + Framer Motion, Phosphor icons
+  Локали: RU / UK (продукт без полноценного EN).
+
+СТЕК
+  Next.js 15 (Turbopack), React 19, Tailwind 4, Framer Motion, GSAP,
+  Three.js + R3F + drei, Firebase Admin, Playwright + puppeteer-core,
+  cheerio, undici (proxy pool), Phosphor icons
+
+
+--------------------------------------------------------------------------------
+06. HIRE DESK
+--------------------------------------------------------------------------------
+Папка:     проекты\hire-desk  (полный MVP)
+Также:     C:\Users\bakuw\hire-desk  (облегчённый UI-snapshot без harvest)
+Live:      https://hire-desk.onrender.com
+
+ЧТО ДЕЛАЕТ
+  Карьерный command center (тот же ops-язык, что Lead Desk, но для
+  permanent-ролей EU / America / Asia — не фриланс / не клиентский аутрич).
+
+  Поток: найти → оценить (Fit · Reach · Priority) → очередь дня →
+         отклик → follow-up (D3 / D7 / D14) → история.
+
+  Views:
+    - Access gate
+    - Queue со скорингом
+    - Region rails (Europe / America / Asia + remote)
+    - Individuals (карточки HR / HM / founders)
+    - Applied + follow-ups, History
+    - Harvest MAX LIVE (Remotive, Arbeitnow, RemoteOK, HN, GitHub →
+      GreenInhouse / Ashby / Lever и т.п.)
+    - Admin
+  Данные: Firebase или локальный data/jobs.json; keep-alive /api/ping.
+
+ДИЗАЙН
+  Stark-ops HUD (другая палитра, не копия Lead Desk 1:1):
+  - void #03040a, cyan #5ee7ff, gold #d4af37
+  - metal gradients, film grain
+  - Syne (display) + Manrope (body) + IBM Plex Mono
+  i18n: EN / UK / RU
+
+СТЕК
+  Next.js 15 (Turbopack), React 19, Tailwind 4, Framer Motion,
+  Firebase Admin, cheerio + undici (harvest), tsx scoring scripts
+
+
+================================================================================
+СВОДНАЯ ТАБЛИЦА
+================================================================================
+
+Demo              | Тип продукта                    | Live / path
+------------------|---------------------------------|----------------------------------
+RJ (host)         | Portfolio + recruiter portal    | Desktop\RJ · localhost:3000
+Orbital C2        | Realtime 3D C2 HUD              | demo-cosmo.vercel.app
+Trading Platform  | Edtech / trading school         | demo-trading-one.vercel.app/auth
+Art of Look       | Beauty booking SaaS             | demo-beautymaster.vercel.app
+FOAMCORE          | B2B plant portal                | demo-foamcore.vercel.app
+Lead Desk         | Lead harvest ops console        | lead-desk-eta.vercel.app
+Hire Desk         | Job hunt ops console            | hire-desk.onrender.com
+
+STACK CHEATSHEET
+  RJ          → Next 16 + R3F + GSAP + Framer + Lenis + Supabase
+  Orbital     → Vite + React + R3F + Socket.IO + Express
+  Trading     → Vite + React + Express + Prisma + Socket.IO
+  Art of Look → Next 16 + Supabase
+  FOAMCORE    → Next 14 + Firebase (+ Drizzle/Postgres path)
+  Lead Desk   → Next 15 + Firebase + parsers (Playwright/Puppeteer)
+  Hire Desk   → Next 15 + Firebase + harvest (cheerio/undici)
+
+================================================================================
+конец report.txt
+================================================================================
