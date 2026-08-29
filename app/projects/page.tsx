@@ -556,10 +556,7 @@ function ProjectCase({
     const seen = new Set<string>();
 
     const push = (item: GalleryItem) => {
-      const src =
-        typeof item.image === "string"
-          ? item.image
-          : item.image.en || item.image.ru || item.image.uk;
+      const src = resolveShot(item.image, lang);
       if (!src || seen.has(src)) return;
       seen.add(src);
       items.push(item);
@@ -582,7 +579,7 @@ function ProjectCase({
       });
     }
     return items;
-  }, [project]);
+  }, [project, lang]);
 
   return (
     <section

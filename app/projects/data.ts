@@ -53,22 +53,25 @@ export function shot(
   };
 }
 
-/** RJ portfolio is English-only — always prefer EN screenshots. */
-export function resolveShot(image: Shot | string, _lang?: Lang): string {
+/** Pick localized screenshot path for portfolio language. */
+export function resolveShot(image: Shot | string, lang?: Lang): string {
   if (typeof image === "string") return image;
+  if (lang && image[lang]) return image[lang];
   return image.en || image.uk || image.ru;
 }
 
-export function L(loc: Localized | undefined, _lang?: Lang): string {
+export function L(loc: Localized | undefined, lang?: Lang): string {
   if (!loc) return "";
+  if (lang && loc[lang]) return loc[lang]!;
   return loc.en || loc.ru || loc.uk || "";
 }
 
 export function LList(
   block: { en: string[]; ru: string[]; uk?: string[] } | undefined,
-  _lang?: Lang
+  lang?: Lang
 ): string[] {
   if (!block) return [];
+  if (lang && block[lang]?.length) return block[lang]!;
   return block.en || block.ru || block.uk || [];
 }
 
@@ -1023,7 +1026,7 @@ score(job) → queue.sort() → apply.next()`,
           uk: "Темний HUD салону з 3D-маркою, тумблером UA / EN і тікером: підбір · викуп · перевірка.",
         },
         image: shot("drift", "hero-viewport.jpg"),
-        caption: { en: "Home — EN", ru: "Главная — UA", uk: "Головна — UA" },
+        caption: { en: "Home — EN", ru: "Главная — RU", uk: "Головна — UA" },
       },
       {
         id: "catalog",
