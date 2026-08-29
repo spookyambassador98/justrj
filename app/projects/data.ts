@@ -53,7 +53,7 @@ export function shot(
   };
 }
 
-/** Pick localized screenshot path for portfolio language. */
+/** English-first portfolio copy + EN screenshots (justrj.vercel.app). */
 export function resolveShot(image: Shot | string, lang?: Lang): string {
   if (typeof image === "string") return image;
   if (lang && image[lang]) return image[lang];

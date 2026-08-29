@@ -43,7 +43,7 @@ export const viewport: Viewport = {
   themeColor: "#020202",
 };
 
-const LANG_BOOT_SCRIPT = `(function(){try{var k="apex-lang";var s=localStorage.getItem(k);if(s==="en"||s==="ru"||s==="uk"){document.documentElement.lang=s==="uk"?"uk":s;document.documentElement.dataset.lang=s;return;}var list=[].concat(navigator.languages||[],[navigator.language||""]);var uk=/^(uk)([-_]|$)/i;var ru=/^(ru|be|kk|ky|uz|tg|tk|hy|az|ka)([-_]|$)/i;var pick=null;for(var i=0;i<list.length;i++){var l=String(list[i]||"").toLowerCase();if(uk.test(l)){pick="uk";break;}if(ru.test(l)){pick="ru";break;}if(l.indexOf("en")===0){pick="en";break;}}if(!pick){try{var tz=Intl.DateTimeFormat().resolvedOptions().timeZone||"";if(/(Kyiv|Kiev|Europe\\/Kyiv)/i.test(tz))pick="uk";else if(/(Moscow|Minsk|Almaty|Tashkent|Yekaterinburg|Novosibirsk|Vladivostok|Kaliningrad|Samara|Volgograd|Baku|Yerevan|Tbilisi|Ashgabat|Bishkek|Dushanbe|Chisinau|Simferopol)/i.test(tz))pick="ru";}catch(e){}}if(!pick)pick="en";document.documentElement.lang=pick==="uk"?"uk":pick;document.documentElement.dataset.lang=pick;}catch(e){document.documentElement.lang="en";document.documentElement.dataset.lang="en";}})();`;
+const LANG_BOOT_SCRIPT = `(function(){try{document.documentElement.lang="en";document.documentElement.dataset.lang="en";localStorage.setItem("apex-lang","en");}catch(e){document.documentElement.lang="en";document.documentElement.dataset.lang="en";}})();`;
 
 export default function RootLayout({ children }: { children: ReactNode }) {
   return (
