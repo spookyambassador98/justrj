@@ -42,7 +42,8 @@ export function shot(
     | "asema"
     | "foamcore"
     | "lead-desk"
-    | "hire-desk",
+    | "hire-desk"
+    | "drift",
   name: string
 ): Shot {
   return {
@@ -956,5 +957,147 @@ parser.run() → buffer.flush() → leads.queue()`,
     },
     code: `// fit × reach → priority → queue
 score(job) → queue.sort() → apply.next()`,
+  },
+  {
+    id: "drift",
+    index: "07",
+    title: { en: "DRIFT Dealership", ru: "DRIFT автосалон", uk: "DRIFT автосалон" },
+    accent: { en: "Auto retail", ru: "Автосалон", uk: "Автосалон" },
+    nav: { en: "DRIFT", ru: "DRIFT", uk: "DRIFT" },
+    hook: {
+      en: "A bilingual dealership: live inventory, car order, buyout, and an owner desk — UA / EN, no CRM graveyard.",
+      ru: "Двуязычный автосалон: живой каталог, заказ авто, выкуп и кабинет хозяина — UA / EN, без склада CRM.",
+      uk: "Двомовний автосалон: живий каталог, замовлення авто, викуп і кабінет господаря — UA / EN, без складу CRM.",
+    },
+    role: {
+      en: "Product · Dealership site",
+      ru: "Продукт · сайт автосалона",
+      uk: "Продукт · сайт автосалону",
+    },
+    year: "2026",
+    tech: ["Next.js", "Three.js", "Framer Motion", "Upstash"],
+    glow: "radial-gradient(ellipse 90% 75% at 48% 30%, rgba(255, 140, 40, 0.08) 0%, rgba(67, 20, 7, 0.05) 42%, transparent 72%)",
+    image: shot("drift", "hero-viewport.jpg"),
+    imageCaption: {
+      en: "Hero — dealership, source, inspect, paperwork",
+      ru: "Главный экран — автосалон, подбор, проверка, оформление",
+      uk: "Головний екран — автосалон, підбір, перевірка, оформлення",
+    },
+    link: "https://drift-pro.vercel.app",
+    problem: {
+      en: "A lot that only spoke one language, with inventory stuck in chats — no public catalog, no owner desk.",
+      ru: "Салон на одном языке, каталог в переписках — без публичной витрины и кабинета хозяина.",
+      uk: "Салон однією мовою, каталог у листуванні — без публічної вітрини і кабінету господаря.",
+    },
+    build: {
+      en: "Next.js dealership with UA/EN UI, live stock, order + buyout forms, PIN owner desk.",
+      ru: "Автосалон на Next.js: UI UA/EN, живое наличие, формы заказа и выкупа, кабинет хозяина за PIN.",
+      uk: "Next.js автосалон: UI UA/EN, жива наявність, форми замовлення і викупу, кабінет господаря за PIN.",
+    },
+    result: {
+      en: "A working lot in two languages — English clients and UA speakers see matching screens.",
+      ru: "Рабочий салон на двух языках — EN-клиенты и UA видят свои экраны.",
+      uk: "Робочий салон двома мовами — EN-клієнти і UA бачать свої екрани.",
+    },
+    overview: {
+      en: [
+        "Not a brochure — a working lot: stock and sold cars, Telegram, order matching, and same-day buyout.",
+        "Owner desk is a PIN-locked control surface: inventory, orders and buyout requests update in real time.",
+      ],
+      ru: [
+        "Не брошюра — рабочий салон: наличие и проданные, Telegram, подбор под заказ и выкуп в тот же день.",
+        "Кабинет хозяина под PIN: каталог, заявки на подбор и выкуп обновляются в реальном времени.",
+      ],
+      uk: [
+        "Не брошура — робочий салон: наявність і продані, Telegram, підбір під замовлення і викуп того ж дня.",
+        "Кабінет господаря під PIN: каталог, заявки на підбір і викуп оновлюються в реальному часі.",
+      ],
+    },
+    features: [
+      {
+        id: "hero",
+        title: { en: "Hero", ru: "Главный экран", uk: "Головний екран" },
+        body: {
+          en: "Dark dealership HUD with 3D mark, UA / EN toggle, and a ticker of sourcing · buyout · inspection.",
+          ru: "Тёмный HUD салона с 3D-маркой, тумблером UA / EN и тикером: подбор · выкуп · проверка.",
+          uk: "Темний HUD салону з 3D-маркою, тумблером UA / EN і тікером: підбір · викуп · перевірка.",
+        },
+        image: shot("drift", "hero-viewport.jpg"),
+        caption: { en: "Home — EN", ru: "Главная — UA", uk: "Головна — UA" },
+      },
+      {
+        id: "catalog",
+        title: { en: "Inventory", ru: "Каталог", uk: "Каталог" },
+        body: {
+          en: "Available / sold rails with live counts. Cards carry price, year, engine and gearbox.",
+          ru: "Полосы «в наличии» и «продано» с живым счётчиком. На карточках цена, год, мотор и коробка.",
+          uk: "Смуги «в наявності» і «продано» з живим лічильником. На картках ціна, рік, мотор і коробка.",
+        },
+        image: shot("drift", "catalog-viewport.jpg"),
+        caption: { en: "Stock grid", ru: "Сетка наличия", uk: "Сітка наявності" },
+      },
+      {
+        id: "detail",
+        title: { en: "Car page", ru: "Карточка авто", uk: "Картка авто" },
+        body: {
+          en: "Gallery, specs, save / compare, and a direct message to the owner about this car.",
+          ru: "Галерея, паспорт машины, избранное / сравнение и сообщение хозяину по этой машине.",
+          uk: "Галерея, паспорт машини, добірка / порівняння і повідомлення господарю по цій машині.",
+        },
+        image: shot("drift", "detail-viewport.jpg"),
+        caption: { en: "Golf · 2018", ru: "Golf · 2018", uk: "Golf · 2018" },
+      },
+      {
+        id: "order",
+        title: { en: "Order a car", ru: "Заказ авто", uk: "Замовлення авто" },
+        body: {
+          en: "Budget, make, year, mileage — match against stock, or send a request to the owner.",
+          ru: "Бюджет, марка, год, пробег — сверка с наличием или заявка хозяину.",
+          uk: "Бюджет, марка, рік, пробіг — звірка з наявністю або заявка господарю.",
+        },
+        image: shot("drift", "order-viewport.jpg"),
+        caption: { en: "Sourcing form", ru: "Форма подбора", uk: "Форма підбору" },
+      },
+      {
+        id: "sell",
+        title: { en: "Buyout", ru: "Выкуп", uk: "Викуп" },
+        body: {
+          en: "Sell-side passport plus photos. Owner sees the request in the desk the same day.",
+          ru: "Паспорт машины на продажу плюс фото. Хозяин видит заявку в кабинете в тот же день.",
+          uk: "Паспорт машини на продаж плюс фото. Господар бачить заявку в кабінеті того ж дня.",
+        },
+        image: shot("drift", "sell-viewport.jpg"),
+        caption: { en: "Buyout form", ru: "Форма выкупа", uk: "Форма викупу" },
+      },
+      {
+        id: "how",
+        title: { en: "How it works", ru: "Как купить", uk: "Як купити" },
+        body: {
+          en: "Three steps: budget, inspection, paperwork. No fairy tales, no unique offers.",
+          ru: "Три шага: бюджет, проверка, оформление. Без сказок и «уникальных предложений».",
+          uk: "Три кроки: бюджет, перевірка, оформлення. Без казок і «унікальних пропозицій».",
+        },
+        image: shot("drift", "how-viewport.jpg"),
+        caption: { en: "Three steps", ru: "Три шага", uk: "Три кроки" },
+      },
+      {
+        id: "owner",
+        title: { en: "Owner desk", ru: "Кабинет хозяина", uk: "Кабінет господаря" },
+        body: {
+          en: "PIN-locked ops: inventory, add car, customer orders, buyout queue — live.",
+          ru: "Операционка под PIN: каталог, добавление авто, заказы клиентов, очередь выкупа.",
+          uk: "Операційка під PIN: каталог, додавання авто, замовлення клієнтів, черга викупу.",
+        },
+        image: shot("drift", "owner-viewport.jpg"),
+        caption: { en: "Owner control", ru: "Пульт хозяина", uk: "Пульт господаря" },
+      },
+    ],
+    architecture: {
+      en: "Next.js App Router + UA/EN dictionaries. Catalog and leads persist to Upstash on Vercel, local JSON in dev. Owner desk behind a PIN.",
+      ru: "Next.js App Router + словари UA / EN. Каталог и заявки — Upstash на Vercel, локальный JSON в dev. Кабинет хозяина за PIN.",
+      uk: "Next.js App Router + словники UA / EN. Каталог і заявки — Upstash на Vercel, локальний JSON у dev. Кабінет господаря за PIN.",
+    },
+    code: `// inventory → order → owner desk
+catalog.filter() → order.submit() → owner.sync()`,
   },
 ];

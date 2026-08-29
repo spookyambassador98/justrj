@@ -39,6 +39,7 @@ const FEATURED_IDS = [
   "foamcore",
   "hire_desk",
   "lead_desk",
+  "drift",
 ] as const;
 
 function evidenceFromProject(project: Project, lang: Lang): BlueprintShot[] {
@@ -224,7 +225,7 @@ export function ProductionHUD({
             </h2>
           </div>
           <p className="max-w-sm font-mono text-[9px] leading-relaxed tracking-[0.16em] text-white/30">
-            ORBITAL · ASEMA · EYE · FOAMCORE · HIRE · LEAD — real captures · real
+            ORBITAL · ASEMA · EYE · FOAMCORE · HIRE · LEAD · DRIFT — real captures · real
             stack · no invented metrics
           </p>
         </motion.div>
