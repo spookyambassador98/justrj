@@ -1,12 +1,7 @@
 "use client";
 
 import { AnimatePresence, motion } from "framer-motion";
-import {
-  useCallback,
-  useEffect,
-  useRef,
-  useState,
-} from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 
 export type BlueprintShot = {
   src: string;
@@ -44,92 +39,7 @@ function ArrowIcon({ dir }: { dir: "left" | "right" }) {
   );
 }
 
-function wrapDelta(i: number, current: number, n: number) {
-  if (n <= 0) return 0;
-  let d = i - current;
-  const half = n / 2;
-  while (d > half) d -= n;
-  while (d < -half) d += n;
-  return d;
-}
-
-function CoverflowStage({
-  shots,
-  index,
-  onSelect,
-}: {
-  shots: BlueprintShot[];
-  index: number;
-  onSelect: (i: number) => void;
-}) {
-  const n = shots.length;
-
-  return (
-    <div
-      className="relative flex h-full w-full items-center justify-center"
-      style={{
-        perspective: "1400px",
-        perspectiveOrigin: "50% 45%",
-        transformStyle: "preserve-3d",
-      }}
-    >
-      {shots.map((shot, i) => {
-        const d = wrapDelta(i, index, n);
-        const abs = Math.abs(d);
-        // Only center + immediate neighbors — no clutter of lookalike side cards
-        if (abs > 1.1) return null;
-
-        const x = d * 48;
-        const z = abs < 0.01 ? 80 : -abs * 180;
-        const rotY = -d * 28;
-        const scale = abs < 0.01 ? 1 : 0.72;
-        const opacity = abs < 0.01 ? 1 : 0.45;
-        const active = abs < 0.5;
-
-        return (
-          <button
-            key={shot.src}
-            type="button"
-            aria-label={shot.label}
-            onClick={() => {
-              if (!active) onSelect(i);
-            }}
-            className="absolute overflow-hidden border border-white/15 bg-[#080808] shadow-[0_24px_80px_rgba(0,0,0,0.65)] transition-[transform,opacity,filter] duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white/40"
-            style={{
-              width: "min(78%, 720px)",
-              aspectRatio: "16 / 10",
-              transform: `translateX(${x}%) translateZ(${z}px) rotateY(${rotY}deg) scale(${scale})`,
-              opacity,
-              zIndex: Math.round(20 - abs * 8),
-              filter: active ? "none" : "brightness(0.55)",
-              cursor: active ? "default" : "pointer",
-            }}
-          >
-            {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img
-              src={shot.src}
-              alt={shot.label}
-              draggable={false}
-              className="h-full w-full object-cover object-top"
-              loading={abs <= 1 ? "eager" : "lazy"}
-              decoding="async"
-            />
-            <div
-              className="pointer-events-none absolute inset-0"
-              style={{
-                background: active
-                  ? "linear-gradient(180deg, transparent 70%, rgba(0,0,0,0.35) 100%)"
-                  : "rgba(0,0,0,0.28)",
-              }}
-            />
-          </button>
-        );
-      })}
-    </div>
-  );
-}
-
-function FullscreenCover({
+function Lightbox({
   shots,
   index,
   onClose,
@@ -140,6 +50,8 @@ function FullscreenCover({
   onClose: () => void;
   onChange: (i: number) => void;
 }) {
+  const shot = shots[index];
+
   useEffect(() => {
     const prev = document.body.style.overflow;
     document.body.style.overflow = "hidden";
@@ -156,62 +68,105 @@ function FullscreenCover({
     };
   }, [index, onChange, onClose, shots.length]);
 
+  if (!shot) return null;
+
   return (
     <motion.div
-      className="fixed inset-0 z-[320] flex flex-col bg-[#020202]"
+      className="fixed inset-0 z-[320] flex items-center justify-center p-3 sm:p-6 md:p-10"
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       exit={{ opacity: 0 }}
       transition={{ duration: 0.2 }}
       role="dialog"
       aria-modal="true"
+      aria-label={shot.label}
     >
-      <div className="relative z-20 flex items-center justify-between px-4 py-4 sm:px-6">
-        <span className="font-mono text-[10px] tracking-[0.28em] text-white/50">
-          {String(index + 1).padStart(2, "0")} /{" "}
-          {String(shots.length).padStart(2, "0")} · {shots[index]?.label}
-        </span>
-        <button
-          type="button"
-          onClick={onClose}
-          className="border border-white/20 px-4 py-2 font-mono text-[10px] tracking-[0.22em] text-white/70 hover:border-white/40 hover:text-white"
-        >
-          CLOSE
-        </button>
-      </div>
+      <button
+        type="button"
+        aria-label="Close"
+        className="absolute inset-0 bg-black/88 backdrop-blur-md"
+        onClick={onClose}
+      />
 
-      <div className="relative min-h-0 flex-1 px-4 pb-8 sm:px-8">
-        {shots.length > 1 && (
-          <>
+      <motion.div
+        className="relative z-10 flex max-h-[min(92dvh,920px)] w-full max-w-6xl flex-col"
+        initial={{ opacity: 0, scale: 0.94, y: 16 }}
+        animate={{ opacity: 1, scale: 1, y: 0 }}
+        exit={{ opacity: 0, scale: 0.97, y: 8 }}
+        transition={{ duration: 0.28, ease: [0.22, 1, 0.36, 1] }}
+        onClick={(e) => e.stopPropagation()}
+      >
+        <div className="relative overflow-hidden rounded-2xl bg-[#0a0a0a] shadow-[0_40px_120px_rgba(0,0,0,0.65)]">
+          <span
+            className="pointer-events-none absolute inset-0 rounded-2xl"
+            style={{ boxShadow: "inset 0 0 0 1px rgba(255,255,255,0.12)" }}
+          />
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img
+            key={shot.src}
+            src={shot.src}
+            alt={shot.label}
+            className="max-h-[min(82dvh,860px)] w-full bg-black object-contain object-top"
+            draggable={false}
+          />
+
+          <div className="absolute inset-x-0 top-0 flex items-center justify-between p-3 sm:p-4">
+            <span className="rounded-full bg-black/50 px-3 py-1.5 font-mono text-[10px] tracking-[0.2em] text-white/55 backdrop-blur-md">
+              {String(index + 1).padStart(2, "0")} /{" "}
+              {String(shots.length).padStart(2, "0")}
+            </span>
             <button
               type="button"
-              onClick={() =>
-                onChange((index - 1 + shots.length) % shots.length)
-              }
-              aria-label="Previous"
-              className="absolute left-4 top-1/2 z-30 flex h-12 w-12 -translate-y-1/2 items-center justify-center border border-white/30 bg-[#020202]/8 text-white backdrop-blur-md hover:border-white/60 sm:left-8"
+              onClick={onClose}
+              className="inline-flex h-10 w-10 items-center justify-center rounded-full bg-black/55 text-white/80 backdrop-blur-md hover:bg-black/75 hover:text-white"
+              style={{ boxShadow: "inset 0 0 0 1px rgba(255,255,255,0.14)" }}
             >
-              <ArrowIcon dir="left" />
+              <svg className="h-4 w-4" viewBox="0 0 24 24" fill="none">
+                <path
+                  d="M6 6l12 12M18 6L6 18"
+                  stroke="currentColor"
+                  strokeWidth="1.5"
+                  strokeLinecap="round"
+                />
+              </svg>
             </button>
-            <button
-              type="button"
-              onClick={() => onChange((index + 1) % shots.length)}
-              aria-label="Next"
-              className="absolute right-4 top-1/2 z-30 flex h-12 w-12 -translate-y-1/2 items-center justify-center border border-white/30 bg-[#020202]/8 text-white backdrop-blur-md hover:border-white/60 sm:right-8"
-            >
-              <ArrowIcon dir="right" />
-            </button>
-          </>
-        )}
-        <CoverflowStage shots={shots} index={index} onSelect={onChange} />
-      </div>
+          </div>
+
+          {shots.length > 1 && (
+            <>
+              <button
+                type="button"
+                onClick={() =>
+                  onChange((index - 1 + shots.length) % shots.length)
+                }
+                aria-label="Previous"
+                className="absolute left-2 top-1/2 inline-flex h-10 w-10 -translate-y-1/2 items-center justify-center rounded-full bg-black/50 text-white/70 backdrop-blur-md hover:text-white sm:left-4"
+                style={{ boxShadow: "inset 0 0 0 1px rgba(255,255,255,0.12)" }}
+              >
+                <ArrowIcon dir="left" />
+              </button>
+              <button
+                type="button"
+                onClick={() => onChange((index + 1) % shots.length)}
+                aria-label="Next"
+                className="absolute right-2 top-1/2 inline-flex h-10 w-10 -translate-y-1/2 items-center justify-center rounded-full bg-black/50 text-white/70 backdrop-blur-md hover:text-white sm:right-4"
+                style={{ boxShadow: "inset 0 0 0 1px rgba(255,255,255,0.12)" }}
+              >
+                <ArrowIcon dir="right" />
+              </button>
+            </>
+          )}
+        </div>
+        <p className="mt-3 px-1 text-center text-[10px] uppercase tracking-[0.22em] text-white/45">
+          {shot.label}
+        </p>
+      </motion.div>
     </motion.div>
   );
 }
 
 /**
- * 3D blueprint coverflow — CSS perspective + real images.
- * No WebGL texture chaos; project switches are instant from browser cache.
+ * Flat screenshot stage — click any frame to enlarge, APEX-style.
  */
 export function BlueprintViewer({
   shots,
@@ -246,11 +201,11 @@ export function BlueprintViewer({
 
   const jumpTo = useCallback(
     (i: number) => {
-      if (i === index || i < 0 || i >= shots.length) return;
+      if (i < 0 || i >= shots.length) return;
       setIndex(i);
       onSelect?.(i);
     },
-    [index, onSelect, shots.length]
+    [onSelect, shots.length]
   );
 
   if (!shots.length) {
@@ -263,6 +218,7 @@ export function BlueprintViewer({
 
   const progress = ((index + 1) / shots.length) * 100;
   const safeIndex = Math.min(index, shots.length - 1);
+  const current = shots[safeIndex];
 
   return (
     <>
@@ -288,18 +244,21 @@ export function BlueprintViewer({
           drag.current.active = false;
         }}
       >
-        <div className="pointer-events-none absolute inset-0 z-20">
-          <div className="absolute left-3 top-3 h-5 w-5 border-l border-t border-white/35" />
-          <div className="absolute right-3 top-3 h-5 w-5 border-r border-t border-white/35" />
-          <div className="absolute bottom-14 left-3 h-5 w-5 border-b border-l border-white/35" />
-          <div className="absolute bottom-14 right-3 h-5 w-5 border-b border-r border-white/35" />
-          <div className="absolute left-4 top-4 font-mono text-[9px] tracking-[0.28em] text-white/45">
-            VISUAL EVIDENCE · BLUEPRINT
-          </div>
-          <div className="absolute right-4 top-4 max-w-[45%] truncate text-right font-mono text-[9px] tracking-[0.18em] text-white/55">
-            {shots[safeIndex]?.label}
-          </div>
-        </div>
+        <button
+          type="button"
+          aria-label={`${current.label} — enlarge`}
+          data-cursor="cta"
+          className="absolute inset-0 z-0 pb-12"
+          onClick={() => setFullscreen(true)}
+        >
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img
+            src={current.src}
+            alt={current.label}
+            draggable={false}
+            className="h-full w-full object-cover object-top"
+          />
+        </button>
 
         {shots.length > 1 && (
           <>
@@ -330,22 +289,8 @@ export function BlueprintViewer({
           </>
         )}
 
-        <button
-          type="button"
-          aria-label="Open fullscreen"
-          data-cursor="cta"
-          className="absolute bottom-[3.25rem] right-3 z-40 border border-white/25 bg-[#020202]/85 px-3 py-1.5 font-mono text-[9px] tracking-[0.2em] text-white/65 backdrop-blur-md hover:border-white/50 hover:text-white"
-          onClick={() => setFullscreen(true)}
-        >
-          EXPAND
-        </button>
-
-        <div className="absolute inset-0 z-0 pb-12 pt-2">
-          <CoverflowStage
-            shots={shots}
-            index={safeIndex}
-            onSelect={jumpTo}
-          />
+        <div className="pointer-events-none absolute right-4 top-4 z-30 max-w-[45%] truncate text-right font-mono text-[9px] tracking-[0.18em] text-white/55">
+          {current.label}
         </div>
 
         <div className="absolute inset-x-0 bottom-0 z-30 border-t border-white/[0.08] bg-[#020202]/92 backdrop-blur-md">
@@ -380,7 +325,7 @@ export function BlueprintViewer({
 
       <AnimatePresence>
         {fullscreen && (
-          <FullscreenCover
+          <Lightbox
             shots={shots}
             index={safeIndex}
             onClose={() => setFullscreen(false)}
