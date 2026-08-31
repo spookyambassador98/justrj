@@ -2,21 +2,21 @@ export const siteConfig = {
   name: "Rauf Pashabayli",
   monogram: "RJ",
   role: {
-    en: "Creative Frontend Engineer · Product Systems & WebGL",
-    ru: "Creative Frontend Engineer · Product Systems & WebGL",
-    uk: "Creative Frontend Engineer · Product Systems & WebGL",
+    en: "AI-Native Product Engineer · Full-Stack Builder",
+    ru: "AI-Native Product Engineer · Full-Stack Builder",
+    uk: "AI-Native Product Engineer · Full-Stack Builder",
   },
   tagline: {
-    en: "I ship product interfaces that feel like systems: realtime ops desks, multi-role portals, and WebGL control surfaces — not landing pages.",
-    ru: "Собираю продуктовые интерфейсы как системы: realtime ops-столы, multi-role порталы и WebGL control surfaces — не лендинги.",
-    uk: "Збираю продуктові інтерфейси як системи: realtime ops-столи, multi-role портали та WebGL control surfaces — не лендінги.",
+    en: "I architect and ship production web products with Claude and Cursor — live demos, not slide decks. Auth, queues, scoring, realtime, failure paths — validated end to end.",
+    ru: "Проектирую и шиплю production web-продукты с Claude и Cursor — live demos, не слайды. Auth, queues, scoring, realtime, failure paths — проверяю end to end.",
+    uk: "Проектую і шиплю production web-продукти з Claude і Cursor — live demos, не слайди. Auth, queues, scoring, realtime, failure paths — перевіряю end to end.",
   },
   introWord: "RJ",
-  introKicker: "OPEN TO WORK · FRONTEND SYSTEMS",
+  introKicker: "OPEN TO WORK · US REMOTE",
   introSub: {
-    en: "NEXT · REALTIME · WEBGL · PRODUCT UI",
-    ru: "NEXT · REALTIME · WEBGL · PRODUCT UI",
-    uk: "NEXT · REALTIME · WEBGL · PRODUCT UI",
+    en: "CURSOR · CLAUDE · NEXT · PRODUCTION DEMOS",
+    ru: "CURSOR · CLAUDE · NEXT · PRODUCTION DEMOS",
+    uk: "CURSOR · CLAUDE · NEXT · PRODUCTION DEMOS",
   },
   hire: {
     status: {
@@ -25,14 +25,14 @@ export const siteConfig = {
       uk: "Відкритий до оферів",
     },
     availability: {
-      en: "Remote / Hybrid",
-      ru: "Remote / Hybrid",
-      uk: "Remote / Hybrid",
+      en: "Remote · US W2 / contract",
+      ru: "Remote · US W2 / contract",
+      uk: "Remote · US W2 / contract",
     },
     focus: {
-      en: "Frontend · Creative Eng",
-      ru: "Frontend · Creative Eng",
-      uk: "Frontend · Creative Eng",
+      en: "Product Engineer · Builder",
+      ru: "Product Engineer · Builder",
+      uk: "Product Engineer · Builder",
     },
     reply: {
       en: "Reply < 24h",
@@ -41,7 +41,7 @@ export const siteConfig = {
     },
   },
   links: {
-    email: "hello@example.com",
+    email: "rauf.pashabayli@outlook.com",
     /** Public GitHub intentionally omitted — commercial IP. Access via NDA flow. */
     github: null as string | null,
     linkedin: "https://www.linkedin.com/in/beyli/",
@@ -56,17 +56,18 @@ export const siteConfig = {
   },
   stack: [
     "Next.js",
-    "React Three Fiber",
-    "GSAP",
-    "Framer Motion",
-    "Realtime",
     "TypeScript",
-    "Supabase",
+    "React",
+    "Firebase",
+    "PostgreSQL",
+    "Playwright",
+    "Cursor",
+    "Claude",
   ],
   meta: {
-    title: "Rauf Pashabayli · Creative Frontend Engineer",
+    title: "Rauf Pashabayli · AI-Native Product Engineer",
     description:
-      "Rauf Pashabayli — Creative Frontend Engineer. Product systems, realtime desks, WebGL interfaces, Next.js.",
+      "Rauf Pashabayli — AI-Native Product Engineer. Six live production demos built with Cursor and Claude. Full-stack 0→1 delivery.",
   },
 } as const;
 
