@@ -49,9 +49,9 @@ export const siteConfig = {
   source: {
     policy: "nda" as const,
     label: {
-      en: "Source · NDA",
-      ru: "Код · NDA",
-      uk: "Код · NDA",
+      en: "Private repos · on request",
+      ru: "Код · по запросу",
+      uk: "Код · на запит",
     },
   },
   stack: [

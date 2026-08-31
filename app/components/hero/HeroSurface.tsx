@@ -29,9 +29,9 @@ type HeroSurfaceProps = {
 };
 
 const HEADLINE = {
-  en: ["Structural", "perfection."],
-  ru: ["Структурное", "совершенство."],
-  uk: ["Структурна", "досконалість."],
+  en: ["Live production", "demos."],
+  ru: ["Live production", "demos."],
+  uk: ["Live production", "demos."],
 } as const;
 
 /**
