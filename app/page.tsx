@@ -10,9 +10,7 @@ import { siteConfig } from "./site.config";
 import { MagneticButton } from "./components/ui/MagneticButton";
 import { PremiumLoader } from "./components/ui/PremiumLoader";
 import { RecruiterBrief } from "./components/ui/RecruiterBrief";
-import { BriefOverlay } from "./components/BriefOverlay";
 import { NdaRequestOverlay } from "./components/NdaRequestOverlay";
-import { HyperWarpTransition } from "./components/three/HyperWarpTransition";
 import { PageTransition } from "./components/motion/PageTransition";
 import { HeroSurface } from "./components/hero/HeroSurface";
 import { ProductionHUD } from "./components/production/ProductionHUD";
@@ -27,26 +25,15 @@ const EASE = [0.16, 1, 0.3, 1] as const;
 export default function Home() {
   const { lang } = useLang();
   const { recruiterMode } = useRecruiterMode();
-  const [transitionState, setTransitionState] = useState<
-    "idle" | "collapsing" | "form"
-  >("idle");
   const [isRouting, setIsRouting] = useState(false);
   const [ndaOpen, setNdaOpen] = useState(false);
   const router = useRouter();
 
-  const startTransition = () => {
-    if (transitionState !== "idle") return;
-    setTransitionState("collapsing");
-    setTimeout(() => setTransitionState("form"), 1500);
-  };
-
   const handleNavigateToProjects = () => {
-    if (transitionState !== "idle") return;
+    if (isRouting) return;
     setIsRouting(true);
     setTimeout(() => router.push("/projects"), 900);
   };
-
-  const resetTransition = () => setTransitionState("idle");
 
   const copy = {
     en: {
@@ -59,7 +46,6 @@ export default function Home() {
       finalSub:
         "Remote US W2/contract. Six live production demos. Strongest in Cursor/Claude-assisted 0→1 delivery.",
       finalCta: "Start a conversation",
-      inquiry: "Project inquiry",
       footer: `© ${new Date().getFullYear()} ${siteConfig.name} · ${siteConfig.monogram}`,
     },
     ru: {
@@ -72,7 +58,6 @@ export default function Home() {
       finalSub:
         "Remote US W2/contract. Шесть live production demos. Сильнее всего в 0→1 с Cursor/Claude.",
       finalCta: "Начать разговор",
-      inquiry: "Бриф по проекту",
       footer: `© ${new Date().getFullYear()} ${siteConfig.name} · ${siteConfig.monogram}`,
     },
     uk: {
@@ -85,13 +70,11 @@ export default function Home() {
       finalSub:
         "Remote US W2/contract. Шість live production demos. Найсильніше в 0→1 з Cursor/Claude.",
       finalCta: "Почати розмову",
-      inquiry: "Бриф по проєкту",
       footer: `© ${new Date().getFullYear()} ${siteConfig.name} · ${siteConfig.monogram}`,
     },
   } as const;
 
   const t = copy[lang];
-  const showMain = transitionState === "idle";
 
   return (
     <PageTransition>
@@ -118,27 +101,25 @@ export default function Home() {
         />
 
         {!recruiterMode && (
-          <NeuralCanvas active={transitionState === "idle"} />
+          <NeuralCanvas active />
         )}
 
-        {showMain && (
-          <div className="pointer-events-auto absolute left-4 top-4 z-20 flex items-center gap-3 safe-pad-t sm:left-8 sm:top-6">
-            <span
-              className="font-display text-[11px] font-semibold tracking-[0.28em] text-white/45"
-              aria-label={`${siteConfig.monogram} mark`}
-            >
-              {siteConfig.monogram}
-            </span>
-          </div>
-        )}
+        <div className="pointer-events-auto absolute left-4 top-4 z-20 flex items-center gap-3 safe-pad-t sm:left-8 sm:top-6">
+          <span
+            className="font-display text-[11px] font-semibold tracking-[0.28em] text-white/45"
+            aria-label={`${siteConfig.monogram} mark`}
+          >
+            {siteConfig.monogram}
+          </span>
+        </div>
 
         {/* Language locked to EN for RJ portfolio */}
 
-        {showMain && recruiterMode && (
+        {recruiterMode && (
           <RecruiterBrief lang={lang} onNavigate={handleNavigateToProjects} />
         )}
 
-        {showMain && !recruiterMode && (
+        {!recruiterMode && (
           <div className="pointer-events-none relative z-10 mx-auto flex min-h-[100dvh] w-full max-w-[90rem] flex-col justify-between px-4 pb-28 pt-24 safe-pad-x sm:px-6 sm:pb-32 sm:pt-28 md:px-10 lg:px-16">
             <HeroSurface
               lang={lang}
@@ -198,15 +179,9 @@ export default function Home() {
                 <p className="relative mx-auto mb-8 max-w-2xl text-sm font-light text-white/45 sm:mb-10 sm:text-base md:text-lg">
                   {t.finalSub}
                 </p>
-                <div className="relative flex flex-col items-center justify-center gap-3 sm:flex-row sm:gap-4">
+                <div className="relative flex items-center justify-center">
                   <MagneticButton href={`mailto:${siteConfig.links.email}`}>
                     {t.finalCta}
-                  </MagneticButton>
-                  <MagneticButton
-                    onClick={startTransition}
-                    className="border-white/[0.08] bg-transparent shadow-none"
-                  >
-                    {t.inquiry}
                   </MagneticButton>
                 </div>
               </motion.div>
@@ -225,12 +200,6 @@ export default function Home() {
           </div>
         )}
 
-        <HyperWarpTransition active={transitionState === "collapsing"} />
-        <BriefOverlay
-          visible={transitionState === "form"}
-          onClose={resetTransition}
-          lang={lang}
-        />
         <NdaRequestOverlay
           open={ndaOpen}
           onClose={() => setNdaOpen(false)}
