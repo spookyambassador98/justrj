@@ -735,7 +735,7 @@ rfq.create() → track.watch() → status.ship()`,
       ru: "Очередь дня — приоритетные цели",
       uk: "Черга дня — пріоритетні цілі",
     },
-    link: "https://lead-desk-liart-six.vercel.app",
+    link: "https://ldesk-app.vercel.app",
     problem: {
       en: "Outreach lived in spreadsheets — no scored daily queue, no live harvest into the same HUD.",
       ru: "Аутрич жил в таблицах — не было скоринговой очереди дня и живого сбора в одном HUD.",
