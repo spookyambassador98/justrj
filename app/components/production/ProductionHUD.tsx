@@ -3,7 +3,7 @@
 import dynamic from "next/dynamic";
 import { AnimatePresence, motion } from "framer-motion";
 import { useEffect, useMemo, useState } from "react";
-import { ArrowUpRight } from "@phosphor-icons/react";
+import { ArrowUpRight, CaretDown } from "@phosphor-icons/react";
 import type { Lang } from "@/app/components/LanguageProvider";
 import { MagneticButton } from "@/app/components/ui/MagneticButton";
 import {
@@ -41,6 +41,21 @@ const FEATURED_IDS = [
   "lead_desk",
   "drift",
 ] as const;
+
+/* ── Levels: collapsible "curtains" in the left index ───────── */
+type LevelKey = "l1" | "l2" | "l3" | "nda";
+const LEVELS: { key: LevelKey; title: string }[] = [
+  { key: "l1", title: "LEVEL 1 PROJECTS" },
+  { key: "l2", title: "LEVEL 2 PROJECTS" },
+  { key: "l3", title: "LEVEL 3 PROJECTS" },
+  { key: "nda", title: "NDA PROJECTS" },
+];
+
+/** Project id → level. Anything not listed falls into NDA. */
+const PROJECT_LEVEL: Record<string, LevelKey> = {};
+const levelOf = (id: string): LevelKey => PROJECT_LEVEL[id] ?? "nda";
+
+const curtainEase = [0.16, 1, 0.3, 1] as const;
 
 function evidenceFromProject(project: Project, lang: Lang): BlueprintShot[] {
   const shots: BlueprintShot[] = [];
@@ -167,6 +182,17 @@ export function ProductionHUD({
   );
   const [active, setActive] = useState(0);
   const [shotIndex, setShotIndex] = useState(0);
+  const [openLevel, setOpenLevel] = useState<LevelKey | null>(null);
+  const grouped = useMemo(() => {
+    const map: Record<LevelKey, { p: Project; i: number }[]> = {
+      l1: [],
+      l2: [],
+      l3: [],
+      nda: [],
+    };
+    featured.forEach((p, i) => map[levelOf(p.id)].push({ p, i }));
+    return map;
+  }, [featured]);
   const project = featured[active] ?? featured[0];
   const facts = authenticFacts(project, lang);
   const overview = LList(project.overview, lang);
@@ -194,6 +220,8 @@ export function ProductionHUD({
   const selectProject = (i: number) => {
     setActive(i);
     setShotIndex(0);
+    const target = featured[i];
+    if (target) setOpenLevel(levelOf(target.id));
   };
 
   return (
@@ -261,25 +289,115 @@ export function ProductionHUD({
                   {String(featured.length).padStart(2, "0")}
                 </span>
               </div>
-              <ul className="space-y-1">
-                {featured.map((p, i) => (
-                  <li key={p.id}>
-                    <button
-                      type="button"
-                      onClick={() => selectProject(i)}
-                      data-cursor="project"
-                      className={`flex w-full items-center justify-between gap-2 px-3 py-3 text-left font-mono text-[11px] tracking-[0.12em] transition-colors ${
-                        i === active
-                          ? "bg-white/[0.05] text-white"
-                          : "text-white/45 hover:bg-white/[0.02] hover:text-white/75"
-                      }`}
-                    >
-                      <span className="truncate">{L(p.title, lang)}</span>
-                      <span className="text-white/25">{p.year}</span>
-                    </button>
-                  </li>
-                ))}
-              </ul>
+              <div className="space-y-2">
+                {LEVELS.map(({ key, title }) => {
+                  const items = grouped[key];
+                  const open = openLevel === key;
+                  const isNda = key === "nda";
+                  const hasActive = items.some(({ i }) => i === active);
+                  return (
+                    <div key={key}>
+                      <button
+                        type="button"
+                        onClick={() => setOpenLevel(open ? null : key)}
+                        aria-expanded={open}
+                        data-cursor="cta"
+                        className={`relative flex w-full items-center justify-between gap-2 overflow-hidden border px-3 py-3 text-left font-mono text-[10px] tracking-[0.18em] transition-colors ${
+                          open
+                            ? isNda
+                              ? "border-amber-300/35 bg-white/[0.04] text-amber-200"
+                              : "border-sky-300/35 bg-white/[0.04] text-sky-200"
+                            : "border-white/[0.08] text-white/50 hover:border-white/20 hover:text-white/80"
+                        }`}
+                      >
+                        <motion.span
+                          aria-hidden
+                          className={`pointer-events-none absolute inset-y-0 left-0 w-full ${
+                            isNda
+                              ? "bg-gradient-to-r from-amber-300/15 to-transparent"
+                              : "bg-gradient-to-r from-sky-300/15 to-transparent"
+                          }`}
+                          initial={false}
+                          animate={{ x: open ? "0%" : "-100%" }}
+                          transition={{ duration: 0.7, ease: curtainEase }}
+                        />
+                        <span className="relative z-10 truncate">
+                          {title}
+                          {hasActive && !open ? (
+                            <span className="ml-2 inline-block h-1 w-1 rounded-full bg-white/70 align-middle" />
+                          ) : null}
+                        </span>
+                        <span className="relative z-10 flex shrink-0 items-center gap-2">
+                          <span className="text-white/30">
+                            {String(items.length).padStart(2, "0")}
+                          </span>
+                          <motion.span
+                            animate={{ rotate: open ? 180 : 0 }}
+                            transition={{ duration: 0.5, ease: curtainEase }}
+                            className="flex"
+                          >
+                            <CaretDown size={11} weight="light" />
+                          </motion.span>
+                        </span>
+                      </button>
+
+                      <AnimatePresence initial={false}>
+                        {open && (
+                          <motion.div
+                            key="curtain"
+                            initial={{ height: 0, opacity: 0, clipPath: "inset(0 0 100% 0)" }}
+                            animate={{ height: "auto", opacity: 1, clipPath: "inset(0 0 0% 0)" }}
+                            exit={{ height: 0, opacity: 0, clipPath: "inset(0 0 100% 0)" }}
+                            transition={{ duration: 0.7, ease: curtainEase }}
+                            className="overflow-hidden"
+                          >
+                            {items.length === 0 ? (
+                              <p className="border border-dashed border-white/[0.08] px-3 py-4 text-center font-mono text-[9px] leading-relaxed tracking-[0.16em] text-white/30">
+                                COMING SOON
+                              </p>
+                            ) : (
+                              <motion.ul
+                                initial="hidden"
+                                animate="visible"
+                                variants={{
+                                  hidden: {},
+                                  visible: { transition: { staggerChildren: 0.06, delayChildren: 0.12 } },
+                                }}
+                                className="space-y-1 pt-1"
+                              >
+                                {items.map(({ p, i }) => (
+                                  <motion.li
+                                    key={p.id}
+                                    variants={{
+                                      hidden: { opacity: 0, x: -12 },
+                                      visible: { opacity: 1, x: 0 },
+                                    }}
+                                    transition={{ duration: 0.45, ease: curtainEase }}
+                                  >
+                                    <button
+                                      type="button"
+                                      onClick={() => selectProject(i)}
+                                      data-cursor="project"
+                                      className={`flex w-full items-center justify-between gap-2 px-3 py-3 text-left font-mono text-[11px] tracking-[0.12em] transition-colors ${
+                                        i === active
+                                          ? "bg-white/[0.05] text-white"
+                                          : "text-white/45 hover:bg-white/[0.02] hover:text-white/75"
+                                      }`}
+                                    >
+                                      <span className="truncate">{L(p.title, lang)}</span>
+                                      <span className="text-white/25">{p.year}</span>
+                                    </button>
+                                  </motion.li>
+                                ))}
+                              </motion.ul>
+                            )}
+                          </motion.div>
+                        )}
+                      </AnimatePresence>
+                    </div>
+                  );
+                })}
+              </div>
               <p className="mt-8 font-mono text-[9px] leading-relaxed tracking-[0.14em] text-white/25">
                 {t.evidence}
               </p>
