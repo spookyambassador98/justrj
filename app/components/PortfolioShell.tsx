@@ -7,6 +7,7 @@ import { CustomCursor } from "./motion/CustomCursor";
 import { SmoothScroll } from "./motion/SmoothScroll";
 import { RecruiterModeProvider, useRecruiterMode } from "./RecruiterMode";
 import { HireStrip } from "./ui/HireStrip";
+import { SilentTracker } from "./SilentTracker";
 import { useLang } from "./LanguageProvider";
 
 type Phase = "intro" | "app";
@@ -40,6 +41,7 @@ function ShellInner({ children }: { children: React.ReactNode }) {
       </AnimatePresence>
 
       {phase === "app" && <HireStrip lang={lang} />}
+      <SilentTracker />
     </>
   );
 }

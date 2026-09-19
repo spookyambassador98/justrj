@@ -18,6 +18,7 @@ import { useRouter } from "next/navigation";
 import {
   ArrowLeft,
   ArrowUpRight,
+  CaretDown,
   MagnifyingGlass,
   Play,
   Stop,
@@ -38,6 +39,139 @@ import {
 } from "./data";
 
 const ease = [0.16, 1, 0.3, 1] as const;
+
+/* ── Project levels ("curtains") ───────────────────────────── */
+type LevelKey = "l1" | "l2" | "l3" | "nda";
+const LEVEL_KEYS: LevelKey[] = ["l1", "l2", "l3", "nda"];
+
+/** Project id → level. Anything not listed falls into NDA. */
+const PROJECT_LEVEL: Record<string, LevelKey> = {};
+const levelOf = (id: string): LevelKey => PROJECT_LEVEL[id] ?? "nda";
+
+function getLevelUi(lang: Lang) {
+  const ru = lang === "ru";
+  const uk = lang === "uk";
+  return {
+    titles: {
+      l1: ru ? "Проекты Level 1" : uk ? "Проєкти Level 1" : "Level 1 projects",
+      l2: ru ? "Проекты Level 2" : uk ? "Проєкти Level 2" : "Level 2 projects",
+      l3: ru ? "Проекты Level 3" : uk ? "Проєкти Level 3" : "Level 3 projects",
+      nda: "NDA PROJECTS",
+    } as Record<LevelKey, string>,
+    tag: {
+      l1: "LVL 01",
+      l2: "LVL 02",
+      l3: "LVL 03",
+      nda: "CLASSIFIED",
+    } as Record<LevelKey, string>,
+    empty: ru
+      ? "Скоро здесь появятся проекты"
+      : uk
+        ? "Скоро тут з’являться проєкти"
+        : "Projects will appear here soon",
+  };
+}
+
+function LevelCurtain({
+  levelKey,
+  title,
+  tag,
+  count,
+  open,
+  onToggle,
+  emptyLabel,
+  children,
+}: {
+  levelKey: LevelKey;
+  title: string;
+  tag: string;
+  count: number;
+  open: boolean;
+  onToggle: () => void;
+  emptyLabel: string;
+  children: React.ReactNode;
+}) {
+  const [settled, setSettled] = useState(false);
+  const isNda = levelKey === "nda";
+  const accent = isNda ? "rgba(251,191,36," : "rgba(56,189,248,";
+
+  return (
+    <section id={`level-${levelKey}`} className="mb-4 sm:mb-5">
+      <button
+        type="button"
+        onClick={onToggle}
+        aria-expanded={open}
+        className="group relative flex w-full items-center justify-between gap-4 overflow-hidden rounded-2xl px-5 py-5 text-left sm:px-8 sm:py-7"
+        style={{
+          background: open ? "rgba(255,255,255,0.045)" : "rgba(255,255,255,0.02)",
+          boxShadow: `inset 0 0 0 1px ${open ? accent + "0.35)" : "rgba(255,255,255,0.08)"}`,
+          transition: "background .5s, box-shadow .5s",
+        }}
+      >
+        <motion.span
+          aria-hidden
+          className="pointer-events-none absolute inset-y-0 left-0 w-1/3"
+          style={{ background: `linear-gradient(90deg, ${accent}0.14), transparent)` }}
+          initial={false}
+          animate={{ x: open ? "0%" : "-100%", opacity: open ? 1 : 0 }}
+          transition={{ duration: 0.8, ease }}
+        />
+        <span className="relative z-10 flex min-w-0 items-center gap-4 sm:gap-6">
+          <span
+            className="font-mono text-[10px] tracking-[0.28em] sm:text-[11px]"
+            style={{ color: accent + "0.75)" }}
+          >
+            {tag}
+          </span>
+          <span className="truncate text-lg font-light tracking-[0.06em] text-white sm:text-2xl">
+            {title}
+          </span>
+        </span>
+        <span className="relative z-10 flex shrink-0 items-center gap-4">
+          <span className="font-mono text-[10px] tracking-[0.2em] text-white/35">
+            {String(count).padStart(2, "0")}
+          </span>
+          <motion.span
+            animate={{ rotate: open ? 180 : 0 }}
+            transition={{ duration: 0.6, ease }}
+            className="flex h-8 w-8 items-center justify-center rounded-full text-white/70"
+            style={{ boxShadow: "inset 0 0 0 1px rgba(255,255,255,0.14)" }}
+          >
+            <CaretDown className="h-3.5 w-3.5" />
+          </motion.span>
+        </span>
+      </button>
+
+      <AnimatePresence initial={false}>
+        {open && (
+          <motion.div
+            key="content"
+            initial={{ height: 0, opacity: 0, clipPath: "inset(0 0 100% 0)" }}
+            animate={{ height: "auto", opacity: 1, clipPath: "inset(0 0 0% 0)" }}
+            exit={{ height: 0, opacity: 0, clipPath: "inset(0 0 100% 0)" }}
+            transition={{ duration: 0.85, ease }}
+            style={{ overflow: settled ? "visible" : "hidden" }}
+            onAnimationStart={() => setSettled(false)}
+            onAnimationComplete={() => setSettled(open)}
+          >
+            <div className="pt-6 sm:pt-8">
+              {count === 0 ? (
+                <div
+                  className="rounded-2xl px-6 py-14 text-center text-[11px] uppercase tracking-[0.28em] text-white/30"
+                  style={{ boxShadow: "inset 0 0 0 1px rgba(255,255,255,0.08)" }}
+                >
+                  {emptyLabel}
+                </div>
+              ) : (
+                children
+              )}
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+    </section>
+  );
+}
 
 type LightboxShot = { src: string; alt: string; caption: string; index: number; total: number };
 
@@ -859,7 +993,14 @@ export default function ProjectsPage() {
   const { lang } = useLang();
   const ui = getUi(lang);
   const [routing, setRouting] = useState(false);
+  const levelUi = getLevelUi(lang);
+  const [openLevel, setOpenLevel] = useState<LevelKey | null>(null);
   const [activeId, setActiveId] = useState(projectsData[0]?.id ?? "");
+  const byLevel = useMemo(() => {
+    const map: Record<LevelKey, Project[]> = { l1: [], l2: [], l3: [], nda: [] };
+    projectsData.forEach((p) => map[levelOf(p.id)].push(p));
+    return map;
+  }, []);
   const [demoId, setDemoId] = useState<string | null>(null);
   const [lightboxItems, setLightboxItems] = useState<GalleryItem[]>([]);
   const [lightboxIndex, setLightboxIndex] = useState(0);
@@ -871,9 +1012,10 @@ export default function ProjectsPage() {
     const hash = window.location.hash.replace("#", "");
     if (hash && projectsData.some((p) => p.id === hash)) {
       setActiveId(hash);
-      requestAnimationFrame(() => {
+      setOpenLevel(levelOf(hash));
+      setTimeout(() => {
         document.getElementById(hash)?.scrollIntoView({ behavior: "smooth", block: "start" });
-      });
+      }, 950);
     }
   }, []);
 
@@ -897,7 +1039,7 @@ export default function ProjectsPage() {
     );
     nodes.forEach((n) => observer.observe(n));
     return () => observer.disconnect();
-  }, []);
+  }, [openLevel]);
 
   const goHome = () => {
     setRouting(true);
@@ -906,10 +1048,20 @@ export default function ProjectsPage() {
 
   const scrollToProject = (id: string) => {
     setActiveId(id);
-    const el = document.getElementById(id);
-    el?.scrollIntoView({ behavior: "smooth", block: "start" });
-    history.replaceState(null, "", `#${id}`);
+    const lvl = levelOf(id);
+    const go = () => {
+      document.getElementById(id)?.scrollIntoView({ behavior: "smooth", block: "start" });
+      history.replaceState(null, "", `#${id}`);
+    };
+    if (openLevel !== lvl) {
+      setOpenLevel(lvl);
+      setTimeout(go, 950);
+    } else {
+      go();
+    }
   };
+
+  const toggleLevel = (k: LevelKey) => setOpenLevel((cur) => (cur === k ? null : k));
 
   const openGallery = useCallback((items: GalleryItem[], index: number) => {
     setLightboxItems(items);
@@ -1019,7 +1171,35 @@ export default function ProjectsPage() {
             aria-label={ui.indexLabel}
             className="mb-8 flex gap-2 overflow-x-auto pb-2 [-ms-overflow-style:none] [scrollbar-width:none] lg:mb-0 lg:max-h-[calc(100dvh-10rem)] lg:flex-col lg:gap-1 lg:overflow-y-auto lg:overflow-x-visible lg:pb-0 [&::-webkit-scrollbar]:hidden"
           >
-            {projectsData.map((p) => {
+            {LEVEL_KEYS.map((k) => (
+              <button
+                key={k}
+                type="button"
+                onClick={() => {
+                  toggleLevel(k);
+                  if (openLevel !== k) {
+                    setTimeout(
+                      () =>
+                        document
+                          .getElementById(`level-${k}`)
+                          ?.scrollIntoView({ behavior: "smooth", block: "start" }),
+                      80
+                    );
+                  }
+                }}
+                className={`shrink-0 rounded-full px-4 py-2 text-left font-mono text-[10px] uppercase tracking-[0.2em] transition-colors lg:w-full lg:rounded-xl lg:px-3 ${
+                  openLevel === k
+                    ? k === "nda"
+                      ? "text-amber-300"
+                      : "text-sky-300"
+                    : "text-white/40 hover:text-white/70"
+                }`}
+              >
+                {k === "nda" ? "NDA" : k.replace("l", "LVL 0")}
+                <span className="ml-2 text-white/25">{String(byLevel[k].length).padStart(2, "0")}</span>
+              </button>
+            ))}
+            {(openLevel ? byLevel[openLevel] : []).map((p) => {
               const active = p.id === activeId;
               return (
                 <button
@@ -1059,18 +1239,31 @@ export default function ProjectsPage() {
             sub={ui.pageSub}
           />
 
-          {projectsData.map((project) => (
-            <ProjectCase
-              key={project.id}
-              project={project}
-              lang={lang}
-              ui={ui}
-              demoOpen={demoId === project.id}
-              onToggleDemo={() =>
-                setDemoId((cur) => (cur === project.id ? null : project.id))
-              }
-              onOpenGallery={openGallery}
-            />
+          {LEVEL_KEYS.map((k) => (
+            <LevelCurtain
+              key={k}
+              levelKey={k}
+              title={levelUi.titles[k]}
+              tag={levelUi.tag[k]}
+              count={byLevel[k].length}
+              open={openLevel === k}
+              onToggle={() => toggleLevel(k)}
+              emptyLabel={levelUi.empty}
+            >
+              {byLevel[k].map((project) => (
+                <ProjectCase
+                  key={project.id}
+                  project={project}
+                  lang={lang}
+                  ui={ui}
+                  demoOpen={demoId === project.id}
+                  onToggleDemo={() =>
+                    setDemoId((cur) => (cur === project.id ? null : project.id))
+                  }
+                  onOpenGallery={openGallery}
+                />
+              ))}
+            </LevelCurtain>
           ))}
         </main>
       </div>

@@ -1,0 +1,7 @@
+all_code.txt
+*.log
+report.txt
+install-log.txt
+screen-lead-*.mjs
+gather.py
+.git

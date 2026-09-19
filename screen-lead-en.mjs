@@ -10,7 +10,7 @@ import { fileURLToPath } from "node:url";
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const VP = { width: 1440, height: 900 };
 const LOCAL = process.env.LEAD_BASE || "http://127.0.0.1:3010";
-const PROD = "https://lead-desk-eta.vercel.app";
+const PROD = "https://lead-desk-liart-six.vercel.app";
 const CODE = process.env.LEAD_CODE || "crabonly26";
 const OUT = path.join(__dirname, "public", "showcase-images", "lead-desk", "en");
 

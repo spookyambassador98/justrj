@@ -98,7 +98,7 @@ await page.addInitScript(() => {
     sessionStorage.setItem("apex-desk-unlocked", "1");
   } catch {}
 });
-await page.goto("https://lead-desk-eta.vercel.app", {
+await page.goto("https://lead-desk-liart-six.vercel.app", {
   waitUntil: "domcontentloaded",
   timeout: 90000,
 });
