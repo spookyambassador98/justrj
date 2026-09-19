@@ -11,7 +11,7 @@ export function ShowcaseBlock({
   onNavigate,
 }: {
   lang: Lang;
-  onNavigate: () => void;
+  onNavigate: (projectId?: string) => void;
 }) {
   return (
     <div className="mt-24 w-full pointer-events-auto md:mt-40" id="showcase">
@@ -39,7 +39,7 @@ export function ShowcaseBlock({
           <motion.button
             key={proj.id}
             type="button"
-            onClick={onNavigate}
+            onClick={() => onNavigate(proj.id)}
             data-cursor="project"
             initial={{ opacity: 0, y: 30 }}
             whileInView={{ opacity: 1, y: 0 }}

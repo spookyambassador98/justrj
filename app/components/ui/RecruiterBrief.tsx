@@ -133,7 +133,7 @@ export function RecruiterBrief({
   onNavigate,
 }: {
   lang: Lang;
-  onNavigate: () => void;
+  onNavigate: (projectId?: string) => void;
 }) {
   const t = ui[lang];
   const [form, setForm] = useState<FormState>(INITIAL);
@@ -215,7 +215,7 @@ export function RecruiterBrief({
             <li key={project.id}>
               <button
                 type="button"
-                onClick={onNavigate}
+                onClick={() => onNavigate(project.id)}
                 data-cursor="project"
                 className="group flex w-full items-center gap-4 py-4 text-left transition-colors hover:bg-black/[0.03]"
               >

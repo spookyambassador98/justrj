@@ -14,7 +14,7 @@ import { ProductionHUD } from "./components/production/ProductionHUD";
 import { AxonPassage } from "./components/motion/AxonPassage";
 import { CurrentMarquee } from "./components/motion/CurrentMarquee";
 import { FooterMark } from "./components/motion/FooterMark";
-import { requestCurtain } from "@/lib/motion/curtain";
+import { requestProjectPage } from "@/lib/motion/curtain";
 
 const NeuralCanvas = dynamic(
   () => import("./components/three/NeuralCanvas").then((m) => m.NeuralCanvas),
@@ -26,8 +26,8 @@ export default function Home() {
   const { recruiterMode } = useRecruiterMode();
   const [ndaOpen, setNdaOpen] = useState(false);
 
-  const handleNavigateToProjects = () => {
-    requestCurtain("/projects");
+  const handleNavigateToProjects = (projectId?: string) => {
+    requestProjectPage(projectId);
   };
 
   const copy = {

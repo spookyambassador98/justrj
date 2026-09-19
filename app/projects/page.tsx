@@ -3,6 +3,7 @@
 import React, {
   useCallback,
   useEffect,
+  useLayoutEffect,
   useMemo,
   useRef,
   useState,
@@ -14,7 +15,6 @@ import {
   useMotionValue,
   useSpring,
 } from "framer-motion";
-import { useRouter } from "next/navigation";
 import {
   ArrowLeft,
   ArrowUpRight,
@@ -26,7 +26,7 @@ import {
 import { useLang, type Lang } from "../components/LanguageProvider";
 import { useViewport } from "../hooks/useViewport";
 import { PageTransition } from "../components/motion/PageTransition";
-import { requestCurtain } from "@/lib/motion/curtain";
+import { FOCUS_PROJECT_KEY, requestCurtain } from "@/lib/motion/curtain";
 import { ProjectsScrollHero } from "../components/motion/ProjectsScrollHero";
 import {
   L,
@@ -856,7 +856,6 @@ function getUi(lang: Lang) {
 }
 
 export default function ProjectsPage() {
-  const router = useRouter();
   const { lang } = useLang();
   const ui = getUi(lang);
   const [routing, setRouting] = useState(false);
@@ -867,15 +866,51 @@ export default function ProjectsPage() {
   const [lightboxOpen, setLightboxOpen] = useState(false);
 
   const glow = projectsData.find((p) => p.id === activeId)?.glow ?? projectsData[0]?.glow;
+  const landingLock = useRef<string | null>(null);
 
-  useEffect(() => {
-    const hash = window.location.hash.replace("#", "");
-    if (hash && projectsData.some((p) => p.id === hash)) {
-      setActiveId(hash);
-      requestAnimationFrame(() => {
-        document.getElementById(hash)?.scrollIntoView({ behavior: "smooth", block: "start" });
-      });
+  useLayoutEffect(() => {
+    if ("scrollRestoration" in history) history.scrollRestoration = "manual";
+
+    const hash = window.location.hash.replace(/^#/, "");
+    const query = new URLSearchParams(window.location.search).get("p") || "";
+    let stored = "";
+    try {
+      stored = sessionStorage.getItem(FOCUS_PROJECT_KEY) || "";
+      if (stored) sessionStorage.removeItem(FOCUS_PROJECT_KEY);
+    } catch {
+      /* private mode */
     }
+
+    const target = [query, hash, stored].find((id) =>
+      projectsData.some((p) => p.id === id)
+    );
+    if (!target) return;
+
+    landingLock.current = target;
+    setActiveId(target);
+
+    const jump = () => {
+      const el = document.getElementById(target);
+      if (!el) return false;
+      el.scrollIntoView({ behavior: "auto", block: "start" });
+      history.replaceState(null, "", `/projects#${target}`);
+      return true;
+    };
+
+    jump();
+    const raf = requestAnimationFrame(() => jump());
+    const t1 = window.setTimeout(jump, 120);
+    const t2 = window.setTimeout(jump, 400);
+    const unlock = window.setTimeout(() => {
+      landingLock.current = null;
+    }, 900);
+
+    return () => {
+      cancelAnimationFrame(raf);
+      window.clearTimeout(t1);
+      window.clearTimeout(t2);
+      window.clearTimeout(unlock);
+    };
   }, []);
 
   useEffect(() => {
@@ -883,6 +918,7 @@ export default function ProjectsPage() {
     if (!nodes.length) return;
     const observer = new IntersectionObserver(
       (entries) => {
+        if (landingLock.current) return;
         const visible = entries
           .filter((e) => e.isIntersecting)
           .sort((a, b) => b.intersectionRatio - a.intersectionRatio)[0];

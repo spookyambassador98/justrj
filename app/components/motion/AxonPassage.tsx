@@ -12,7 +12,7 @@ export function AxonPassage({
   onInspect,
 }: {
   lang: Lang;
-  onInspect: () => void;
+  onInspect: (projectId: string) => void;
 }) {
   const pin = useRef<HTMLElement>(null);
   const track = useRef<HTMLDivElement>(null);
@@ -76,7 +76,7 @@ export function AxonPassage({
             <article key={p.id} className="axon__station">
               <button
                 type="button"
-                onClick={onInspect}
+                onClick={() => onInspect(p.id)}
                 data-cursor="project"
                 className="block w-full text-left"
               >

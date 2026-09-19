@@ -20,14 +20,16 @@ export function LiquidCurtain() {
     return subscribeCurtain((href) => {
       const path = pathRef.current;
       const root = wrap.current;
+      const url = new URL(href, window.location.origin);
+      const next = `${url.pathname}${url.search}`;
       if (!path || !root) {
-        router.push(href);
+        router.push(next);
         return;
       }
       setBusy(true);
       const tl = gsap.timeline({
         onComplete: () => {
-          router.push(href);
+          router.push(next);
           gsap.to(path, {
             attr: { d: FLAT },
             duration: 0.55,
