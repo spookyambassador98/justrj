@@ -31,7 +31,7 @@ function BriefInner() {
           <Link
             href="/"
             data-cursor="cta"
-            className="inline-flex items-center gap-2 text-[11px] uppercase tracking-[0.26em] text-white/45 transition hover:text-white focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-cyan-400/50"
+            className="inline-flex items-center gap-2 text-[11px] uppercase tracking-[0.26em] text-white/45 transition hover:text-white focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-violet-400/50"
           >
             <ArrowLeft size={14} weight="light" /> {copy.back}
           </Link>
@@ -50,7 +50,7 @@ function BriefInner() {
           <p className="mt-4 max-w-xl text-[15px] leading-relaxed text-white/45">
             {copy.sub}
           </p>
-          <p className="mt-3 text-[12px] text-cyan-300/50">
+          <p className="mt-3 text-[12px] text-violet-300/50">
             <a
               href={`mailto:${siteConfig.links.email}`}
               className="underline-offset-4 hover:underline"

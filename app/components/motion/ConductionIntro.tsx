@@ -116,7 +116,7 @@ export function ConductionIntro({ onDone }: Props) {
           ref={pathRef}
           d="M -5 62 C 18 40, 28 78, 48 52 S 78 28, 105 44"
           fill="none"
-          stroke="#7ee0ff"
+          stroke="#8c7bff"
           strokeWidth="0.4"
         />
       </svg>

@@ -139,7 +139,7 @@ function MagneticButton({
       aria-pressed={ariaPressed}
       className={`relative inline-flex items-center justify-center gap-2 overflow-hidden rounded-full px-5 py-3 text-[10px] uppercase tracking-[0.22em] transition-[background,box-shadow,color] duration-500 will-change-transform sm:px-6 sm:text-[11px] sm:tracking-[0.26em] ${
         active
-          ? "bg-sky-400/15 text-sky-100 shadow-[0_0_40px_rgba(56,189,248,0.18)]"
+          ? "bg-violet-400/15 text-violet-100 shadow-[0_0_40px_rgba(167,139,250,0.18)]"
           : "bg-white/[0.03] text-white/75 hover:bg-white/[0.06] hover:text-white"
       } ${className}`}
     >
@@ -147,7 +147,7 @@ function MagneticButton({
         className="pointer-events-none absolute inset-0 rounded-full"
         style={{
           boxShadow: active
-            ? "inset 0 0 0 1px rgba(125,211,252,0.35)"
+            ? "inset 0 0 0 1px rgba(196,181,253,0.35)"
             : "inset 0 0 0 1px rgba(255,255,255,0.1)",
         }}
       />
@@ -398,7 +398,7 @@ function ProjectGallery({
               transition={{ duration: 0.7, ease, delay: Math.min(i * 0.04, 0.28) }}
               whileHover={{ y: -4 }}
               whileTap={{ scale: 0.985 }}
-              className="group relative w-[min(82vw,28rem)] shrink-0 snap-center overflow-hidden rounded-2xl bg-white/[0.02] text-left outline-none focus-visible:ring-2 focus-visible:ring-sky-300/40 sm:w-[min(70vw,32rem)]"
+              className="group relative w-[min(82vw,28rem)] shrink-0 snap-center overflow-hidden rounded-2xl bg-white/[0.02] text-left outline-none focus-visible:ring-2 focus-visible:ring-violet-300/40 sm:w-[min(70vw,32rem)]"
               style={{ boxShadow: "inset 0 0 0 1px rgba(255,255,255,0.08)" }}
               aria-label={`${L(item.alt, lang)} — enlarge`}
             >
@@ -470,10 +470,10 @@ function DemoStage({
             <div className="flex flex-wrap items-center justify-between gap-3 border-b border-white/[0.06] px-4 py-3 sm:px-5">
               <div className="flex items-center gap-3">
                 <span className="relative flex h-2 w-2">
-                  <span className="absolute inset-0 animate-ping rounded-full bg-sky-400/50" />
-                  <span className="relative h-2 w-2 rounded-full bg-sky-400" />
+                  <span className="absolute inset-0 animate-ping rounded-full bg-violet-400/50" />
+                  <span className="relative h-2 w-2 rounded-full bg-violet-400" />
                 </span>
-                <span className="text-[10px] uppercase tracking-[0.26em] text-sky-200/80">
+                <span className="text-[10px] uppercase tracking-[0.26em] text-violet-200/80">
                   {labels.live}
                 </span>
                 <span className="hidden font-mono text-[10px] text-white/25 sm:inline">
@@ -508,7 +508,7 @@ function DemoStage({
                 <div className="absolute inset-0 z-10 flex flex-col items-center justify-center gap-3 bg-[#070707]">
                   <div className="h-px w-40 overflow-hidden bg-white/5">
                     <motion.div
-                      className="h-full bg-sky-400/80"
+                      className="h-full bg-violet-400/80"
                       initial={{ width: "0%" }}
                       animate={{ width: "100%" }}
                       transition={{ duration: 1.4, ease, repeat: Infinity }}
@@ -591,7 +591,7 @@ function ProjectCase({
       <div className="grid gap-8 lg:grid-cols-12 lg:gap-12">
         <div className="space-y-6 lg:col-span-5">
           <div className="flex items-center gap-3 text-[10px] uppercase tracking-[0.28em] text-white/35 sm:text-[11px]">
-            <span className="font-mono text-sky-300/70">{project.index}</span>
+            <span className="font-mono text-violet-300/70">{project.index}</span>
             <span className="h-px w-8 shrink-0 bg-white/15" aria-hidden />
             <span>{project.year}</span>
           </div>
@@ -601,7 +601,7 @@ function ProjectCase({
               <span
                 className="block whitespace-nowrap font-serif text-[clamp(2.1rem,5.2vw,3.85rem)] italic leading-[1.05] tracking-[-0.03em] text-white"
                 style={{
-                  textShadow: "0 0 60px rgba(125,211,252,0.12)",
+                  textShadow: "0 0 60px rgba(196,181,253,0.12)",
                 }}
               >
                 {L(project.title, lang)}
@@ -640,7 +640,7 @@ function ProjectCase({
                 transition={{ delay: 0.1 + i * 0.06, duration: 0.55, ease }}
                 className="rounded-2xl border border-white/[0.06] bg-white/[0.02] p-4 backdrop-blur-sm"
               >
-                <p className="mb-2 text-[9px] uppercase tracking-[0.28em] text-cyan-300/50">
+                <p className="mb-2 text-[9px] uppercase tracking-[0.28em] text-violet-300/50">
                   {label}
                 </p>
                 <p className="text-[12px] font-light leading-relaxed text-white/55 sm:text-[13px]">
@@ -678,7 +678,7 @@ function ProjectCase({
               href={project.link}
               target="_blank"
               rel="noreferrer"
-              className="inline-flex items-center gap-1.5 text-[10px] uppercase tracking-[0.22em] text-white/40 transition-colors hover:text-sky-200"
+              className="inline-flex items-center gap-1.5 text-[10px] uppercase tracking-[0.22em] text-white/40 transition-colors hover:text-violet-200"
             >
               {ui.openTab}
               <IconArrowUpRight className="h-3.5 w-3.5" />
@@ -748,7 +748,7 @@ function ProjectCase({
             {project.features.map((feature, idx) => (
               <article key={feature.id} className="space-y-2">
                 <div className="flex items-baseline gap-3">
-                  <span className="font-mono text-[10px] tracking-[0.2em] text-sky-300/45">
+                  <span className="font-mono text-[10px] tracking-[0.2em] text-violet-300/45">
                     {String(idx + 1).padStart(2, "0")}
                   </span>
                   <h3 className="font-serif text-xl italic text-white/90">{L(feature.title, lang)}</h3>
@@ -759,7 +759,7 @@ function ProjectCase({
           </div>
           <div className="rounded-xl bg-black/35 p-5 sm:p-6" style={{ boxShadow: "inset 0 0 0 1px rgba(255,255,255,0.05)" }}>
             <p className="mb-3 text-[10px] uppercase tracking-[0.24em] text-white/30">{ui.architecture}</p>
-            <p className="font-mono text-sm leading-relaxed text-sky-100/50">{L(project.architecture, lang)}</p>
+            <p className="font-mono text-sm leading-relaxed text-violet-100/50">{L(project.architecture, lang)}</p>
             <pre className="mt-4 overflow-x-auto rounded-lg bg-black/50 p-4 font-mono text-[12px] leading-7 text-white/60">
               <code>{project.code}</code>
             </pre>
@@ -943,7 +943,7 @@ export default function ProjectsPage() {
         className="pointer-events-none fixed inset-0 z-0 opacity-[0.35]"
         style={{
           background:
-            "radial-gradient(ellipse 80% 50% at 10% 0%, rgba(56,189,248,0.06), transparent 55%), radial-gradient(ellipse 60% 40% at 90% 20%, rgba(99,102,241,0.05), transparent 50%)",
+            "radial-gradient(ellipse 80% 50% at 10% 0%, rgba(167,139,250,0.06), transparent 55%), radial-gradient(ellipse 60% 40% at 90% 20%, rgba(99,102,241,0.05), transparent 50%)",
         }}
       />
 
@@ -974,11 +974,11 @@ export default function ProjectsPage() {
             <div className="w-72 space-y-4">
               <div className="flex justify-between text-[10px] uppercase tracking-[0.3em] text-white/40">
                 <span>{ui.returning}</span>
-                <span className="font-mono text-sky-400/70">[ SYNC ]</span>
+                <span className="font-mono text-violet-400/70">[ SYNC ]</span>
               </div>
               <div className="relative h-px overflow-hidden bg-white/5">
                 <motion.div
-                  className="absolute inset-y-0 left-0 bg-sky-400"
+                  className="absolute inset-y-0 left-0 bg-violet-400"
                   initial={{ width: "0%" }}
                   animate={{ width: "100%" }}
                   transition={{ duration: 0.75, ease }}
@@ -1042,7 +1042,7 @@ export default function ProjectsPage() {
                     />
                   )}
                   <span className="relative z-10 flex items-center gap-3">
-                    <span className="font-mono text-[9px] tracking-[0.2em] text-sky-300/50">
+                    <span className="font-mono text-[9px] tracking-[0.2em] text-violet-300/50">
                       {p.index}
                     </span>
                     <span className="max-w-[12rem] truncate text-[11px] tracking-[0.04em] lg:max-w-none">

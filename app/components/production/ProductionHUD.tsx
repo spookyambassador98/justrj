@@ -238,7 +238,7 @@ function HudPlaceholder() {
         {/* decoder layer: only random glyphs, revealed under the cursor */}
         <pre
           aria-hidden
-          className="pointer-events-none absolute inset-0 flex flex-col justify-center gap-[9px] overflow-hidden px-[7%] font-mono text-[11px] leading-[14px] tracking-[0.18em] text-sky-300/80"
+          className="pointer-events-none absolute inset-0 flex flex-col justify-center gap-[9px] overflow-hidden px-[7%] font-mono text-[11px] leading-[14px] tracking-[0.18em] text-violet-300/80"
           style={{ WebkitMaskImage: mask, maskImage: mask }}
         >
           {lines.map((l, i) => (
@@ -251,7 +251,7 @@ function HudPlaceholder() {
         {/* scan line */}
         <motion.div
           aria-hidden
-          className="pointer-events-none absolute inset-x-0 h-px bg-gradient-to-r from-transparent via-sky-300/40 to-transparent"
+          className="pointer-events-none absolute inset-x-0 h-px bg-gradient-to-r from-transparent via-violet-300/40 to-transparent"
           initial={{ top: "0%" }}
           animate={{ top: "100%" }}
           transition={{ duration: 5, repeat: Infinity, ease: "linear" }}
@@ -287,7 +287,7 @@ function HudPlaceholder() {
                   cy="32"
                   r="24"
                   fill="none"
-                  stroke="rgba(125,211,252,0.5)"
+                  stroke="rgba(196,181,253,0.5)"
                   strokeDasharray="14 10"
                 />
               </motion.svg>
@@ -473,8 +473,8 @@ export function ProductionHUD({
                           aria-hidden
                           className={`pointer-events-none absolute inset-y-0 left-0 w-full ${
                             isNda
-                              ? "bg-gradient-to-r from-amber-300/15 to-transparent"
-                              : "bg-gradient-to-r from-sky-300/15 to-transparent"
+                              ? "bg-gradient-to-r from-orange-400/15 to-transparent"
+                              : "bg-gradient-to-r from-violet-300/15 to-transparent"
                           }`}
                           initial={false}
                           animate={{ x: open ? "0%" : "-100%" }}

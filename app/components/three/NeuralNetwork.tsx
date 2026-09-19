@@ -102,28 +102,30 @@ export function NeuralNetwork({ active }: { active: boolean }) {
         varying float vSynapse;
         void main() {
           vec4 tex = texture2D(uMap, gl_PointCoord);
-          // Cool steel base → ice core
-          vec3 steel = vec3(0.42, 0.58, 0.78);
-          vec3 ice = vec3(0.82, 0.92, 1.0);
+          // Cool violet-steel base → violet-white core (resting potential)
+          vec3 steel = vec3(0.46, 0.43, 0.64);
+          vec3 ice = vec3(0.88, 0.87, 0.98);
           // Whisper tones — only as soft gleams on the brightest nodes
-          vec3 midnight = vec3(0.06, 0.14, 0.34);
-          vec3 coldCyan = vec3(0.38, 0.80, 0.98);
-          vec3 pearl = vec3(0.94, 0.98, 1.0);
+          vec3 midnight = vec3(0.10, 0.07, 0.30);
+          vec3 volt = vec3(0.56, 0.44, 0.98);
+          vec3 pearl = vec3(0.96, 0.95, 1.0);
+          // Fired action-potential warmth — the one moment a node runs hot
+          vec3 ember = vec3(1.0, 0.4, 0.2);
 
           vec3 col = mix(steel, ice, 0.4 + vPulse * 0.5);
           float gleam = pow(clamp(max(vPulse * 0.85, vSynapse), 0.0, 1.0), 1.45);
 
-          // Soft cyan highlights — never a flat wash
-          col = mix(col, coldCyan, gleam * 0.32);
-          // Ultra-deep obsidian-blue whisper in the bloom
+          // Soft violet highlights — never a flat wash
+          col = mix(col, volt, gleam * 0.32);
+          // Ultra-deep indigo whisper in the bloom
           if (uHalo > 0.5) {
-            col = mix(col, mix(midnight, coldCyan, 0.55), gleam * 0.38);
+            col = mix(col, mix(midnight, volt, 0.55), gleam * 0.38);
           } else {
-            col = mix(col, mix(coldCyan, pearl, 0.45), gleam * 0.22);
+            col = mix(col, mix(volt, pearl, 0.45), gleam * 0.22);
           }
 
-          // Synaptic nodes: pearl kiss on top of the whisper
-          col = mix(col, pearl, clamp(vSynapse, 0.0, 1.0) * 0.55);
+          // Synaptic nodes: an ember kiss on fire — resting is violet, firing is warm
+          col = mix(col, ember, clamp(vSynapse, 0.0, 1.0) * 0.6);
 
           float a = tex.a * uOpacity;
           if (uHalo > 0.5) {
@@ -472,15 +474,16 @@ export function NeuralNetwork({ active }: { active: boolean }) {
         fiberPos[i1 + 1] = tmpB.y;
         fiberPos[i1 + 2] = tmpB.z;
 
-        // Fiber optic: cold cyan head with a midnight whisper in the bloom
+        // The travelling impulse is the action potential itself: an ember
+        // pulse racing through the violet resting network.
         const bright0 = Math.pow(k0, 1.55) * life * turnFade * 1.35;
         const bright1 = Math.pow(k1, 1.55) * life * turnFade * 1.35;
-        fiberCol[i0] = 0.12 * bright0;
-        fiberCol[i0 + 1] = 0.42 * bright0;
-        fiberCol[i0 + 2] = 0.95 * bright0;
-        fiberCol[i1] = 0.12 * bright1;
-        fiberCol[i1 + 1] = 0.42 * bright1;
-        fiberCol[i1 + 2] = 0.95 * bright1;
+        fiberCol[i0] = 0.98 * bright0;
+        fiberCol[i0 + 1] = 0.4 * bright0;
+        fiberCol[i0 + 2] = 0.16 * bright0;
+        fiberCol[i1] = 0.98 * bright1;
+        fiberCol[i1 + 1] = 0.4 * bright1;
+        fiberCol[i1 + 2] = 0.16 * bright1;
 
         corePos[i0] = tmpA.x;
         corePos[i0 + 1] = tmpA.y;
@@ -490,12 +493,12 @@ export function NeuralNetwork({ active }: { active: boolean }) {
         corePos[i1 + 2] = tmpB.z;
         const c0 = Math.pow(k0, 2.05) * life * turnFade * 1.45;
         const c1 = Math.pow(k1, 2.05) * life * turnFade * 1.45;
-        coreCol[i0] = 0.45 * c0;
-        coreCol[i0 + 1] = 0.82 * c0;
-        coreCol[i0 + 2] = 1.0 * c0;
-        coreCol[i1] = 0.45 * c1;
-        coreCol[i1 + 1] = 0.82 * c1;
-        coreCol[i1 + 2] = 1.0 * c1;
+        coreCol[i0] = 1.0 * c0;
+        coreCol[i0 + 1] = 0.7 * c0;
+        coreCol[i0 + 2] = 0.46 * c0;
+        coreCol[i1] = 1.0 * c1;
+        coreCol[i1 + 1] = 0.7 * c1;
+        coreCol[i1 + 2] = 0.46 * c1;
 
         fiberVerts += 2;
       }
@@ -574,7 +577,7 @@ export function NeuralNetwork({ active }: { active: boolean }) {
         </bufferGeometry>
         <lineBasicMaterial
           ref={linesMatRef}
-          color="#5b8fb8"
+          color="#5b5590"
           transparent
           opacity={0.22}
           depthWrite={false}

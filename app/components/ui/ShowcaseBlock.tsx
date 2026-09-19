@@ -53,13 +53,13 @@ export function ShowcaseBlock({
             viewport={{ once: true }}
             className="group relative flex min-h-[240px] flex-col justify-between overflow-hidden rounded-[1.5rem] border border-white/[0.06] bg-gradient-to-b from-white/[0.045] to-[#020202]/70 p-6 text-left shadow-[0_0_60px_rgba(0,0,0,0.35)] backdrop-blur-3xl will-change-transform sm:min-h-[280px] sm:rounded-[1.75rem] sm:p-7"
           >
-            <div className="pointer-events-none absolute inset-0 bg-gradient-to-br from-cyan-400/[0.04] to-transparent opacity-0 transition-opacity duration-700 group-hover:opacity-100" />
+            <div className="pointer-events-none absolute inset-0 bg-gradient-to-br from-violet-400/[0.04] to-transparent opacity-0 transition-opacity duration-700 group-hover:opacity-100" />
 
             <div className="relative z-10">
-              <p className="mb-3 text-[10px] uppercase tracking-[0.22em] text-cyan-300/55">
+              <p className="mb-3 text-[10px] uppercase tracking-[0.22em] text-violet-300/55">
                 {proj.year} · {L(proj.result, lang)}
               </p>
-              <h3 className="mb-3 text-xl font-medium tracking-wide text-white/90 transition-colors group-hover:text-cyan-100 sm:text-2xl">
+              <h3 className="mb-3 text-xl font-medium tracking-wide text-white/90 transition-colors group-hover:text-violet-100 sm:text-2xl">
                 {L(proj.title, lang)}
               </h3>
               <p className="text-sm font-light leading-relaxed text-white/45">
@@ -67,10 +67,10 @@ export function ShowcaseBlock({
               </p>
             </div>
             <div className="relative z-10 mt-6 flex items-center justify-between gap-3">
-              <div className="truncate pr-2 text-[10px] uppercase tracking-widest text-cyan-400/60">
+              <div className="truncate pr-2 text-[10px] uppercase tracking-widest text-violet-400/60">
                 {proj.tech.slice(0, 2).join(" · ")}
               </div>
-              <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full border border-white/10 transition-all group-hover:border-cyan-400/40 group-hover:bg-cyan-400/15">
+              <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full border border-white/10 transition-all group-hover:border-violet-400/40 group-hover:bg-violet-400/15">
                 <ArrowUpRight
                   className="h-3.5 w-3.5 text-white"
                   weight="light"

@@ -149,7 +149,7 @@ export function NdaRequestOverlay({
             </button>
 
             <div className="mb-5 flex items-center gap-3">
-              <span className="flex h-9 w-9 items-center justify-center rounded-full border border-cyan-400/25 bg-cyan-400/10 text-cyan-300">
+              <span className="flex h-9 w-9 items-center justify-center rounded-full border border-violet-400/25 bg-violet-400/10 text-violet-300">
                 <LockSimple size={18} weight="light" />
               </span>
               <h2
@@ -174,7 +174,7 @@ export function NdaRequestOverlay({
             </ol>
 
             {sent ? (
-              <p className="rounded-xl border border-cyan-400/20 bg-cyan-400/5 px-4 py-3 text-sm text-cyan-100/80">
+              <p className="rounded-xl border border-violet-400/20 bg-violet-400/5 px-4 py-3 text-sm text-violet-100/80">
                 {t.sent}
               </p>
             ) : (
@@ -184,20 +184,20 @@ export function NdaRequestOverlay({
                   value={name}
                   onChange={(e) => setName(e.target.value)}
                   placeholder={t.name}
-                  className="rounded-xl border border-white/[0.08] bg-white/[0.03] px-4 py-3 text-sm text-white outline-none placeholder:text-white/25 focus:border-cyan-400/30"
+                  className="rounded-xl border border-white/[0.08] bg-white/[0.03] px-4 py-3 text-sm text-white outline-none placeholder:text-white/25 focus:border-violet-400/30"
                 />
                 <input
                   required
                   value={company}
                   onChange={(e) => setCompany(e.target.value)}
                   placeholder={t.company}
-                  className="rounded-xl border border-white/[0.08] bg-white/[0.03] px-4 py-3 text-sm text-white outline-none placeholder:text-white/25 focus:border-cyan-400/30"
+                  className="rounded-xl border border-white/[0.08] bg-white/[0.03] px-4 py-3 text-sm text-white outline-none placeholder:text-white/25 focus:border-violet-400/30"
                 />
                 <input
                   value={role}
                   onChange={(e) => setRole(e.target.value)}
                   placeholder={t.role}
-                  className="rounded-xl border border-white/[0.08] bg-white/[0.03] px-4 py-3 text-sm text-white outline-none placeholder:text-white/25 focus:border-cyan-400/30"
+                  className="rounded-xl border border-white/[0.08] bg-white/[0.03] px-4 py-3 text-sm text-white outline-none placeholder:text-white/25 focus:border-violet-400/30"
                 />
                 <input
                   required
@@ -205,14 +205,14 @@ export function NdaRequestOverlay({
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   placeholder={t.email}
-                  className="rounded-xl border border-white/[0.08] bg-white/[0.03] px-4 py-3 text-sm text-white outline-none placeholder:text-white/25 focus:border-cyan-400/30"
+                  className="rounded-xl border border-white/[0.08] bg-white/[0.03] px-4 py-3 text-sm text-white outline-none placeholder:text-white/25 focus:border-violet-400/30"
                 />
                 <textarea
                   value={note}
                   onChange={(e) => setNote(e.target.value)}
                   placeholder={t.notePh}
                   rows={3}
-                  className="resize-none rounded-xl border border-white/[0.08] bg-white/[0.03] px-4 py-3 text-sm text-white outline-none placeholder:text-white/25 focus:border-cyan-400/30"
+                  className="resize-none rounded-xl border border-white/[0.08] bg-white/[0.03] px-4 py-3 text-sm text-white outline-none placeholder:text-white/25 focus:border-violet-400/30"
                 />
                 <div className="mt-2 flex flex-col gap-2 sm:flex-row sm:justify-end">
                   <MagneticButton

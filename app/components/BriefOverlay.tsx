@@ -47,7 +47,7 @@ export function BriefOverlay({
             <button
               type="button"
               onClick={onClose}
-              className="absolute right-5 top-5 z-20 text-white/35 transition-colors hover:text-white focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-cyan-400/50 md:right-7 md:top-7"
+              className="absolute right-5 top-5 z-20 text-white/35 transition-colors hover:text-white focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-violet-400/50 md:right-7 md:top-7"
               aria-label="Close"
               data-cursor="cta"
             >

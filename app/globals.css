@@ -1,21 +1,29 @@
 @import "tailwindcss";
 
 @theme {
-  --font-sans: var(--font-syne), var(--font-geist), ui-sans-serif, system-ui, sans-serif;
-  --font-serif: var(--font-instrument), "Instrument Serif", ui-serif, Georgia, serif;
-  --font-display: "Panchang", var(--font-syne), ui-sans-serif, system-ui, sans-serif;
+  --font-sans: var(--font-geist), ui-sans-serif, system-ui, sans-serif;
+  --font-serif: var(--font-fraunces), "Fraunces", ui-serif, Georgia, serif;
+  --font-display: var(--font-shoulders), ui-sans-serif, system-ui, sans-serif;
+  --font-stencil: var(--font-big-stencil), var(--font-shoulders), ui-sans-serif, sans-serif;
   --font-mono: var(--font-plex), ui-monospace, "SF Mono", Menlo, monospace;
 }
 
+/*
+ * CONDUCTION — signal system.
+ * Near-black tissue, bone ink. Two signals carry all meaning: --volt is the
+ * resting potential (default interactive/current), --ember is the fired
+ * action potential (urgent / gated / live). No decorative color — if it's
+ * not violet or ember, it's not doing anything.
+ */
 :root {
-  --bg: #05070c;
-  --bg-2: #0a1018;
-  --ink: #eef4fa;
+  --bg: #05070a;
+  --bg-2: #0a0e18;
+  --ink: #f1eef7;
   --mute: color-mix(in oklch, var(--ink) 46%, transparent);
   --hair: color-mix(in oklch, var(--ink) 12%, transparent);
-  --filament: #7ee0ff;
-  --filament-dim: color-mix(in oklch, #7ee0ff 38%, transparent);
-  --amber: #e8c27a;
+  --filament: #8c7bff;
+  --filament-dim: color-mix(in oklch, #8c7bff 38%, transparent);
+  --amber: #ff7a45;
   --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
   --ease-current: cubic-bezier(0.76, 0, 0.24, 1);
   --grid-gutter: clamp(1rem, 2.4vw, 2.5rem);
@@ -194,24 +202,20 @@ html.has-instrument-cursor * {
     linear-gradient(180deg, color-mix(in srgb, var(--bg) 28%, transparent) 0%, color-mix(in srgb, var(--bg) 18%, transparent) 42%, color-mix(in srgb, var(--bg) 72%, transparent) 100%);
 }
 
+/*
+ * The stencil face already has the gaps built into its letterforms — a
+ * solid fill is enough for the neural field behind it to show straight
+ * through the cuts. (mix-blend-mode: destination-out is a canvas compositing
+ * op, not a valid CSS blend mode, so we don't rely on that trick at all.)
+ */
 .stencil-mark {
   margin: 0;
-  font-family: var(--font-display);
+  font-family: var(--font-stencil);
   font-weight: 800;
-  line-height: 0.78;
-  letter-spacing: -0.06em;
+  line-height: 0.76;
+  letter-spacing: -0.02em;
   text-transform: uppercase;
-  color: #fff;
-  mix-blend-mode: destination-out;
-  -webkit-text-stroke: 0;
-}
-
-@supports not (mix-blend-mode: destination-out) {
-  .stencil-mark {
-    color: transparent;
-    -webkit-text-stroke: 1px rgba(238, 244, 250, 0.85);
-    mix-blend-mode: normal;
-  }
+  color: var(--ink);
 }
 
 .stencil-outline {
@@ -308,11 +312,11 @@ html.has-instrument-cursor * {
   position: relative;
   z-index: 2;
   margin: 0;
-  font-family: var(--font-display);
+  font-family: var(--font-stencil);
   font-weight: 800;
   font-size: clamp(6rem, 28vw, 14rem);
-  letter-spacing: -0.07em;
-  line-height: 0.8;
+  letter-spacing: -0.03em;
+  line-height: 0.78;
   text-transform: uppercase;
   color: var(--ink);
 }
@@ -476,11 +480,11 @@ html[data-ops="on"] .hire-rail {
 
 /* —— Footer mark —— */
 .foot-mark {
-  font-family: var(--font-display);
+  font-family: var(--font-stencil);
   font-weight: 800;
   font-size: clamp(6rem, 22vw, 18rem);
-  line-height: 0.78;
-  letter-spacing: -0.07em;
+  line-height: 0.76;
+  letter-spacing: -0.03em;
   text-transform: uppercase;
   color: var(--ink);
 }
