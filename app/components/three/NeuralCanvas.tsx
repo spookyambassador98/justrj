@@ -5,7 +5,8 @@ import { Suspense } from "react";
 import { NeuralNetwork } from "./NeuralNetwork";
 
 /**
- * Neuron backdrop — myvis framing, soft so it doesn't punch through the desk.
+ * Neuron backdrop — keep the network itself; only the framing overlay changes
+ * so type can cut a window into the field.
  */
 export function NeuralCanvas({ active }: { active: boolean }) {
   return (
@@ -25,13 +26,11 @@ export function NeuralCanvas({ active }: { active: boolean }) {
           <NeuralNetwork active={active} />
         </Suspense>
       </Canvas>
-      {/* Keep neurons readable on the right, quiet behind copy/HUD */}
       <div
         className="pointer-events-none absolute inset-0"
         style={{
           background: `
-            linear-gradient(90deg, rgba(2,2,2,0.78) 0%, rgba(2,2,2,0.35) 42%, transparent 72%),
-            linear-gradient(180deg, transparent 40%, rgba(2,2,2,0.55) 78%, #020202 100%)
+            radial-gradient(ellipse 85% 72% at 55% 42%, transparent 8%, rgba(5,7,12,0.28) 58%, #05070c 100%)
           `,
         }}
       />

@@ -2,8 +2,8 @@
 
 import dynamic from "next/dynamic";
 import { AnimatePresence, motion } from "framer-motion";
-import { useEffect, useMemo, useState } from "react";
-import { ArrowUpRight, CaretDown } from "@phosphor-icons/react";
+import { useEffect, useMemo, useRef, useState } from "react";
+import { ArrowUpRight, CaretDown, Lock } from "@phosphor-icons/react";
 import type { Lang } from "@/app/components/LanguageProvider";
 import { MagneticButton } from "@/app/components/ui/MagneticButton";
 import {
@@ -19,6 +19,7 @@ import {
   staggerContainer,
 } from "@/lib/motion";
 import type { BlueprintShot } from "./BlueprintViewer";
+import { FEATURED_IDS } from "./featured";
 
 const BlueprintViewer = dynamic(
   () => import("./BlueprintViewer").then((m) => m.BlueprintViewer),
@@ -31,16 +32,6 @@ const BlueprintViewer = dynamic(
     ),
   }
 );
-
-const FEATURED_IDS = [
-  "orbital",
-  "asema",
-  "eye_master",
-  "foamcore",
-  "hire_desk",
-  "lead_desk",
-  "drift",
-] as const;
 
 /* ── Levels: collapsible "curtains" in the left index ───────── */
 type LevelKey = "l1" | "l2" | "l3" | "nda";
@@ -146,10 +137,182 @@ function authenticFacts(project: Project, _lang: Lang) {
   ];
 }
 
+/**
+ * Shown until the visitor picks a system. Deliberately generic: NDA work must
+ * never leak (no names, no captions, no numbers). A redacted archive with a
+ * cursor-driven "decoder" that only ever reveals random glyphs.
+ */
+const GLYPHS = "01ABCDEF23456789#%$&@<>/\\[]{}=+*";
+const ROWS = 11;
+const COLS = 46;
+
+function randomLine() {
+  let out = "";
+  for (let i = 0; i < COLS; i++) {
+    out += Math.random() < 0.14 ? " " : GLYPHS[Math.floor(Math.random() * GLYPHS.length)];
+  }
+  return out;
+}
+
+function HudPlaceholder() {
+  const boxRef = useRef<HTMLDivElement>(null);
+  const [lines, setLines] = useState<string[]>(() =>
+    Array.from({ length: ROWS }, () => "")
+  );
+  const [pointer, setPointer] = useState(false);
+
+  // scramble stream
+  useEffect(() => {
+    setLines(Array.from({ length: ROWS }, randomLine));
+    const id = setInterval(() => {
+      setLines((prev) =>
+        prev.map((l) => (Math.random() < 0.35 ? randomLine() : l))
+      );
+    }, 110);
+    return () => clearInterval(id);
+  }, []);
+
+  // idle spotlight path (touch / no pointer), pointer overrides
+  useEffect(() => {
+    const el = boxRef.current;
+    if (!el) return;
+    let raf = 0;
+    const t0 = performance.now();
+    const tick = (now: number) => {
+      if (!pointer) {
+        const t = (now - t0) / 1000;
+        el.style.setProperty("--mx", `${50 + Math.sin(t * 0.7) * 32}%`);
+        el.style.setProperty("--my", `${50 + Math.sin(t * 1.1 + 1) * 26}%`);
+      }
+      raf = requestAnimationFrame(tick);
+    };
+    raf = requestAnimationFrame(tick);
+    return () => cancelAnimationFrame(raf);
+  }, [pointer]);
+
+  const onMove = (e: React.PointerEvent<HTMLDivElement>) => {
+    const el = boxRef.current;
+    if (!el) return;
+    const r = el.getBoundingClientRect();
+    el.style.setProperty("--mx", `${((e.clientX - r.left) / r.width) * 100}%`);
+    el.style.setProperty("--my", `${((e.clientY - r.top) / r.height) * 100}%`);
+    if (!pointer) setPointer(true);
+  };
+
+  const mask =
+    "radial-gradient(circle 130px at var(--mx, 50%) var(--my, 50%), black 0%, rgba(0,0,0,0.55) 45%, transparent 100%)";
+
+  return (
+    <motion.div
+      key="placeholder"
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      exit={{ opacity: 0 }}
+      transition={{ duration: 0.5 }}
+      className="hud-frame relative overflow-hidden"
+    >
+      <div
+        ref={boxRef}
+        onPointerMove={onMove}
+        onPointerLeave={() => setPointer(false)}
+        className="relative aspect-[16/10] min-h-[320px] w-full select-none"
+        style={{ touchAction: "pan-y" }}
+      >
+        {/* redacted bars (always visible, static, generic) */}
+        <div
+          aria-hidden
+          className="absolute inset-0 flex flex-col justify-center gap-[9px] px-[7%]"
+        >
+          {Array.from({ length: ROWS }).map((_, i) => (
+            <motion.div
+              key={i}
+              initial={{ scaleX: 0 }}
+              animate={{ scaleX: 1 }}
+              transition={{ duration: 0.9, delay: i * 0.06, ease: [0.16, 1, 0.3, 1] }}
+              className="h-[14px] origin-left bg-white/[0.07]"
+              style={{ width: `${48 + ((i * 37) % 47)}%` }}
+            />
+          ))}
+        </div>
+
+        {/* decoder layer: only random glyphs, revealed under the cursor */}
+        <pre
+          aria-hidden
+          className="pointer-events-none absolute inset-0 flex flex-col justify-center gap-[9px] overflow-hidden px-[7%] font-mono text-[11px] leading-[14px] tracking-[0.18em] text-sky-300/80"
+          style={{ WebkitMaskImage: mask, maskImage: mask }}
+        >
+          {lines.map((l, i) => (
+            <span key={i} className="block whitespace-pre">
+              {l}
+            </span>
+          ))}
+        </pre>
+
+        {/* scan line */}
+        <motion.div
+          aria-hidden
+          className="pointer-events-none absolute inset-x-0 h-px bg-gradient-to-r from-transparent via-sky-300/40 to-transparent"
+          initial={{ top: "0%" }}
+          animate={{ top: "100%" }}
+          transition={{ duration: 5, repeat: Infinity, ease: "linear" }}
+        />
+
+        {/* centre seal */}
+        <div className="pointer-events-none absolute inset-0 flex items-center justify-center">
+          <div className="flex flex-col items-center rounded-sm bg-[#060606]/85 px-8 py-6 text-center backdrop-blur-sm">
+            <div className="relative mb-4 flex h-16 w-16 items-center justify-center">
+              <motion.svg
+                viewBox="0 0 64 64"
+                className="absolute inset-0 h-full w-full"
+                animate={{ rotate: 360 }}
+                transition={{ duration: 18, ease: "linear", repeat: Infinity }}
+              >
+                <circle
+                  cx="32"
+                  cy="32"
+                  r="30"
+                  fill="none"
+                  stroke="rgba(255,255,255,0.25)"
+                  strokeDasharray="3 5"
+                />
+              </motion.svg>
+              <motion.svg
+                viewBox="0 0 64 64"
+                className="absolute inset-0 h-full w-full"
+                animate={{ rotate: -360 }}
+                transition={{ duration: 11, ease: "linear", repeat: Infinity }}
+              >
+                <circle
+                  cx="32"
+                  cy="32"
+                  r="24"
+                  fill="none"
+                  stroke="rgba(125,211,252,0.5)"
+                  strokeDasharray="14 10"
+                />
+              </motion.svg>
+              <Lock size={20} weight="light" className="text-white/80" />
+            </div>
+            <p className="font-mono text-[9px] tracking-[0.34em] text-white/40">
+              REDACTED ARCHIVE
+            </p>
+            <p className="mt-2 font-mono text-[11px] tracking-[0.24em] text-white/75">
+              SELECT A LEVEL TO BEGIN
+            </p>
+          </div>
+        </div>
+      </div>
+      <p className="border-t border-white/[0.06] px-4 py-3 font-mono text-[9px] tracking-[0.2em] text-white/30">
+        Open a level on the left — evidence loads only for the system you choose.
+      </p>
+    </motion.div>
+  );
+}
+
 const copy = {
   en: {
-    kicker: "ENGINEERING SHOWCASE · PRODUCTION HUD & VISUAL EVIDENCE",
-    title: "Production systems",
+    kicker: "03 / PRODUCTION HUD · VISUAL EVIDENCE",
+    title: "Inspect a system",
     index: "LINE",
     problem: "PROBLEM",
     build: "BUILD",
@@ -180,7 +343,7 @@ export function ProductionHUD({
       ) as Project[],
     []
   );
-  const [active, setActive] = useState(0);
+  const [active, setActive] = useState<number | null>(null);
   const [shotIndex, setShotIndex] = useState(0);
   const [openLevel, setOpenLevel] = useState<LevelKey | null>(null);
   const grouped = useMemo(() => {
@@ -193,11 +356,12 @@ export function ProductionHUD({
     featured.forEach((p, i) => map[levelOf(p.id)].push({ p, i }));
     return map;
   }, [featured]);
-  const project = featured[active] ?? featured[0];
-  const facts = authenticFacts(project, lang);
-  const overview = LList(project.overview, lang);
+  // null = nothing chosen yet → placeholder instead of a screenshot
+  const project = active === null ? null : (featured[active] ?? null);
+  const facts = project ? authenticFacts(project, lang) : [];
+  const overview = project ? LList(project.overview, lang) : [];
   const shots = useMemo(
-    () => evidenceFromProject(project, lang),
+    () => (project ? evidenceFromProject(project, lang) : []),
     [project, lang]
   );
 
@@ -229,10 +393,9 @@ export function ProductionHUD({
       id="production"
       className="pointer-events-auto relative isolate z-10 mt-24 w-full md:mt-40"
     >
-      {/* Kill neuron bleed-through behind the desk */}
       <div
         aria-hidden
-        className="pointer-events-none absolute -inset-x-4 -inset-y-8 -z-10 bg-[#020202]/92 sm:-inset-x-8"
+        className="pointer-events-none absolute -inset-x-2 -inset-y-6 -z-10 bg-[var(--bg)]/80 backdrop-blur-[2px] sm:-inset-x-4"
       />
       <motion.div
         initial="hidden"
@@ -248,7 +411,7 @@ export function ProductionHUD({
             <p className="font-mono text-[10px] tracking-[0.36em] text-white/40">
               {t.kicker}
             </p>
-            <h2 className="mt-3 font-display text-4xl font-medium tracking-tight text-white md:text-5xl">
+            <h2 className="mt-3 font-display text-4xl font-extrabold uppercase tracking-[-0.02em] text-white md:text-5xl">
               {t.title}
             </h2>
           </div>
@@ -267,7 +430,7 @@ export function ProductionHUD({
               data-cursor="cta"
               className={`border px-4 py-2 font-mono text-[10px] tracking-[0.22em] transition-colors ${
                 i === active
-                  ? "border-white/40 bg-white/[0.06] text-white"
+                  ? "border-[color:var(--filament)]/50 bg-white/[0.04] text-white"
                   : "border-white/[0.08] text-white/40 hover:border-white/20 hover:text-white/70"
               }`}
             >
@@ -278,14 +441,14 @@ export function ProductionHUD({
 
         <motion.div
           variants={hudPulse}
-          className="relative overflow-hidden border border-white/[0.1] bg-[#060606]"
+          className="hud-frame relative overflow-hidden"
         >
-          <div className="relative z-20 grid bg-[#060606] lg:grid-cols-[220px_1fr]">
-            <aside className="border-b border-white/[0.08] bg-[#060606] p-5 lg:border-b-0 lg:border-r">
+          <div className="relative z-20 grid lg:grid-cols-[220px_1fr]">
+            <aside className="border-b border-white/[0.08] p-5 lg:border-b-0 lg:border-r lg:border-white/[0.08]">
               <div className="mb-5 flex items-center justify-between font-mono text-[9px] tracking-[0.25em] text-white/35">
                 <span>{t.index}</span>
                 <span>
-                  {String(active + 1).padStart(2, "0")} /{" "}
+                  {active === null ? "--" : String(active + 1).padStart(2, "0")} /{" "}
                   {String(featured.length).padStart(2, "0")}
                 </span>
               </div>
@@ -302,12 +465,8 @@ export function ProductionHUD({
                         onClick={() => setOpenLevel(open ? null : key)}
                         aria-expanded={open}
                         data-cursor="cta"
-                        className={`relative flex w-full items-center justify-between gap-2 overflow-hidden border px-3 py-3 text-left font-mono text-[10px] tracking-[0.18em] transition-colors ${
-                          open
-                            ? isNda
-                              ? "border-amber-300/35 bg-white/[0.04] text-amber-200"
-                              : "border-sky-300/35 bg-white/[0.04] text-sky-200"
-                            : "border-white/[0.08] text-white/50 hover:border-white/20 hover:text-white/80"
+                        className={`hud-node relative flex items-center justify-between gap-2 overflow-hidden ${
+                          open ? (isNda ? "is-open is-nda" : "is-open") : ""
                         }`}
                       >
                         <motion.span
@@ -404,6 +563,10 @@ export function ProductionHUD({
             </aside>
 
             <div className="p-4 md:p-7">
+              {!project ? (
+                <HudPlaceholder />
+              ) : (
+              <>
               <AnimatePresence mode="popLayout">
                 <motion.div
                   key={`${project.id}-head`}
@@ -418,7 +581,7 @@ export function ProductionHUD({
                       {L(project.accent, lang).toUpperCase()} ·{" "}
                       {L(project.role, lang)}
                     </p>
-                    <h3 className="mt-2 font-display text-3xl font-medium tracking-tight text-white md:text-4xl">
+                    <h3 className="mt-2 font-display text-3xl font-extrabold uppercase tracking-[-0.02em] text-white md:text-4xl">
                       {L(project.title, lang)}
                     </h3>
                     <p className="mt-3 max-w-2xl text-sm font-light leading-relaxed text-white/50">
@@ -536,6 +699,8 @@ export function ProductionHUD({
                   </div>
                 </motion.div>
               </AnimatePresence>
+              </>
+              )}
             </div>
           </div>
         </motion.div>

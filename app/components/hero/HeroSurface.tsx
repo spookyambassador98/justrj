@@ -1,22 +1,17 @@
 "use client";
 
-import { motion } from "framer-motion";
+import { useEffect, useRef, useState } from "react";
 import {
   EnvelopeSimple,
-  GithubLogo,
   LinkedinLogo,
   LockSimple,
 } from "@phosphor-icons/react";
 import { MagneticButton } from "@/app/components/ui/MagneticButton";
 import { siteConfig } from "@/app/site.config";
 import type { Lang } from "@/app/components/LanguageProvider";
-import {
-  clipReveal,
-  fadeRise,
-  letterPull,
-  staggerContainer,
-  staggerFast,
-} from "@/lib/motion";
+import { gsap, registerMotion } from "@/lib/motion/register";
+import { onIntroReady, isIntroReady } from "@/lib/motion/ready";
+import { useViewport } from "@/app/hooks/useViewport";
 
 type HeroSurfaceProps = {
   lang: Lang;
@@ -29,14 +24,11 @@ type HeroSurfaceProps = {
 };
 
 const HEADLINE = {
-  en: ["Live production", "demos."],
-  ru: ["Live production", "demos."],
-  uk: ["Live production", "demos."],
+  en: "Live production demos.",
+  ru: "Live production demos.",
+  uk: "Live production demos.",
 } as const;
 
-/**
- * Engineering Core hero — brand-first, liquid stagger, clinical framing.
- */
 export function HeroSurface({
   lang,
   role,
@@ -46,149 +38,117 @@ export function HeroSurface({
   onNavigate,
   onNda,
 }: HeroSurfaceProps) {
-  const nameParts = siteConfig.name.split(" ");
-  const words = HEADLINE[lang];
+  const root = useRef<HTMLElement>(null);
+  const { reduceMotion } = useViewport();
+  const [lit, setLit] = useState(isIntroReady());
+  const given = siteConfig.name.split(" ")[0] ?? "Rauf";
+  const family = siteConfig.name.split(" ").slice(1).join(" ");
+
+  useEffect(() => onIntroReady(() => setLit(true)), []);
+
+  useEffect(() => {
+    if (!lit || reduceMotion || !root.current) return;
+    registerMotion();
+    const ctx = gsap.context(() => {
+      const stencil = root.current?.querySelector(".hero-stencil");
+      const copyNodes = root.current?.querySelectorAll(".hero-copy > *");
+      if (!stencil || !copyNodes) return;
+      gsap.fromTo(
+        stencil,
+        { yPercent: 12, opacity: 0 },
+        { yPercent: 0, opacity: 1, duration: 1.05, ease: "expoOut" }
+      );
+      gsap.fromTo(
+        copyNodes,
+        { y: 28, opacity: 0 },
+        { y: 0, opacity: 1, duration: 0.8, stagger: 0.08, delay: 0.2, ease: "expoOut" }
+      );
+
+      gsap.to(stencil, {
+        yPercent: -8,
+        scale: 0.86,
+        filter: "blur(8px)",
+        ease: "none",
+        scrollTrigger: {
+          trigger: root.current,
+          start: "top top",
+          end: "bottom top",
+          scrub: 0.6,
+        },
+      });
+    }, root);
+    return () => ctx.revert();
+  }, [lit, reduceMotion]);
 
   return (
     <section
+      ref={root}
       id="engineering-core"
-      className="pointer-events-auto relative flex min-h-[72vh] w-full max-w-7xl flex-col items-start justify-center pb-16 pt-10 sm:pb-24 sm:pt-16 md:min-h-[78vh] md:pb-28 md:pt-20"
+      className="pointer-events-auto relative flex min-h-[100dvh] w-full flex-col justify-end pb-28 pt-8 sm:pb-32"
     >
-      <div
-        aria-hidden
-        className="pointer-events-none absolute -left-4 top-4 bottom-0 right-0 z-0 md:-left-10 md:right-[10%] lg:right-[22%]"
-        style={{
-          background: `
-            linear-gradient(90deg, rgba(2,2,2,0.92) 0%, rgba(2,2,2,0.75) 40%, rgba(2,2,2,0.28) 72%, transparent 100%),
-            linear-gradient(180deg, rgba(2,2,2,0.5) 0%, rgba(2,2,2,0.2) 70%, transparent 100%)
-          `,
-        }}
-      />
-
-      {/* Clinical corner marks */}
-      <div className="pointer-events-none absolute left-0 top-8 hidden h-10 w-10 border-l border-t border-white/20 md:block" />
-      <div className="pointer-events-none absolute bottom-8 left-0 hidden h-10 w-10 border-b border-l border-white/20 md:block" />
-
-      <motion.div
-        initial="hidden"
-        animate="visible"
-        variants={staggerContainer}
-        className="relative z-10 w-full"
-      >
-        <motion.p
-          variants={fadeRise}
-          className="mb-5 font-mono text-[10px] uppercase tracking-[0.38em] text-white/40 sm:mb-6"
-        >
-          {role}
-        </motion.p>
-
-        <motion.div
-          variants={fadeRise}
-          className="mb-6 flex items-center gap-3 font-mono text-[10px] tracking-[0.32em] text-white/55"
-        >
-          <span className="inline-flex size-7 items-center justify-center border border-white/25 text-[11px] text-white">
-            {siteConfig.monogram}
-          </span>
-          <span>ENGINEERING CORE</span>
-        </motion.div>
-
-        <h1 className="relative w-full max-w-[min(96vw,72rem)]">
-          <span className="sr-only">
-            {siteConfig.name}. {words.join(" ")}
-          </span>
-          <motion.span
-            variants={staggerFast}
-            className="flex flex-wrap gap-x-[0.22em] gap-y-1 font-display text-[clamp(2.5rem,8.8vw,6.4rem)] font-medium leading-[0.95] tracking-[-0.035em]"
+      <h1 className="sr-only">
+        {siteConfig.name}. {HEADLINE[lang]}
+      </h1>
+      <div className="stencil-stage pointer-events-none absolute inset-0 z-0 overflow-hidden">
+        <div className="stencil-veil absolute inset-0" />
+        <div className="absolute inset-x-0 top-[10vh] px-[var(--grid-gutter)] md:top-[6vh]">
+          <h1
+            className="hero-stencil stencil-mark w-full text-[min(18vw,11.2rem)]"
             aria-hidden
           >
-            {nameParts.map((word) => (
-              <span key={word} className="inline-block overflow-hidden pb-[0.1em]">
-                <motion.span variants={letterPull} className="inline-block text-white">
-                  {word}
-                </motion.span>
-              </span>
-            ))}
-          </motion.span>
-        </h1>
+            {given}
+          </h1>
+        </div>
+      </div>
 
-        <motion.h2
-          variants={staggerFast}
-          className="mt-5 flex flex-wrap gap-x-3 font-display text-[clamp(1.35rem,3.5vw,2.35rem)] font-medium tracking-[-0.02em] text-white/55"
-          aria-hidden
-        >
-          {words.map((word, i) => (
-            <span key={word} className="inline-block overflow-hidden">
-              <motion.span
-                variants={letterPull}
-                className={`inline-block ${i === 1 ? "text-white/90" : ""}`}
-              >
-                {word}
-              </motion.span>
-            </span>
-          ))}
-        </motion.h2>
+      <div className="hero-copy relative z-10 mt-auto grid w-full grid-cols-12 items-end gap-y-6 bg-gradient-to-t from-[var(--bg)] via-[var(--bg)]/80 to-transparent px-[var(--grid-gutter)] pt-24">
+        <p className="col-span-12 font-mono text-[10px] uppercase tracking-[0.36em] text-white/40 md:col-span-4">
+          <span className="text-white/25">01</span>
+          <span className="mx-3 text-white/15">/</span>
+          {role}
+        </p>
 
-        <motion.p
-          variants={clipReveal}
-          className="mt-8 max-w-xl text-[14px] font-light leading-[1.85] text-white/60 sm:mt-10 sm:text-[15px] md:max-w-2xl md:text-base"
-        >
+        <div className="col-span-12 md:col-span-8 md:text-right">
+          <p className="font-serif text-[clamp(1.6rem,4vw,3.1rem)] italic leading-[1.05] text-white/80">
+            {family}
+          </p>
+          <p className="mt-2 font-display text-[clamp(1.05rem,2.2vw,1.6rem)] uppercase tracking-[0.12em] text-white/45">
+            {HEADLINE[lang]}
+          </p>
+        </div>
+
+        <p className="col-span-12 max-w-xl text-[14px] font-light leading-[1.85] text-white/55 md:col-span-5 md:text-[15px]">
           {description}
-        </motion.p>
+        </p>
 
-        <motion.div
-          variants={fadeRise}
-          className="mt-10 flex w-full flex-col gap-3 sm:mt-12 sm:w-auto sm:flex-row sm:flex-wrap sm:items-center sm:gap-4"
-        >
+        <div className="col-span-12 flex flex-col gap-3 sm:flex-row sm:flex-wrap sm:items-center md:col-span-7 md:justify-end">
           <MagneticButton onClick={onNavigate}>{viewWork}</MagneticButton>
-          <MagneticButton
-            href={`mailto:${siteConfig.links.email}`}
-            className="border-white/[0.08] bg-transparent shadow-none"
-          >
+          <MagneticButton href={`mailto:${siteConfig.links.email}`} data-cursor="mail">
             <EnvelopeSimple size={16} weight="light" />
             {emailMe}
           </MagneticButton>
-        </motion.div>
-
-        <motion.div
-          variants={fadeRise}
-          className="mt-8 flex flex-wrap items-center gap-4 text-white/35"
-        >
           <button
             type="button"
             onClick={onNda}
             data-cursor="cta"
             aria-label={siteConfig.source.label[lang]}
-            className="inline-flex items-center gap-2 transition-colors hover:text-white"
+            className="filament filament--ghost"
           >
-            <LockSimple size={20} weight="light" />
-            <span className="text-[10px] uppercase tracking-[0.18em]">
-              {siteConfig.source.label[lang]}
-            </span>
+            <LockSimple size={16} weight="light" />
+            {siteConfig.source.label[lang]}
           </button>
-          {siteConfig.links.github ? (
-            <a
-              href={siteConfig.links.github}
-              target="_blank"
-              rel="noreferrer"
-              data-cursor="cta"
-              aria-label="GitHub"
-              className="transition-colors hover:text-white"
-            >
-              <GithubLogo size={20} weight="light" />
-            </a>
-          ) : null}
           <a
             href={siteConfig.links.linkedin}
             target="_blank"
             rel="noreferrer"
             data-cursor="cta"
             aria-label="LinkedIn"
-            className="transition-colors hover:text-white"
+            className="filament filament--ghost"
           >
-            <LinkedinLogo size={20} weight="light" />
+            <LinkedinLogo size={18} weight="light" />
           </a>
-        </motion.div>
-      </motion.div>
+        </div>
+      </div>
     </section>
   );
 }

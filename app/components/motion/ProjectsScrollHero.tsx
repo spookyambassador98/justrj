@@ -69,7 +69,7 @@ export function ProjectsScrollHero({ eyebrow, title, sub }: Props) {
 
   return (
     <div ref={root} className="ps-hero relative mb-16 md:mb-24">
-      <p className="mb-4 text-[10px] uppercase tracking-[0.35em] text-cyan-300/55">
+      <p className="mb-4 font-mono text-[10px] uppercase tracking-[0.35em] text-white/40">
         {eyebrow}
       </p>
       <h1

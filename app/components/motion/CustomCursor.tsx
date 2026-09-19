@@ -22,10 +22,8 @@ export function CustomCursor() {
       x.set(e.clientX);
       y.set(e.clientY);
       setVisible(true);
-      const el = (e.target as HTMLElement | null)?.closest?.[
-        "[data-cursor]"
-      ] as HTMLElement | null;
-      const next = (el?.dataset.cursor as CursorMode) || "default";
+      const hit = (e.target as HTMLElement | null)?.closest("[data-cursor]");
+      const next = ((hit as HTMLElement | null)?.dataset.cursor as CursorMode) || "default";
       setMode(next);
     };
 

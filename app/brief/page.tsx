@@ -44,7 +44,7 @@ function BriefInner() {
           <p className="mb-3 text-[10px] uppercase tracking-[0.3em] text-white/35">
             {copy.eyebrow}
           </p>
-          <h1 className="max-w-2xl font-serif text-[clamp(2.4rem,5vw,3.75rem)] italic leading-[1.05] text-white">
+          <h1 className="max-w-2xl font-display text-[clamp(2.4rem,6vw,4.2rem)] font-extrabold uppercase leading-[0.9] tracking-[-0.045em] text-white">
             {copy.title}
           </h1>
           <p className="mt-4 max-w-xl text-[15px] leading-relaxed text-white/45">
@@ -60,7 +60,7 @@ function BriefInner() {
             </a>
           </p>
 
-          <div className="mt-14 rounded-[2rem] border border-white/[0.08] bg-gradient-to-b from-white/[0.04] to-[#0a0a0a]/90 p-6 shadow-[0_0_100px_rgba(0,0,0,0.45)] backdrop-blur-2xl md:p-10">
+          <div className="mt-14 hud-frame p-6 md:p-10">
             <BriefForm referralCode={referralCode} />
           </div>
         </main>

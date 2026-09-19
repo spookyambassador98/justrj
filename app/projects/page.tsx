@@ -26,6 +26,7 @@ import {
 import { useLang, type Lang } from "../components/LanguageProvider";
 import { useViewport } from "../hooks/useViewport";
 import { PageTransition } from "../components/motion/PageTransition";
+import { requestCurtain } from "@/lib/motion/curtain";
 import { ProjectsScrollHero } from "../components/motion/ProjectsScrollHero";
 import {
   L,
@@ -900,8 +901,7 @@ export default function ProjectsPage() {
   }, []);
 
   const goHome = () => {
-    setRouting(true);
-    setTimeout(() => router.push("/"), 850);
+    requestCurtain("/");
   };
 
   const scrollToProject = (id: string) => {
@@ -989,7 +989,10 @@ export default function ProjectsPage() {
         )}
       </AnimatePresence>
 
-      <header className="fixed inset-x-0 top-0 z-50 h-14 bg-black/55 backdrop-blur-xl safe-pad-t sm:h-16" style={{ boxShadow: "inset 0 -1px 0 rgba(255,255,255,0.06)" }}>
+      <header
+          className="fixed inset-x-0 top-0 z-50 h-14 bg-[var(--bg)]/70 backdrop-blur-md safe-pad-t sm:h-16"
+          style={{ boxShadow: "inset 0 -1px 0 rgba(255,255,255,0.08)" }}
+        >
         <div className="mx-auto flex h-full w-full max-w-[100rem] items-center justify-between px-4 sm:px-6 lg:px-12">
           <button
             type="button"

@@ -30,6 +30,7 @@ export function RecruiterModeProvider({
       // Only restore ON if explicitly saved — never surprise-black the neural field
       if (localStorage.getItem(STORAGE_KEY) === "1") {
         setRecruiterModeState(true);
+        document.documentElement.dataset.ops = "on";
       }
     } catch {
       /* ignore */
@@ -40,6 +41,7 @@ export function RecruiterModeProvider({
     setRecruiterModeState(v);
     try {
       localStorage.setItem(STORAGE_KEY, v ? "1" : "0");
+      document.documentElement.dataset.ops = v ? "on" : "off";
     } catch {
       /* ignore */
     }

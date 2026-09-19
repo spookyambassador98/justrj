@@ -2,13 +2,16 @@
 
 import { useCallback, useState } from "react";
 import { AnimatePresence } from "framer-motion";
-import { SignalLockIntro } from "./motion/SignalLockIntro";
-import { CustomCursor } from "./motion/CustomCursor";
+import { ConductionIntro } from "./motion/ConductionIntro";
+import { InstrumentCursor } from "./motion/InstrumentCursor";
 import { SmoothScroll } from "./motion/SmoothScroll";
+import { LiquidCurtain } from "./motion/LiquidCurtain";
+import { ScrollProgress } from "./motion/ScrollProgress";
 import { RecruiterModeProvider, useRecruiterMode } from "./RecruiterMode";
 import { HireStrip } from "./ui/HireStrip";
 import { SilentTracker } from "./SilentTracker";
 import { useLang } from "./LanguageProvider";
+import { markIntroReady } from "@/lib/motion/ready";
 
 type Phase = "intro" | "app";
 
@@ -17,14 +20,22 @@ function ShellInner({ children }: { children: React.ReactNode }) {
   const { recruiterMode } = useRecruiterMode();
   const { lang } = useLang();
 
-  const onIntroDone = useCallback(() => setPhase("app"), []);
+  const onIntroDone = useCallback(() => {
+    markIntroReady();
+    setPhase("app");
+    if (typeof document !== "undefined") {
+      document.documentElement.dataset.ops = recruiterMode ? "on" : "off";
+    }
+  }, [recruiterMode]);
 
   return (
     <>
       {!recruiterMode && <SmoothScroll />}
-      {!recruiterMode && phase === "app" && <CustomCursor />}
+      {!recruiterMode && phase === "app" && <InstrumentCursor />}
+      <LiquidCurtain />
+      <ScrollProgress />
+      <div className="site-grain" aria-hidden />
 
-      {/* Site mounts under the gate so iris can reveal the neural field */}
       <div
         aria-hidden={phase === "intro"}
         style={{
@@ -36,7 +47,7 @@ function ShellInner({ children }: { children: React.ReactNode }) {
 
       <AnimatePresence mode="wait">
         {phase === "intro" && (
-          <SignalLockIntro key="intro" onDone={onIntroDone} />
+          <ConductionIntro key="intro" onDone={onIntroDone} />
         )}
       </AnimatePresence>
 

@@ -1,6 +1,6 @@
 import type { ReactNode } from "react";
 import type { Metadata, Viewport } from "next";
-import { Geist, Instrument_Serif, Plus_Jakarta_Sans } from "next/font/google";
+import { Geist, IBM_Plex_Mono, Instrument_Serif, Syne } from "next/font/google";
 import { LanguageProvider } from "./components/LanguageProvider";
 import { PortfolioShell } from "./components/PortfolioShell";
 import { siteConfig } from "./site.config";
@@ -12,9 +12,17 @@ const geist = Geist({
   display: "swap",
 });
 
-const jakarta = Plus_Jakarta_Sans({
+const syne = Syne({
   subsets: ["latin"],
-  variable: "--font-jakarta",
+  weight: ["500", "700", "800"],
+  variable: "--font-syne",
+  display: "swap",
+});
+
+const plex = IBM_Plex_Mono({
+  subsets: ["latin"],
+  weight: ["400", "500"],
+  variable: "--font-plex",
   display: "swap",
 });
 
@@ -40,7 +48,7 @@ export const viewport: Viewport = {
   initialScale: 1,
   maximumScale: 5,
   viewportFit: "cover",
-  themeColor: "#020202",
+  themeColor: "#05070c",
 };
 
 const LANG_BOOT_SCRIPT = `(function(){try{document.documentElement.lang="en";document.documentElement.dataset.lang="en";localStorage.setItem("apex-lang","en");}catch(e){document.documentElement.lang="en";document.documentElement.dataset.lang="en";}})();`;
@@ -49,13 +57,13 @@ export default function RootLayout({ children }: { children: ReactNode }) {
   return (
     <html
       lang="en"
-      className={`${geist.variable} ${jakarta.variable} ${instrument.variable}`}
+      className={`${geist.variable} ${syne.variable} ${plex.variable} ${instrument.variable}`}
       suppressHydrationWarning
     >
       <head>
         <link
           rel="stylesheet"
-          href="https://api.fontshare.com/v2/css?f[]=clash-display@500,600,700&display=swap"
+          href="https://api.fontshare.com/v2/css?f[]=panchang@700,800&display=swap"
         />
         <script dangerouslySetInnerHTML={{ __html: LANG_BOOT_SCRIPT }} />
       </head>

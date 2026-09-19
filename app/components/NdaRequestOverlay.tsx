@@ -4,7 +4,7 @@ import { useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import { LockSimple, X } from "@phosphor-icons/react";
 import { siteConfig } from "../site.config";
-import type { Lang } from "../LanguageProvider";
+import type { Lang } from "./LanguageProvider";
 import { MagneticButton } from "./ui/MagneticButton";
 
 const EASE = [0.16, 1, 0.3, 1] as const;
@@ -132,7 +132,7 @@ export function NdaRequestOverlay({
             role="dialog"
             aria-modal="true"
             aria-labelledby="nda-title"
-            className="relative z-10 my-auto w-full max-w-lg rounded-[1.5rem] border border-white/[0.08] bg-gradient-to-b from-white/[0.05] to-[#0a0a0a]/95 p-5 shadow-[0_0_100px_rgba(0,0,0,0.55)] backdrop-blur-2xl sm:rounded-[1.75rem] sm:p-7"
+            className="relative z-10 my-auto w-full max-w-lg hud-frame p-5 sm:p-7"
             initial={{ opacity: 0, y: 24, scale: 0.98 }}
             animate={{ opacity: 1, y: 0, scale: 1 }}
             exit={{ opacity: 0, y: 16, scale: 0.98 }}

@@ -174,7 +174,7 @@ export function RecruiterBrief({
 
   return (
     <section
-      className="pointer-events-auto relative z-10 mx-auto w-full max-w-4xl px-4 pb-28 pt-20 sm:px-6"
+      className="paper pointer-events-auto relative z-10 mx-auto min-h-screen w-full max-w-4xl px-4 pb-28 pt-20 sm:px-6"
       aria-label="Recruiter brief"
     >
       <motion.div
@@ -187,13 +187,13 @@ export function RecruiterBrief({
           className="mb-10 flex flex-wrap items-end justify-between gap-4"
         >
           <div>
-            <p className="font-mono text-[10px] tracking-[0.32em] text-white/40">
+            <p className="font-mono text-[10px] tracking-[0.32em] text-black/40">
               {siteConfig.role[lang]}
             </p>
-            <h1 className="mt-3 font-display text-4xl font-medium tracking-tight text-white sm:text-5xl">
+            <h1 className="mt-3 font-display text-4xl font-extrabold uppercase tracking-[-0.04em] text-[#161410] sm:text-5xl">
               {siteConfig.name}
             </h1>
-            <p className="mt-4 max-w-xl text-sm font-light leading-relaxed text-white/50">
+            <p className="mt-4 max-w-xl text-sm font-light leading-relaxed text-black/55">
               {t.lead}
             </p>
           </div>
@@ -209,7 +209,7 @@ export function RecruiterBrief({
 
         <motion.ul
           variants={fadeRise}
-          className="mb-10 divide-y divide-white/[0.06] border-y border-white/[0.08]"
+          className="mb-10 divide-y divide-black/[0.08] border-y border-black/[0.12]"
         >
           {projectsData.map((project) => (
             <li key={project.id}>
@@ -217,7 +217,7 @@ export function RecruiterBrief({
                 type="button"
                 onClick={onNavigate}
                 data-cursor="project"
-                className="group flex w-full items-center gap-4 py-4 text-left transition-colors hover:bg-white/[0.02]"
+                className="group flex w-full items-center gap-4 py-4 text-left transition-colors hover:bg-black/[0.03]"
               >
                 <div className="relative h-14 w-20 shrink-0 overflow-hidden border border-white/[0.1] bg-[#0a0a0a]">
                   {/* eslint-disable-next-line @next/next/no-img-element */}
@@ -229,8 +229,8 @@ export function RecruiterBrief({
                   <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-[#020202]/50 to-transparent" />
                 </div>
                 <div className="min-w-0 flex-1">
-                  <p className="text-sm text-white/90">{L(project.title, lang)}</p>
-                  <p className="mt-1 text-xs text-white/40">
+                  <p className="text-sm text-[#161410]">{L(project.title, lang)}</p>
+                  <p className="mt-1 text-xs text-black/45">
                     {L(project.result, lang)}
                   </p>
                 </div>
@@ -242,19 +242,19 @@ export function RecruiterBrief({
 
         <motion.div
           variants={fadeRise}
-          className="overflow-hidden border border-white/[0.1] bg-[#060606]"
+          className="overflow-hidden border border-black/[0.12] bg-[#e7e1d4]"
         >
           <div className="flex flex-wrap items-center justify-between gap-3 border-b border-white/[0.08] px-5 py-4 sm:px-7">
             <div>
-              <p className="flex items-center gap-2 font-mono text-[10px] tracking-[0.3em] text-white/45">
+              <p className="flex items-center gap-2 font-mono text-[10px] tracking-[0.3em] text-black/45">
                 <LockSimple size={12} weight="bold" />
                 {t.kicker}
               </p>
-              <h2 className="mt-2 font-display text-2xl font-medium text-white">
+              <h2 className="mt-2 font-display text-2xl font-extrabold uppercase tracking-[-0.03em] text-[#161410]">
                 {t.title}
               </h2>
             </div>
-            <span className="font-mono text-[10px] tracking-[0.22em] text-white/35">
+            <span className="font-mono text-[10px] tracking-[0.22em] text-black/40">
               {status === "idle" && t.idle}
               {status === "sending" && t.sending}
               {status === "sent" && t.sent}
@@ -271,10 +271,10 @@ export function RecruiterBrief({
                 transition={{ duration: 0.85, ease: [0.22, 1, 0.36, 1] }}
                 className="flex min-h-[320px] flex-col items-center justify-center px-6 py-14 text-center"
               >
-                <h3 className="font-display text-3xl font-medium text-white">
+                <h3 className="font-display text-3xl font-extrabold uppercase text-[#161410]">
                   {t.successTitle}
                 </h3>
-                <p className="mt-4 max-w-md text-sm font-light text-white/45">
+                <p className="mt-4 max-w-md text-sm font-light text-black/50">
                   {t.successBody}
                 </p>
                 <MagneticButton
@@ -307,11 +307,11 @@ export function RecruiterBrief({
                   <motion.div
                     key={field.key}
                     variants={formField}
-                    className={`border-b border-white/[0.08] p-5 sm:p-6 ${
-                      focused === field.key ? "bg-white/[0.02]" : ""
+                    className={`border-b border-black/[0.08] p-5 sm:p-6 ${
+                      focused === field.key ? "bg-black/[0.03]" : ""
                     }`}
                   >
-                    <label className="mb-3 block font-mono text-[10px] tracking-[0.24em] text-white/35">
+                    <label className="mb-3 block font-mono text-[10px] tracking-[0.24em] text-black/40">
                       {t.fields[field.key]}
                     </label>
                     <input
@@ -322,25 +322,25 @@ export function RecruiterBrief({
                       onFocus={() => setFocused(field.key)}
                       onBlur={() => setFocused(null)}
                       placeholder={field.ph}
-                      className="w-full bg-transparent text-sm text-white outline-none placeholder:text-white/20"
+                      className="w-full bg-transparent text-sm text-[#161410] outline-none placeholder:text-black/25"
                     />
                   </motion.div>
                 ))}
 
                 <motion.div
                   variants={formField}
-                  className="border-b border-white/[0.08] p-5 sm:p-6 md:col-span-2"
+                  className="border-b border-black/[0.08] p-5 sm:p-6 md:col-span-2"
                 >
-                  <label className="mb-3 block font-mono text-[10px] tracking-[0.24em] text-white/35">
+                  <label className="mb-3 block font-mono text-[10px] tracking-[0.24em] text-black/40">
                     {t.fields.intent}
                   </label>
                   <select
                     value={form.intent}
                     onChange={(e) => onChange("intent", e.target.value)}
-                    className="w-full appearance-none bg-transparent font-mono text-sm tracking-[0.12em] text-white outline-none"
+                    className="w-full appearance-none bg-transparent font-mono text-sm tracking-[0.12em] text-[#161410] outline-none"
                   >
                     {Object.entries(t.intents).map(([value, label]) => (
-                      <option key={value} value={value} className="bg-[#020202]">
+                      <option key={value} value={value} className="bg-[#ece7dc]">
                         {label}
                       </option>
                     ))}
@@ -349,9 +349,9 @@ export function RecruiterBrief({
 
                 <motion.div
                   variants={formField}
-                  className="border-b border-white/[0.08] p-5 sm:p-6 md:col-span-2"
+                  className="border-b border-black/[0.08] p-5 sm:p-6 md:col-span-2"
                 >
-                  <label className="mb-3 block font-mono text-[10px] tracking-[0.24em] text-white/35">
+                  <label className="mb-3 block font-mono text-[10px] tracking-[0.24em] text-black/40">
                     {t.fields.brief}
                   </label>
                   <textarea
@@ -362,7 +362,7 @@ export function RecruiterBrief({
                     onFocus={() => setFocused("brief")}
                     onBlur={() => setFocused(null)}
                     placeholder="Role, timeline, compensation band, NDA needs…"
-                    className="w-full resize-none bg-transparent text-sm leading-relaxed text-white outline-none placeholder:text-white/20"
+                    className="w-full resize-none bg-transparent text-sm leading-relaxed text-[#161410] outline-none placeholder:text-black/25"
                   />
                 </motion.div>
 
@@ -370,7 +370,7 @@ export function RecruiterBrief({
                   variants={formField}
                   className="flex flex-col gap-4 p-6 md:col-span-2 md:flex-row md:items-center md:justify-between md:p-8"
                 >
-                  <p className="max-w-md font-mono text-[9px] leading-relaxed tracking-[0.14em] text-white/30">
+                  <p className="max-w-md font-mono text-[9px] leading-relaxed tracking-[0.14em] text-black/40">
                     {t.legal}
                   </p>
                   <MagneticButton
