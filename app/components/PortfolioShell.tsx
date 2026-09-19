@@ -2,7 +2,7 @@
 
 import { useCallback, useState } from "react";
 import { AnimatePresence } from "framer-motion";
-import { ConductionIntro } from "./motion/ConductionIntro";
+import { SignalLockIntro } from "./motion/SignalLockIntro";
 import { InstrumentCursor } from "./motion/InstrumentCursor";
 import { SmoothScroll } from "./motion/SmoothScroll";
 import { LiquidCurtain } from "./motion/LiquidCurtain";
@@ -47,7 +47,7 @@ function ShellInner({ children }: { children: React.ReactNode }) {
 
       <AnimatePresence mode="wait">
         {phase === "intro" && (
-          <ConductionIntro key="intro" onDone={onIntroDone} />
+          <SignalLockIntro key="intro" onDone={onIntroDone} />
         )}
       </AnimatePresence>
 

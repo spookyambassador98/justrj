@@ -288,7 +288,128 @@ html.has-instrument-cursor * {
   border-color: transparent;
 }
 
-/* —— Conduction intro —— */
+/* —— Epic vault gate (Signal Lock intro) —— */
+.epic-gate {
+  position: fixed;
+  inset: 0;
+  z-index: 300;
+  display: grid;
+  place-items: center;
+  overflow: hidden;
+  cursor: pointer;
+  background: #010103;
+  perspective: 1400px;
+  will-change: opacity;
+}
+
+.epic-gate__void {
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(ellipse 80% 60% at 50% 45%, rgba(8, 28, 56, 0.55), transparent 68%),
+    #010103;
+}
+
+.epic-gate__flash {
+  position: absolute;
+  inset: 0;
+  z-index: 8;
+  background: radial-gradient(circle at 50% 48%, #fff 0%, rgba(186, 230, 253, 0.7) 28%, transparent 70%);
+  pointer-events: none;
+  mix-blend-mode: screen;
+  will-change: opacity;
+}
+
+.epic-gate__wave {
+  position: absolute;
+  left: 50%;
+  top: 48%;
+  z-index: 3;
+  width: min(40vw, 280px);
+  height: min(40vw, 280px);
+  margin: calc(min(40vw, 280px) / -2) 0 0 calc(min(40vw, 280px) / -2);
+  border-radius: 50%;
+  border: 1.5px solid rgba(34, 211, 238, 0.55);
+  box-shadow: 0 0 40px rgba(34, 211, 238, 0.35);
+  pointer-events: none;
+  will-change: transform, opacity;
+}
+
+.epic-gate__bloom {
+  position: absolute;
+  left: 50%;
+  top: 48%;
+  z-index: 1;
+  width: min(75vw, 560px);
+  height: min(75vw, 560px);
+  margin: calc(min(75vw, 560px) / -2) 0 0 calc(min(75vw, 560px) / -2);
+  border-radius: 50%;
+  background: radial-gradient(
+    circle,
+    rgba(34, 211, 238, 0.35) 0%,
+    rgba(59, 130, 246, 0.12) 42%,
+    transparent 70%
+  );
+  filter: blur(14px);
+  pointer-events: none;
+  will-change: transform, opacity;
+}
+
+.epic-gate__stage {
+  position: relative;
+  z-index: 5;
+  display: grid;
+  place-items: center;
+  transform-style: preserve-3d;
+}
+
+.epic-gate__stage > * {
+  grid-area: 1 / 1;
+  transform-style: preserve-3d;
+}
+
+.epic-gate__mark {
+  margin: 0;
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: clamp(6.5rem, 30vw, 15rem);
+  letter-spacing: -0.055em;
+  line-height: 0.82;
+  text-transform: uppercase;
+  text-align: center;
+  will-change: transform, opacity, filter;
+  color: #fff;
+  background: linear-gradient(180deg, #fff 20%, rgba(186, 230, 253, 0.75) 55%, rgba(255, 255, 255, 0.35) 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  filter: drop-shadow(0 0 28px rgba(34, 211, 238, 0.22));
+}
+
+.epic-gate__streak {
+  position: absolute;
+  left: 5%;
+  right: 5%;
+  top: 48%;
+  z-index: 7;
+  height: 2px;
+  transform-origin: center;
+  background: linear-gradient(
+    90deg,
+    transparent 0%,
+    rgba(34, 211, 238, 0.3) 20%,
+    #fff 50%,
+    rgba(96, 165, 250, 0.35) 80%,
+    transparent 100%
+  );
+  box-shadow:
+    0 0 24px rgba(34, 211, 238, 0.9),
+    0 0 60px rgba(255, 255, 255, 0.45);
+  pointer-events: none;
+  will-change: transform, opacity;
+}
+
+/* —— Conduction intro (parked; not mounted) —— */
 .cond {
   position: fixed;
   inset: 0;
