@@ -396,8 +396,8 @@ export function ProductionHUD({
             </h2>
           </div>
           <p className="max-w-sm font-mono text-[9px] leading-relaxed tracking-[0.16em] text-white/30">
-            ORBITAL · ASEMA · EYE · FOAMCORE · HIRE · LEAD · DRIFT — real captures · real
-            stack · no invented metrics
+            LEVEL 1–3 PUBLIC · REST UNDER NDA — real captures · real stack · no invented
+            metrics
           </p>
         </motion.div>
 

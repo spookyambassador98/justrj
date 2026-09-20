@@ -53,6 +53,15 @@ export function shot(
   };
 }
 
+/** Public level cases — EN captures used for every language. */
+export function shotEn(
+  folder: "price-radar" | "middocs" | "pulse",
+  name: string
+): Shot {
+  const src = `/showcase-images/${folder}/en/${name}`;
+  return { ru: src, en: src, uk: src };
+}
+
 /** English-first portfolio copy + EN screenshots (justrj.vercel.app). */
 export function resolveShot(image: Shot | string, lang?: Lang): string {
   if (typeof image === "string") return image;
@@ -76,6 +85,296 @@ export function LList(
 }
 
 export const projectsData: Project[] = [
+  {
+    id: "price_radar",
+    index: "01",
+    title: { en: "Price Radar", ru: "Ценовой радар", uk: "Ціновий радар" },
+    accent: { en: "Marketplace tracker", ru: "Трекер цен", uk: "Трекер цін" },
+    nav: { en: "Price Radar", ru: "Ценовой радар", uk: "Ціновий радар" },
+    hook: {
+      en: "Paste a product URL. The radar scrapes the live price, stores history, and pings you when it drops below your floor.",
+      ru: "Вставь ссылку на товар. Радар снимает цену со страницы, пишет историю и сигналит, когда она падает ниже порога.",
+      uk: "Встав посилання на товар. Радар знімає ціну зі сторінки, пише історію і сигналить, коли вона падає нижче порога.",
+    },
+    role: {
+      en: "Product · Price watch",
+      ru: "Продукт · слежение за ценой",
+      uk: "Продукт · стеження за ціною",
+    },
+    year: "2026",
+    tech: ["Node", "Playwright", "Prisma", "PostgreSQL", "React", "Vite"],
+    glow: "radial-gradient(ellipse 90% 75% at 48% 30%, rgba(34, 197, 94, 0.07) 0%, rgba(24, 24, 18, 0.04) 42%, transparent 72%)",
+    image: shotEn("price-radar", "dashboard-viewport.png"),
+    imageCaption: {
+      en: "Home — paste a URL, set a floor, watch the board",
+      ru: "Главная — ссылка, порог, доска товаров",
+      uk: "Головна — посилання, поріг, дошка товарів",
+    },
+    link: "https://price-tracker-psi-red.vercel.app",
+    problem: {
+      en: "Prices move while you are away. Refreshing marketplace tabs is not a system.",
+      ru: "Цены двигаются, пока ты не смотришь. Обновлять вкладки магазина — это не система.",
+      uk: "Ціни рухаються, поки ти не дивишся. Оновлювати вкладки магазину — це не система.",
+    },
+    build: {
+      en: "Universal extractor (JSON-LD / Open Graph / heuristics) with a Playwright fallback, hourly cron, Postgres history, email + Web Push.",
+      ru: "Универсальный парсер (JSON-LD / Open Graph / эвристика) + Playwright, часовой cron, история в Postgres, email и Web Push.",
+      uk: "Універсальний парсер (JSON-LD / Open Graph / евристика) + Playwright, годинний cron, історія в Postgres, email і Web Push.",
+    },
+    result: {
+      en: "A live watchboard: three tracked books, a floor per card, and a history chart on the product page.",
+      ru: "Живая доска: три книги на радаре, порог на карточке и график истории на странице товара.",
+      uk: "Жива дошка: три книги на радарі, поріг на картці і графік історії на сторінці товару.",
+    },
+    overview: {
+      en: [
+        "Not a shop clone — a watch. Paste a link, the extractor reads the page, cron re-checks every hour.",
+        "When the price crosses your floor, email and browser push fire. History stays in Postgres.",
+      ],
+      ru: [
+        "Не клон магазина — радар. Вставил ссылку, парсер прочитал страницу, cron перепроверяет каждый час.",
+        "Если цена пробила порог — уходит email и браузерный push. История лежит в Postgres.",
+      ],
+    },
+    features: [
+      {
+        id: "hero",
+        title: { en: "Radar home", ru: "Главный экран", uk: "Головний екран" },
+        body: {
+          en: "Headline, URL field, price floor, notify email — one strip to start watching.",
+          ru: "Заголовок, ссылка, порог цены, email — одна полоса, чтобы начать следить.",
+          uk: "Заголовок, посилання, поріг ціни, email — одна смуга, щоб почати стежити.",
+        },
+        image: shotEn("price-radar", "dashboard-viewport.png"),
+        caption: { en: "Home — watch setup", ru: "Главная — постановка на радар", uk: "Головна — постановка на радар" },
+      },
+      {
+        id: "board",
+        title: { en: "Tracked board", ru: "Доска товаров", uk: "Дошка товарів" },
+        body: {
+          en: "Live cards with cover, current price, floor and last check. The ticker at the top moves with the same data.",
+          ru: "Живые карточки: обложка, текущая цена, порог и последняя проверка. Тикер сверху берёт те же данные.",
+          uk: "Живі картки: обкладинка, поточна ціна, поріг і остання перевірка. Тікер зверху бере ті самі дані.",
+        },
+        image: shotEn("price-radar", "form-viewport.png"),
+        caption: { en: "Watchboard", ru: "Доска слежения", uk: "Дошка стеження" },
+      },
+      {
+        id: "history",
+        title: { en: "Price history", ru: "История цены", uk: "Історія ціни" },
+        body: {
+          en: "Product page with status, all-time low, last scrape and a chart. Check-now hits the extractor without waiting for cron.",
+          ru: "Страница товара: статус, минимум, последняя проверка и график. «Проверить сейчас» бьёт в парсер, не дожидаясь cron.",
+          uk: "Сторінка товару: статус, мінімум, остання перевірка і графік. «Перевірити зараз» б'є в парсер, не чекаючи cron.",
+        },
+        image: shotEn("price-radar", "detail-viewport.png"),
+        caption: { en: "History chart", ru: "График истории", uk: "Графік історії" },
+      },
+    ],
+    architecture: {
+      en: "Vite dashboard + Express API. Prisma/Postgres for products and ticks. Playwright only when HTML has no price. GitHub Action hits /api/scrape/run-now hourly in prod.",
+      ru: "Vite-дашборд + Express API. Prisma/Postgres — товары и тики. Playwright — только если в HTML нет цены. В проде GitHub Action раз в час бьёт в /api/scrape/run-now.",
+    },
+    code: `// url → extract → tick → alert if below floor
+watch.add(url) → scrape.price() → alert.ifDropped()`,
+  },
+  {
+    id: "middocs",
+    index: "02",
+    title: { en: "Middocs", ru: "Middocs", uk: "Middocs" },
+    accent: { en: "Realtime documents", ru: "Документы в реальном времени", uk: "Документи в реальному часі" },
+    nav: { en: "Middocs", ru: "Middocs", uk: "Middocs" },
+    hook: {
+      en: "A mini Google Docs: two people type in the same file, cursors stay live, the CRDT does not fight itself.",
+      ru: "Мини-Google Docs: двое пишут в одном файле, курсоры живые, CRDT не конфликтует сам с собой.",
+      uk: "Міні-Google Docs: двоє пишуть в одному файлі, курсори живі, CRDT не конфліктує сам із собою.",
+    },
+    role: {
+      en: "Product · Collaborative editor",
+      ru: "Продукт · совместный редактор",
+      uk: "Продукт · спільний редактор",
+    },
+    year: "2026",
+    tech: ["React", "Yjs", "Quill", "Socket.io", "Redis", "PostgreSQL", "Docker"],
+    glow: "radial-gradient(ellipse 90% 75% at 48% 30%, rgba(124, 58, 237, 0.08) 0%, rgba(30, 27, 75, 0.04) 42%, transparent 72%)",
+    image: shotEn("middocs", "home-viewport.png"),
+    imageCaption: {
+      en: "Sign-in — continue the document",
+      ru: "Вход — продолжить документ",
+      uk: "Вхід — продовжити документ",
+    },
+    link: "https://frontend-mauve-psi-fk8zi9x14v.vercel.app",
+    problem: {
+      en: "Realtime docs usually mean “one server, pray it holds”. Two instances and the document splits.",
+      ru: "Realtime-дока обычно = один сервер и молитва. Два инстанса — документ расходится.",
+      uk: "Realtime-дока зазвичай = один сервер і молитва. Два інстанси — документ розходиться.",
+    },
+    build: {
+      en: "Yjs CRDT + Quill + Socket.io. Redis adapter for rooms, a separate Yjs bus between Node processes, Postgres for the document bytes.",
+      ru: "Yjs CRDT + Quill + Socket.io. Redis-адаптер для комнат, отдельная Yjs-шина между процессами Node, Postgres для байтов документа.",
+      uk: "Yjs CRDT + Quill + Socket.io. Redis-адаптер для кімнат, окрема Yjs-шина між процесами Node, Postgres для байтів документа.",
+    },
+    result: {
+      en: "Sign in, create an account, open a doc. Two backends behind nginx ip_hash — the same Y.Doc, not two copies.",
+      ru: "Вошёл, создал аккаунт, открыл документ. Два бэкенда за nginx ip_hash — один Y.Doc, не две копии.",
+      uk: "Увійшов, створив акаунт, відкрив документ. Два бекенди за nginx ip_hash — один Y.Doc, не дві копії.",
+    },
+    overview: {
+      en: [
+        "Auth is JWT. The editor is Quill bound to Yjs. Presence cursors ride the same room.",
+        "Docker Compose runs Postgres, Redis, nginx and two Node backends so collab is not a single-process trick.",
+      ],
+      ru: [
+        "Авторизация — JWT. Редактор — Quill на Yjs. Чужие курсоры едут в той же комнате.",
+        "Docker Compose поднимает Postgres, Redis, nginx и два Node-бэкенда — коллаб не трюк одного процесса.",
+      ],
+    },
+    features: [
+      {
+        id: "login",
+        title: { en: "Sign in", ru: "Вход", uk: "Вхід" },
+        body: {
+          en: "Email and password to pick the document back up. Same gate for every editor in the room.",
+          ru: "Почта и пароль, чтобы вернуться в документ. Один шлюз для всех, кто пишет в комнате.",
+          uk: "Пошта і пароль, щоб повернутись у документ. Один шлюз для всіх, хто пише в кімнаті.",
+        },
+        image: shotEn("middocs", "home-viewport.png"),
+        caption: { en: "Login card", ru: "Карточка входа", uk: "Картка входу" },
+      },
+      {
+        id: "register",
+        title: { en: "Create account", ru: "Регистрация", uk: "Реєстрація" },
+        body: {
+          en: "Name as it should appear in the doc, email, password. Then the same collab session as everyone else.",
+          ru: "Имя как в документе, почта, пароль. Дальше — та же сессия, что у остальных.",
+          uk: "Ім'я як у документі, пошта, пароль. Далі — та сама сесія, що в інших.",
+        },
+        image: shotEn("middocs", "auth-viewport.png"),
+        caption: { en: "Register card", ru: "Карточка регистрации", uk: "Картка реєстрації" },
+      },
+    ],
+    architecture: {
+      en: "React/Vite SPA + two Node backends. Socket.io redis-adapter for emits, custom yjs-bus for CRDT updates, Postgres for users and document_state.",
+      ru: "React/Vite SPA + два Node-бэкенда. Socket.io redis-adapter для emit, своя yjs-bus для CRDT, Postgres для users и document_state.",
+    },
+    code: `// two backends, one Y.Doc
+join(room) → yjs.sync() → persist.toPostgres()`,
+  },
+  {
+    id: "pulse",
+    index: "03",
+    title: { en: "Pulse", ru: "Pulse", uk: "Pulse" },
+    accent: { en: "Session diagnostics", ru: "Диагностика сессии", uk: "Діагностика сесії" },
+    nav: { en: "Pulse", ru: "Pulse", uk: "Pulse" },
+    hook: {
+      en: "Your device is a neuron. Their server is another. Pulse reads this tab’s real timing APIs and shows the axon between them.",
+      ru: "Твой девайс — нейрон. Их сервер — второй. Pulse читает реальные timing API этой вкладки и показывает аксон между ними.",
+      uk: "Твій девайс — нейрон. Їхній сервер — другий. Pulse читає реальні timing API цієї вкладки і показує аксон між ними.",
+    },
+    role: {
+      en: "Product · Live session",
+      ru: "Продукт · живая сессия",
+      uk: "Продукт · жива сесія",
+    },
+    year: "2026",
+    tech: ["Next.js", "GSAP", "Lenis", "OGL", "TypeScript"],
+    glow: "radial-gradient(ellipse 90% 75% at 48% 30%, rgba(186, 255, 41, 0.08) 0%, rgba(6, 7, 10, 0.05) 42%, transparent 72%)",
+    image: shotEn("pulse", "hero-viewport.png"),
+    imageCaption: {
+      en: "Signal — device → server",
+      ru: "Сигнал — девайс → сервер",
+      uk: "Сигнал — девайс → сервер",
+    },
+    link: "https://pulse-beryl-one.vercel.app",
+    problem: {
+      en: "The Network tab is rows. Nobody sees a session as a living signal — healthy fire vs flatline.",
+      ru: "Network tab — это строки. Никто не видит сессию как живой сигнал: ровный огонь или плоская линия.",
+      uk: "Network tab — це рядки. Ніхто не бачить сесію як живий сигнал: рівний вогонь чи плоска лінія.",
+    },
+    build: {
+      en: "Navigation Timing, Resource Timing and Network Information — same-origin, nothing sent off-device. GSAP scroll scenes + an OGL field.",
+      ru: "Navigation Timing, Resource Timing и Network Information — same-origin, ничего не уходит с устройства. GSAP-сцены + поле на OGL.",
+      uk: "Navigation Timing, Resource Timing і Network Information — same-origin, нічого не йде з пристрою. GSAP-сцени + поле на OGL.",
+    },
+    result: {
+      en: "A diagnostic monitor: consent, then a live neuron of this tab. TTFB, transfer, connection type — real numbers.",
+      ru: "Диагностический монитор: согласие, потом живой нейрон этой вкладки. TTFB, трафик, тип сети — настоящие цифры.",
+      uk: "Діагностичний монітор: згода, потім живий нейрон цієї вкладки. TTFB, трафік, тип мережі — справжні цифри.",
+    },
+    overview: {
+      en: [
+        "Hero names the two cells. Trace walks DNS → TLS → TTFB → paint. Compare flips this demo against a slow session.",
+        "The monitor asks first. Allow, and it reads this tab — it does not phone home.",
+      ],
+      ru: [
+        "Герой называет две клетки. Trace ведёт DNS → TLS → TTFB → paint. Compare ставит это демо против медленной сессии.",
+        "Монитор сначала спрашивает. Allow — и он читает эту вкладку, никуда не отправляя данные.",
+      ],
+    },
+    features: [
+      {
+        id: "signal",
+        title: { en: "Signal", ru: "Сигнал", uk: "Сигнал" },
+        body: {
+          en: "Device and server as two neurons. The axon sits under the headline. Watch it live opens the monitor.",
+          ru: "Девайс и сервер — два нейрона. Аксон под заголовком. Watch it live открывает монитор.",
+          uk: "Девайс і сервер — два нейрони. Аксон під заголовком. Watch it live відкриває монітор.",
+        },
+        image: shotEn("pulse", "hero-viewport.png"),
+        caption: { en: "Hero — SIGNAL", ru: "Герой — SIGNAL", uk: "Герой — SIGNAL" },
+      },
+      {
+        id: "trace",
+        title: { en: "Trace", ru: "Трасса", uk: "Траса" },
+        body: {
+          en: "Five beats of a request: DNS, TLS, send, TTFB, render. Annotated like a session, not a waterfall chart.",
+          ru: "Пять ударов запроса: DNS, TLS, send, TTFB, render. Как сессия, не как waterfall.",
+          uk: "П'ять ударів запиту: DNS, TLS, send, TTFB, render. Як сесія, не як waterfall.",
+        },
+        image: shotEn("pulse", "trace-viewport.png"),
+        caption: { en: "Session beats", ru: "Удары сессии", uk: "Удари сесії" },
+      },
+      {
+        id: "compare",
+        title: { en: "Compare", ru: "Сравнение", uk: "Порівняння" },
+        body: {
+          en: "This demo vs a typical heavy page: TTFB, total, request count, firing vs misfire.",
+          ru: "Это демо против типичной тяжёлой страницы: TTFB, total, число запросов, ровный огонь или сбой.",
+          uk: "Це демо проти типової важкої сторінки: TTFB, total, число запитів, рівний вогонь чи збій.",
+        },
+        image: shotEn("pulse", "diagnosis-viewport.png"),
+        caption: { en: "This demo vs typical", ru: "Это демо vs typical", uk: "Це демо vs typical" },
+      },
+      {
+        id: "readout",
+        title: { en: "Readout", ru: "Заключение", uk: "Висновок" },
+        body: {
+          en: "One URL, one live session. Run a diagnosis — see it breathe or flatline before anyone has to tell you.",
+          ru: "Один URL, одна живая сессия. Запусти диагностику — увидишь дыхание или плоскую линию сам.",
+          uk: "Один URL, одна жива сесія. Запусти діагностику — побачиш дихання або плоску лінію сам.",
+        },
+        image: shotEn("pulse", "compare-viewport.png"),
+        caption: { en: "Footer readout", ru: "Readout в подвале", uk: "Readout у підвалі" },
+      },
+      {
+        id: "monitor",
+        title: { en: "Live monitor", ru: "Живой монитор", uk: "Живий монітор" },
+        body: {
+          en: "Permission first. Then Pulse reads this tab’s own timing — nothing is sent anywhere.",
+          ru: "Сначала разрешение. Потом Pulse читает тайминги этой вкладки — ничего никуда не отправляется.",
+          uk: "Спочатку дозвіл. Потім Pulse читає таймінги цієї вкладки — нічого нікуди не відправляється.",
+        },
+        image: shotEn("pulse", "monitor-viewport.png"),
+        caption: { en: "Consent gate", ru: "Запрос разрешения", uk: "Запит дозволу" },
+      },
+    ],
+    architecture: {
+      en: "Next.js App Router. Live numbers from the browser Performance APIs. Motion is GSAP + Lenis; the stage field is OGL.",
+      ru: "Next.js App Router. Живые цифры из Performance API браузера. Motion — GSAP + Lenis, поле сцены — OGL.",
+    },
+    code: `// this tab, not a mock
+captureLiveSession() → neuron.draw(realTiming)`,
+  },
   {
     id: "orbital",
     index: "01",

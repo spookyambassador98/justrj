@@ -67,7 +67,7 @@ export const siteConfig = {
   meta: {
     title: "Rauf Pashabayli · AI-Native Product Engineer",
     description:
-      "Rauf Pashabayli — AI-Native Product Engineer. Six live production demos built with Cursor and Claude. Full-stack 0→1 delivery.",
+      "Rauf Pashabayli — AI-Native Product Engineer. Live production demos built with Cursor and Claude. Full-stack 0→1 delivery.",
   },
 } as const;
 
