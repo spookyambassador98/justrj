@@ -39,7 +39,7 @@ export default function Home() {
       stackTitle: "Stack I ship with",
       finalTitle: "Open to AI-native product & full-stack builder roles",
       finalSub:
-        "Remote US W2/contract. Live production demos — public levels plus NDA cases. Strongest in Cursor/Claude-assisted 0→1 delivery.",
+        "Remote US W2/contract. Live production demos on the public levels. Other systems are walked in the interview. Strongest in Cursor/Claude-assisted 0→1 delivery.",
       finalCta: "Start a conversation",
       footer: `© ${new Date().getFullYear()} ${siteConfig.name} · ${siteConfig.monogram}`,
     },
@@ -51,7 +51,7 @@ export default function Home() {
       stackTitle: "Стек, с которым шиплю",
       finalTitle: "Открыт к AI-native product и full-stack builder ролям",
       finalSub:
-        "Remote US W2/contract. Live production demos — публичные уровни и NDA-кейсы. Сильнее всего в 0→1 с Cursor/Claude.",
+        "Remote US W2/contract. Live production demos на публичных уровнях. Остальное разбираем на интервью. Сильнее всего в 0→1 с Cursor/Claude.",
       finalCta: "Начать разговор",
       footer: `© ${new Date().getFullYear()} ${siteConfig.name} · ${siteConfig.monogram}`,
     },
@@ -63,7 +63,7 @@ export default function Home() {
       stackTitle: "Стек, з яким шиплю",
       finalTitle: "Відкритий до AI-native product і full-stack builder ролей",
       finalSub:
-        "Remote US W2/contract. Live production demos — публічні рівні і NDA-кейси. Найсильніше в 0→1 з Cursor/Claude.",
+        "Remote US W2/contract. Live production demos на публічних рівнях. Решту розбираємо на інтерв’ю. Найсильніше в 0→1 з Cursor/Claude.",
       finalCta: "Почати розмову",
       footer: `© ${new Date().getFullYear()} ${siteConfig.name} · ${siteConfig.monogram}`,
     },
@@ -88,7 +88,11 @@ export default function Home() {
         )}
 
         {recruiterMode && (
-          <RecruiterBrief lang={lang} onNavigate={handleNavigateToProjects} />
+          <RecruiterBrief
+            lang={lang}
+            onNavigate={handleNavigateToProjects}
+            onHoldNda={() => setNdaOpen(true)}
+          />
         )}
 
         {!recruiterMode && (
@@ -110,7 +114,11 @@ export default function Home() {
             <AxonPassage lang={lang} onInspect={handleNavigateToProjects} />
 
             <div className="px-[var(--grid-gutter)]">
-              <ProductionHUD lang={lang} onNavigate={handleNavigateToProjects} />
+              <ProductionHUD
+                lang={lang}
+                onNavigate={handleNavigateToProjects}
+                onHoldNda={() => setNdaOpen(true)}
+              />
             </div>
 
             <CurrentMarquee title={t.stackTitle} />

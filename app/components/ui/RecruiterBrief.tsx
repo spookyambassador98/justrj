@@ -7,6 +7,7 @@ import { siteConfig } from "@/app/site.config";
 import type { Lang } from "@/app/components/LanguageProvider";
 import { MagneticButton } from "@/app/components/ui/MagneticButton";
 import { L, projectsData, resolveShot } from "@/app/projects/data";
+import { isPublicProject } from "@/app/components/production/HudLevelIndex";
 import {
   fadeRise,
   formField,
@@ -131,11 +132,14 @@ const ui = {
 export function RecruiterBrief({
   lang,
   onNavigate,
+  onHoldNda,
 }: {
   lang: Lang;
   onNavigate: (projectId?: string) => void;
+  onHoldNda: () => void;
 }) {
   const t = ui[lang];
+  const catalog = projectsData.filter((p) => isPublicProject(p.id));
   const [form, setForm] = useState<FormState>(INITIAL);
   const [status, setStatus] = useState<"idle" | "sending" | "sent">("idle");
   const [focused, setFocused] = useState<string | null>(null);
@@ -211,7 +215,7 @@ export function RecruiterBrief({
           variants={fadeRise}
           className="mb-10 divide-y divide-black/[0.08] border-y border-black/[0.12]"
         >
-          {projectsData.map((project) => (
+          {catalog.map((project) => (
             <li key={project.id}>
               <button
                 type="button"
@@ -238,6 +242,25 @@ export function RecruiterBrief({
               </button>
             </li>
           ))}
+          <li>
+            <button
+              type="button"
+              onClick={onHoldNda}
+              data-cursor="cta"
+              className="group flex w-full items-center gap-4 py-4 text-left transition-colors hover:bg-black/[0.03]"
+            >
+              <div className="flex h-14 w-20 shrink-0 items-center justify-center border border-black/[0.12] bg-black/[0.04] text-black/40">
+                <LockSimple size={18} weight="light" />
+              </div>
+              <div className="min-w-0 flex-1">
+                <p className="text-sm text-[#161410]">Under NDA</p>
+                <p className="mt-1 text-xs text-black/45">
+                  Walked during the interview — names and surfaces stay off this site.
+                </p>
+              </div>
+              <LockSimple size={16} weight="light" className="text-black/25" />
+            </button>
+          </li>
         </motion.ul>
 
         <motion.div

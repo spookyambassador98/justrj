@@ -5,6 +5,7 @@ import { gsap, registerMotion } from "@/lib/motion/register";
 import { useViewport } from "../../hooks/useViewport";
 import { L, resolveShot, projectsData, type Project } from "../../projects/data";
 import { FEATURED_IDS } from "../production/featured";
+import { isPublicProject } from "../production/HudLevelIndex";
 import type { Lang } from "../LanguageProvider";
 
 export function AxonPassage({
@@ -20,7 +21,7 @@ export function AxonPassage({
 
   const featured = FEATURED_IDS.map((id) =>
     projectsData.find((p) => p.id === id)
-  ).filter(Boolean) as Project[];
+  ).filter((p): p is Project => p != null && isPublicProject(p.id));
 
   useEffect(() => {
     if (reduceMotion || isMobile || !pin.current || !track.current) return;
@@ -62,7 +63,7 @@ export function AxonPassage({
           </h2>
         </div>
         <p className="hidden max-w-xs text-right font-mono text-[9px] leading-relaxed tracking-[0.16em] text-white/30 md:block">
-          Levels 1–3 are public. The rest sits under NDA. Open the HUD to inspect evidence.
+          Three live systems. Everything else is walked in the interview — no names, no screens.
         </p>
       </div>
 

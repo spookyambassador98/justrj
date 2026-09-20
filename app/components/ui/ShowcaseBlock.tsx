@@ -5,6 +5,7 @@ import { ArrowUpRight } from "@phosphor-icons/react";
 import { MagneticButton } from "./MagneticButton";
 import type { Lang } from "../LanguageProvider";
 import { L, projectsData } from "@/app/projects/data";
+import { isPublicProject } from "@/app/components/production/HudLevelIndex";
 
 export function ShowcaseBlock({
   lang,
@@ -13,6 +14,8 @@ export function ShowcaseBlock({
   lang: Lang;
   onNavigate: (projectId?: string) => void;
 }) {
+  const catalog = projectsData.filter((p) => isPublicProject(p.id));
+
   return (
     <div className="mt-24 w-full pointer-events-auto md:mt-40" id="showcase">
       <motion.div
@@ -35,7 +38,7 @@ export function ShowcaseBlock({
       </motion.div>
 
       <div className="mb-12 grid grid-cols-1 gap-5 sm:gap-6 md:mb-16 md:grid-cols-2 lg:grid-cols-4">
-        {projectsData.map((proj, idx) => (
+        {catalog.map((proj, idx) => (
           <motion.button
             key={proj.id}
             type="button"

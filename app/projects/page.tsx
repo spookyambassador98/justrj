@@ -27,6 +27,8 @@ import { useLang, type Lang } from "../components/LanguageProvider";
 import { useViewport } from "../hooks/useViewport";
 import { PageTransition } from "../components/motion/PageTransition";
 import { FOCUS_PROJECT_KEY, requestCurtain } from "@/lib/motion/curtain";
+import { isPublicProject } from "../components/production/HudLevelIndex";
+import { NdaRequestOverlay } from "../components/NdaRequestOverlay";
 import { ProjectsScrollHero } from "../components/motion/ProjectsScrollHero";
 import {
   L,
@@ -778,7 +780,7 @@ function getUi(lang: Lang) {
       pageEyebrow: "Case studies",
       pageTitle: "Проекты",
       pageSub:
-        "Problem → Build → Result. Каждый кейс — живое демо, стек и доказательства, которые можно показать на собеседовании.",
+        "Публичные системы с живым демо. Остальное разбираем на интервью — без имён и экранов.",
       role: "Роль",
       stack: "Стек",
       problem: "Problem",
@@ -806,7 +808,7 @@ function getUi(lang: Lang) {
       pageEyebrow: "Case studies",
       pageTitle: "Проєкти",
       pageSub:
-        "Problem → Build → Result. Кожен кейс — живе демо, стек і докази, які можна показати на співбесіді.",
+        "Публічні системи з живим демо. Решту розбираємо на інтерв’ю — без імен і екранів.",
       role: "Роль",
       stack: "Стек",
       problem: "Problem",
@@ -833,7 +835,7 @@ function getUi(lang: Lang) {
     pageEyebrow: "Case studies",
     pageTitle: "Projects",
     pageSub:
-      "Problem → Build → Result. Each case ships a live demo, stack proof, and interview-ready narrative.",
+      "Public systems with live demos. Everything else is walked in the interview — no names, no screens.",
     role: "Role",
     stack: "Stack",
     problem: "Problem",
@@ -858,21 +860,27 @@ function getUi(lang: Lang) {
 export default function ProjectsPage() {
   const { lang } = useLang();
   const ui = getUi(lang);
+  const catalog = useMemo(
+    () => projectsData.filter((p) => isPublicProject(p.id)),
+    []
+  );
   const [routing, setRouting] = useState(false);
-  const [activeId, setActiveId] = useState(projectsData[0]?.id ?? "");
+  const [activeId, setActiveId] = useState(catalog[0]?.id ?? "");
   const [demoId, setDemoId] = useState<string | null>(null);
   const [lightboxItems, setLightboxItems] = useState<GalleryItem[]>([]);
   const [lightboxIndex, setLightboxIndex] = useState(0);
   const [lightboxOpen, setLightboxOpen] = useState(false);
+  const [ndaHold, setNdaHold] = useState(false);
 
-  const glow = projectsData.find((p) => p.id === activeId)?.glow ?? projectsData[0]?.glow;
+  const glow = catalog.find((p) => p.id === activeId)?.glow ?? catalog[0]?.glow;
   const landingLock = useRef<string | null>(null);
 
   useLayoutEffect(() => {
     if ("scrollRestoration" in history) history.scrollRestoration = "manual";
 
+    const params = new URLSearchParams(window.location.search);
     const hash = window.location.hash.replace(/^#/, "");
-    const query = new URLSearchParams(window.location.search).get("p") || "";
+    const query = params.get("p") || "";
     let stored = "";
     try {
       stored = sessionStorage.getItem(FOCUS_PROJECT_KEY) || "";
@@ -881,9 +889,14 @@ export default function ProjectsPage() {
       /* private mode */
     }
 
-    const target = [query, hash, stored].find((id) =>
-      projectsData.some((p) => p.id === id)
-    );
+    const candidates = [query, hash, stored].filter(Boolean);
+    if (params.get("hold") === "nda" || candidates.some((id) => !isPublicProject(id))) {
+      setNdaHold(true);
+      history.replaceState(null, "", "/projects");
+      return;
+    }
+
+    const target = candidates.find((id) => catalog.some((p) => p.id === id));
     if (!target) return;
 
     landingLock.current = target;
@@ -911,7 +924,7 @@ export default function ProjectsPage() {
       window.clearTimeout(t2);
       window.clearTimeout(unlock);
     };
-  }, []);
+  }, [catalog]);
 
   useEffect(() => {
     const nodes = Array.from(document.querySelectorAll<HTMLElement>("[data-project-id]"));
@@ -1050,7 +1063,7 @@ export default function ProjectsPage() {
           <div className="mb-4 hidden lg:block">
             <p className="text-[10px] uppercase tracking-[0.28em] text-white/30">{ui.indexLabel}</p>
             <p className="mt-2 font-mono text-[10px] tracking-[0.18em] text-white/20">
-              {String(projectsData.length).padStart(2, "0")}
+              {String(catalog.length).padStart(2, "0")}
             </p>
           </div>
 
@@ -1058,7 +1071,7 @@ export default function ProjectsPage() {
             aria-label={ui.indexLabel}
             className="mb-8 flex gap-2 overflow-x-auto pb-2 [-ms-overflow-style:none] [scrollbar-width:none] lg:mb-0 lg:max-h-[calc(100dvh-10rem)] lg:flex-col lg:gap-1 lg:overflow-y-auto lg:overflow-x-visible lg:pb-0 [&::-webkit-scrollbar]:hidden"
           >
-            {projectsData.map((p) => {
+            {catalog.map((p) => {
               const active = p.id === activeId;
               return (
                 <button
@@ -1098,7 +1111,7 @@ export default function ProjectsPage() {
             sub={ui.pageSub}
           />
 
-          {projectsData.map((project) => (
+          {catalog.map((project) => (
             <ProjectCase
               key={project.id}
               project={project}
@@ -1113,6 +1126,11 @@ export default function ProjectsPage() {
           ))}
         </main>
       </div>
+      <NdaRequestOverlay
+        open={ndaHold}
+        onClose={() => setNdaHold(false)}
+        lang={lang}
+      />
     </div>
     </PageTransition>
   );

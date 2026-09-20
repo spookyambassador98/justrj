@@ -22,6 +22,7 @@ import type { BlueprintShot } from "./BlueprintViewer";
 import { FEATURED_IDS } from "./featured";
 import {
   HudLevelIndex,
+  isPublicProject,
   levelOf,
   type LevelKey,
 } from "./HudLevelIndex";
@@ -321,16 +322,18 @@ const copy = {
 export function ProductionHUD({
   lang,
   onNavigate,
+  onHoldNda,
 }: {
   lang: Lang;
   onNavigate: (projectId?: string) => void;
+  onHoldNda: () => void;
 }) {
   const t = copy.en;
   const featured = useMemo(
     () =>
       FEATURED_IDS.map((id) => projectsData.find((p) => p.id === id)).filter(
-        Boolean
-      ) as Project[],
+        (p): p is Project => p != null && isPublicProject(p.id)
+      ),
     []
   );
   const [active, setActive] = useState<number | null>(null);
@@ -396,8 +399,8 @@ export function ProductionHUD({
             </h2>
           </div>
           <p className="max-w-sm font-mono text-[9px] leading-relaxed tracking-[0.16em] text-white/30">
-            LEVEL 1–3 PUBLIC · REST UNDER NDA — real captures · real stack · no invented
-            metrics
+            LEVEL 1–3 LIVE · THE REST IS WALKED IN THE INTERVIEW — real captures ·
+            real stack · no invented metrics
           </p>
         </motion.div>
 
@@ -417,6 +420,14 @@ export function ProductionHUD({
               {L(p.title, lang).toUpperCase()}
             </button>
           ))}
+          <button
+            type="button"
+            onClick={onHoldNda}
+            data-cursor="cta"
+            className="border border-orange-300/20 px-4 py-2 font-mono text-[10px] tracking-[0.22em] text-orange-200/55 transition-colors hover:border-orange-300/40 hover:text-orange-100"
+          >
+            UNDER NDA
+          </button>
         </motion.div>
 
         <motion.div
@@ -439,6 +450,7 @@ export function ProductionHUD({
                 lang={lang}
                 onToggleLevel={setOpenLevel}
                 onSelect={selectProject}
+                onHoldNda={onHoldNda}
               />
               <p className="mt-8 font-mono text-[9px] leading-relaxed tracking-[0.14em] text-white/25">
                 {t.evidence}

@@ -1,5 +1,7 @@
 "use client";
 
+import { isPublicProject } from "@/app/components/production/HudLevelIndex";
+
 type Listener = (href: string) => void;
 
 const waiters: Listener[] = [];
@@ -17,6 +19,10 @@ export function requestCurtain(href: string) {
 
 export function requestProjectPage(projectId?: string) {
   if (typeof window !== "undefined" && projectId) {
+    if (!isPublicProject(projectId)) {
+      requestCurtain("/projects?hold=nda");
+      return;
+    }
     try {
       sessionStorage.setItem(FOCUS_PROJECT_KEY, projectId);
     } catch {
