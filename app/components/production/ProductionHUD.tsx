@@ -20,6 +20,11 @@ import {
 } from "@/lib/motion";
 import type { BlueprintShot } from "./BlueprintViewer";
 import { FEATURED_IDS } from "./featured";
+import {
+  HudLevelIndex,
+  levelOf,
+  type LevelKey,
+} from "./HudLevelIndex";
 
 const BlueprintViewer = dynamic(
   () => import("./BlueprintViewer").then((m) => m.BlueprintViewer),
@@ -282,13 +287,13 @@ function HudPlaceholder() {
               REDACTED ARCHIVE
             </p>
             <p className="mt-2 font-mono text-[11px] tracking-[0.24em] text-white/75">
-              SELECT A SYSTEM TO BEGIN
+              SELECT A LEVEL TO BEGIN
             </p>
           </div>
         </div>
       </div>
       <p className="border-t border-white/[0.06] px-4 py-3 font-mono text-[9px] tracking-[0.2em] text-white/30">
-        Open a system on the left — evidence loads only for the one you choose.
+        Open a level on the left — evidence loads only for the system you choose.
       </p>
     </motion.div>
   );
@@ -330,6 +335,7 @@ export function ProductionHUD({
   );
   const [active, setActive] = useState<number | null>(null);
   const [shotIndex, setShotIndex] = useState(0);
+  const [openLevel, setOpenLevel] = useState<LevelKey | null>(null);
   // null = nothing chosen yet → placeholder instead of a screenshot
   const project = active === null ? null : (featured[active] ?? null);
   const facts = project ? authenticFacts(project, lang) : [];
@@ -358,6 +364,8 @@ export function ProductionHUD({
   const selectProject = (i: number) => {
     setActive(i);
     setShotIndex(0);
+    const target = featured[i];
+    if (target) setOpenLevel(levelOf(target.id));
   };
 
   return (
@@ -424,25 +432,14 @@ export function ProductionHUD({
                   {String(featured.length).padStart(2, "0")}
                 </span>
               </div>
-              <ul className="space-y-1">
-                {featured.map((p, i) => (
-                  <li key={p.id}>
-                    <button
-                      type="button"
-                      onClick={() => selectProject(i)}
-                      data-cursor="project"
-                      className={`flex w-full items-center justify-between gap-2 px-3 py-3 text-left font-mono text-[11px] tracking-[0.12em] transition-colors ${
-                        i === active
-                          ? "bg-white/[0.05] text-white"
-                          : "text-white/45 hover:bg-white/[0.02] hover:text-white/75"
-                      }`}
-                    >
-                      <span className="truncate">{L(p.title, lang)}</span>
-                      <span className="text-white/25">{p.year}</span>
-                    </button>
-                  </li>
-                ))}
-              </ul>
+              <HudLevelIndex
+                featured={featured}
+                active={active}
+                openLevel={openLevel}
+                lang={lang}
+                onToggleLevel={setOpenLevel}
+                onSelect={selectProject}
+              />
               <p className="mt-8 font-mono text-[9px] leading-relaxed tracking-[0.14em] text-white/25">
                 {t.evidence}
               </p>

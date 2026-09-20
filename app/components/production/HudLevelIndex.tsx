@@ -8,10 +8,10 @@ import type { Lang } from "@/app/components/LanguageProvider";
 export type LevelKey = "l1" | "l2" | "l3" | "nda";
 
 export const LEVELS: { key: LevelKey; title: string }[] = [
-  { key: "l1", title: "LEVEL 1 PROJECTS" },
-  { key: "l2", title: "LEVEL 2 PROJECTS" },
-  { key: "l3", title: "LEVEL 3 PROJECTS" },
-  { key: "nda", title: "NDA PROJECTS" },
+  { key: "l1", title: "LEVEL 1" },
+  { key: "l2", title: "LEVEL 2" },
+  { key: "l3", title: "LEVEL 3" },
+  { key: "nda", title: "UNDER NDA" },
 ];
 
 /** Project id → level. Anything not listed falls into NDA. */
