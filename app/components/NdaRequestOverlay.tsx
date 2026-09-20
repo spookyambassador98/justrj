@@ -42,7 +42,7 @@ export function NdaRequestOverlay({
     <AnimatePresence>
       {open && (
         <motion.div
-          className="pointer-events-auto fixed inset-0 z-[400] flex items-center justify-center px-4 py-8"
+          className="pointer-events-auto fixed inset-0 z-[400] flex items-center justify-center px-4 py-8 [isolation:isolate] [mix-blend-mode:normal]"
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
@@ -51,7 +51,7 @@ export function NdaRequestOverlay({
           <motion.button
             type="button"
             aria-label={t.close}
-            className="absolute inset-0 bg-[#050505]/90 backdrop-blur-md"
+            className="absolute inset-0 bg-black/92 backdrop-blur-xl"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
@@ -62,7 +62,8 @@ export function NdaRequestOverlay({
             role="dialog"
             aria-modal="true"
             aria-labelledby="nda-hold-title"
-            className="relative z-10 w-full max-w-md overflow-hidden border border-white/[0.1] bg-[#0a0908] px-7 py-8 shadow-[0_40px_120px_rgba(0,0,0,0.55)]"
+            className="relative z-10 w-full max-w-md overflow-hidden border border-white/[0.12] bg-[#080705] px-7 py-8 shadow-[0_40px_140px_rgba(0,0,0,0.85)]"
+            style={{ backgroundColor: "#080705" }}
             initial={{ opacity: 0, y: 18, scale: 0.97 }}
             animate={{ opacity: 1, y: 0, scale: 1 }}
             exit={{ opacity: 0, y: 12, scale: 0.98 }}
