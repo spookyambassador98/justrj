@@ -2,6 +2,7 @@
 
 import { AnimatePresence, motion } from "framer-motion";
 import { useEffect, useState } from "react";
+import { createPortal } from "react-dom";
 import { LockSimple, X } from "@phosphor-icons/react";
 import { siteConfig } from "@/app/site.config";
 import type { Lang } from "@/app/components/LanguageProvider";
@@ -138,6 +139,9 @@ export function RecruiterBrief({
   const [form, setForm] = useState<FormState>(INITIAL);
   const [status, setStatus] = useState<"idle" | "sending" | "sent">("idle");
   const [focused, setFocused] = useState<string | null>(null);
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => setMounted(true), []);
 
   const onChange = (key: keyof FormState, value: string) => {
     setForm((f) => ({ ...f, [key]: value }));
@@ -185,11 +189,13 @@ export function RecruiterBrief({
     setStatus("sent");
   };
 
-  return (
+  if (!mounted) return null;
+
+  return createPortal(
     <AnimatePresence>
       {open && (
         <motion.div
-          className="pointer-events-auto fixed inset-0 z-[400] flex items-start justify-center overflow-y-auto overscroll-contain px-4 py-10 [isolation:isolate]"
+          className="pointer-events-auto fixed inset-0 z-[400] flex items-start justify-center overflow-y-auto overscroll-contain px-4 py-10 [isolation:isolate] [mix-blend-mode:normal]"
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
@@ -392,6 +398,7 @@ export function RecruiterBrief({
           </motion.div>
         </motion.div>
       )}
-    </AnimatePresence>
+    </AnimatePresence>,
+    document.body
   );
 }
