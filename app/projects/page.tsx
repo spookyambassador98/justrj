@@ -27,7 +27,11 @@ import { useLang, type Lang } from "../components/LanguageProvider";
 import { useViewport } from "../hooks/useViewport";
 import { PageTransition } from "../components/motion/PageTransition";
 import { FOCUS_PROJECT_KEY, requestCurtain } from "@/lib/motion/curtain";
-import { isPublicProject } from "../components/production/HudLevelIndex";
+import {
+  isPublicProject,
+  levelNumber,
+  sortByLevel,
+} from "../components/production/HudLevelIndex";
 import { NdaRequestOverlay } from "../components/NdaRequestOverlay";
 import { ProjectsScrollHero } from "../components/motion/ProjectsScrollHero";
 import {
@@ -593,7 +597,9 @@ function ProjectCase({
       <div className="grid gap-8 lg:grid-cols-12 lg:gap-12">
         <div className="space-y-6 lg:col-span-5">
           <div className="flex items-center gap-3 text-[10px] uppercase tracking-[0.28em] text-white/35 sm:text-[11px]">
-            <span className="font-mono text-violet-300/70">{project.index}</span>
+            <span className="font-mono text-violet-300/70">
+              L{levelNumber(project.id) ?? project.index}
+            </span>
             <span className="h-px w-8 shrink-0 bg-white/15" aria-hidden />
             <span>{project.year}</span>
           </div>
@@ -780,7 +786,7 @@ function getUi(lang: Lang) {
       pageEyebrow: "Case studies",
       pageTitle: "Проекты",
       pageSub:
-        "Публичные системы с живым демо. Остальное разбираем на интервью — без имён и экранов.",
+        "Три уровня сложности: Price Radar → Pulse → Middocs. Остальное — на интервью, без имён и экранов.",
       role: "Роль",
       stack: "Стек",
       problem: "Problem",
@@ -808,7 +814,7 @@ function getUi(lang: Lang) {
       pageEyebrow: "Case studies",
       pageTitle: "Проєкти",
       pageSub:
-        "Публічні системи з живим демо. Решту розбираємо на інтерв’ю — без імен і екранів.",
+        "Три рівні складності: Price Radar → Pulse → Middocs. Решту — на інтерв’ю, без імен і екранів.",
       role: "Роль",
       stack: "Стек",
       problem: "Problem",
@@ -835,7 +841,7 @@ function getUi(lang: Lang) {
     pageEyebrow: "Case studies",
     pageTitle: "Projects",
     pageSub:
-      "Public systems with live demos. Everything else is walked in the interview — no names, no screens.",
+      "Three complexity levels: Price Radar → Pulse → Middocs. Everything else is walked in the interview — no names, no screens.",
     role: "Role",
     stack: "Stack",
     problem: "Problem",
@@ -861,7 +867,7 @@ export default function ProjectsPage() {
   const { lang } = useLang();
   const ui = getUi(lang);
   const catalog = useMemo(
-    () => projectsData.filter((p) => isPublicProject(p.id)),
+    () => sortByLevel(projectsData.filter((p) => isPublicProject(p.id))),
     []
   );
   const [routing, setRouting] = useState(false);
@@ -1092,7 +1098,7 @@ export default function ProjectsPage() {
                   )}
                   <span className="relative z-10 flex items-center gap-3">
                     <span className="font-mono text-[9px] tracking-[0.2em] text-violet-300/50">
-                      {p.index}
+                      L{levelNumber(p.id) ?? p.index}
                     </span>
                     <span className="max-w-[12rem] truncate text-[11px] tracking-[0.04em] lg:max-w-none">
                       {L(p.nav, lang)}

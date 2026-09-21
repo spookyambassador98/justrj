@@ -8,22 +8,41 @@ import type { Lang } from "@/app/components/LanguageProvider";
 export type LevelKey = "l1" | "l2" | "l3" | "nda";
 
 export const LEVELS: { key: LevelKey; title: string }[] = [
-  { key: "l1", title: "LEVEL 1 · RADAR" },
-  { key: "l2", title: "LEVEL 2 · MIDDOCS" },
-  { key: "l3", title: "LEVEL 3 · PULSE" },
+  { key: "l1", title: "LEVEL 1" },
+  { key: "l2", title: "LEVEL 2" },
+  { key: "l3", title: "LEVEL 3" },
   { key: "nda", title: "UNDER NDA" },
 ];
 
 /** Project id → level. Anything not listed falls into NDA. */
 export const PROJECT_LEVEL: Record<string, LevelKey> = {
   price_radar: "l1",
-  middocs: "l2",
-  pulse: "l3",
+  pulse: "l2",
+  middocs: "l3",
+};
+
+const LEVEL_ORDER: Record<LevelKey, number> = {
+  l1: 1,
+  l2: 2,
+  l3: 3,
+  nda: 99,
 };
 
 export const levelOf = (id: string): LevelKey => PROJECT_LEVEL[id] ?? "nda";
 
+export const levelNumber = (id: string): number | null => {
+  const key = levelOf(id);
+  return key === "nda" ? null : LEVEL_ORDER[key];
+};
+
 export const isPublicProject = (id: string) => levelOf(id) !== "nda";
+
+/** Public portfolio cases in ascending level order (1 → 3). */
+export function sortByLevel<T extends { id: string }>(items: T[]): T[] {
+  return [...items].sort(
+    (a, b) => LEVEL_ORDER[levelOf(a.id)] - LEVEL_ORDER[levelOf(b.id)]
+  );
+}
 
 const curtainEase = [0.16, 1, 0.3, 1] as const;
 

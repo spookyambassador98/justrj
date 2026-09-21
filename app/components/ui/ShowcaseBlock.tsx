@@ -5,7 +5,11 @@ import { ArrowUpRight } from "@phosphor-icons/react";
 import { MagneticButton } from "./MagneticButton";
 import type { Lang } from "../LanguageProvider";
 import { L, projectsData } from "@/app/projects/data";
-import { isPublicProject } from "@/app/components/production/HudLevelIndex";
+import {
+  isPublicProject,
+  levelNumber,
+  sortByLevel,
+} from "@/app/components/production/HudLevelIndex";
 
 export function ShowcaseBlock({
   lang,
@@ -14,7 +18,7 @@ export function ShowcaseBlock({
   lang: Lang;
   onNavigate: (projectId?: string) => void;
 }) {
-  const catalog = projectsData.filter((p) => isPublicProject(p.id));
+  const catalog = sortByLevel(projectsData.filter((p) => isPublicProject(p.id)));
 
   return (
     <div className="mt-24 w-full pointer-events-auto md:mt-40" id="showcase">
@@ -60,6 +64,9 @@ export function ShowcaseBlock({
 
             <div className="relative z-10">
               <p className="mb-3 text-[10px] uppercase tracking-[0.22em] text-violet-300/55">
+                {levelNumber(proj.id) != null
+                  ? `Level ${levelNumber(proj.id)} · `
+                  : ""}
                 {proj.year} · {L(proj.result, lang)}
               </p>
               <h3 className="mb-3 text-xl font-medium tracking-wide text-white/90 transition-colors group-hover:text-violet-100 sm:text-2xl">

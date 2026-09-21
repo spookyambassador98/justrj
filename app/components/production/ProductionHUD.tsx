@@ -23,6 +23,7 @@ import { FEATURED_IDS } from "./featured";
 import {
   HudLevelIndex,
   isPublicProject,
+  levelNumber,
   levelOf,
   type LevelKey,
 } from "./HudLevelIndex";
@@ -417,7 +418,7 @@ export function ProductionHUD({
                   : "border-white/[0.08] text-white/40 hover:border-white/20 hover:text-white/70"
               }`}
             >
-              {L(p.title, lang).toUpperCase()}
+              L{levelNumber(p.id) ?? "?"} · {L(p.title, lang).toUpperCase()}
             </button>
           ))}
           <button
