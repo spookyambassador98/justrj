@@ -95,38 +95,37 @@ try {
 
   // ---------- Pulse ----------
   const pulse = await browser.newPage({ viewport: VIEWPORT, locale: "en-US" });
-  await gotoReady(pulse, PULSE, 2200);
-  const dismiss = pulse.getByRole("button", { name: /not now|close/i }).first();
-  if (await dismiss.count()) {
-    await dismiss.click().catch(() => {});
-    await pulse.waitForTimeout(800);
-  }
-  await pulse.getByText("YOUR DEVICE", { exact: false }).first().waitFor({ timeout: 15000 }).catch(() => {});
-  await pulse.waitForTimeout(600);
+  await gotoReady(pulse, PULSE, 1800);
+  await pulse.locator(".release-title").waitFor({ timeout: 15000 }).catch(() => {});
+  await pulse.waitForTimeout(800);
   await shot(pulse, "pulse", "hero-viewport.png");
-  await pulse.evaluate(() => window.scrollTo(0, Math.round(document.body.scrollHeight * 0.22)));
-  await pulse.waitForTimeout(700);
-  await shot(pulse, "pulse", "trace-viewport.png");
-  await pulse.evaluate(() => window.scrollTo(0, Math.round(document.body.scrollHeight * 0.4)));
-  await pulse.waitForTimeout(700);
-  await shot(pulse, "pulse", "diagnosis-viewport.png");
-  await pulse.evaluate(() => window.scrollTo(0, Math.round(document.body.scrollHeight * 0.58)));
-  await pulse.waitForTimeout(700);
-  await shot(pulse, "pulse", "compare-viewport.png");
-  await pulse.evaluate(() => window.scrollTo(0, Math.round(document.body.scrollHeight * 0.78)));
-  await pulse.waitForTimeout(700);
+  const pulseBoard = pulse.locator(".release-board");
+  if (await pulseBoard.count()) {
+    await pulseBoard.scrollIntoViewIfNeeded();
+    await pulse.waitForTimeout(600);
+    await shot(pulse, "pulse", "monitor-viewport.png");
+  }
+  const pulseFacts = pulse.locator(".release-facts");
+  if (await pulseFacts.count()) {
+    await pulseFacts.scrollIntoViewIfNeeded();
+    await pulse.waitForTimeout(500);
+    await shot(pulse, "pulse", "trace-viewport.png");
+  }
+  const pulseWindows = pulse.locator(".release-windows");
+  if (await pulseWindows.count()) {
+    await pulseWindows.scrollIntoViewIfNeeded();
+    await pulse.waitForTimeout(500);
+    await shot(pulse, "pulse", "diagnosis-viewport.png");
+  }
+  const pulsePlate = pulse.locator(".release-plate");
+  if (await pulsePlate.count()) {
+    await pulsePlate.scrollIntoViewIfNeeded();
+    await pulse.waitForTimeout(400);
+    await shot(pulse, "pulse", "compare-viewport.png");
+  }
+  await pulse.evaluate(() => window.scrollTo(0, document.body.scrollHeight));
+  await pulse.waitForTimeout(600);
   await shot(pulse, "pulse", "readout-viewport.png");
-  const watchBtn = pulse.getByRole("button", { name: /watch it live|watch/i }).first();
-  if (await watchBtn.count()) {
-    await watchBtn.click().catch(() => {});
-    await pulse.waitForTimeout(900);
-  }
-  const allow = pulse.getByRole("button", { name: /allow & watch|allow/i }).first();
-  if (await allow.count()) {
-    await allow.click().catch(() => {});
-    await pulse.waitForTimeout(1200);
-  }
-  await shot(pulse, "pulse", "monitor-viewport.png");
   await pulse.close();
 
   // ---------- Middocs: two accounts, live sync ----------
