@@ -16,7 +16,7 @@ type RecruiterCtx = {
 };
 
 const Ctx = createContext<RecruiterCtx | null>(null);
-const STORAGE_KEY = "rj-recruiter-mode";
+const LEGACY_KEY = "rj-recruiter-mode";
 
 export function RecruiterModeProvider({
   children,
@@ -27,11 +27,10 @@ export function RecruiterModeProvider({
 
   useEffect(() => {
     try {
-      // Only restore ON if explicitly saved — never surprise-black the neural field
-      if (localStorage.getItem(STORAGE_KEY) === "1") {
-        setRecruiterModeState(true);
-        document.documentElement.dataset.ops = "on";
-      }
+      // Cream dossier used to persist across visits and replace the site.
+      // Burn the flag so a recruiter (or you) never lands on paper again.
+      localStorage.removeItem(LEGACY_KEY);
+      document.documentElement.dataset.ops = "off";
     } catch {
       /* ignore */
     }
@@ -40,7 +39,6 @@ export function RecruiterModeProvider({
   const setRecruiterMode = useCallback((v: boolean) => {
     setRecruiterModeState(v);
     try {
-      localStorage.setItem(STORAGE_KEY, v ? "1" : "0");
       document.documentElement.dataset.ops = v ? "on" : "off";
     } catch {
       /* ignore */

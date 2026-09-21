@@ -524,39 +524,6 @@ html.has-instrument-cursor * {
   display: block;
 }
 
-/* —— Paper dossier (recruiter / light surface) —— */
-html[data-ops="on"] body {
-  background: #ece7dc;
-  color: #161410;
-}
-
-html[data-ops="on"] .hire-rail {
-  background: color-mix(in srgb, #ece7dc 86%, transparent);
-  border-color: rgba(22, 20, 16, 0.12);
-}
-
-html[data-ops="on"] .hire-rail .text-white\/40,
-html[data-ops="on"] .hire-rail .text-white\/75,
-html[data-ops="on"] .hire-rail {
-  color: #161410;
-}
-
-.paper {
-  background: #ece7dc;
-  color: #161410;
-}
-
-.paper .filament {
-  border-color: rgba(22, 20, 16, 0.2);
-  color: #161410;
-}
-
-.paper .filament:hover,
-.paper .filament:focus-visible {
-  color: #ece7dc;
-  border-color: #0b4c5c;
-}
-
 /* —— Hire rail —— */
 .hire-rail {
   position: fixed;

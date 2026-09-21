@@ -37,7 +37,7 @@ export function HireStrip({ lang }: { lang: Lang }) {
           aria-pressed={recruiterMode}
           className="filament !min-h-11 !px-4 !py-2"
         >
-          {recruiterMode ? "Ops · ON" : "Ops portal"}
+          {recruiterMode ? "Close ops" : "Ops portal"}
         </button>
       </div>
     </div>

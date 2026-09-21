@@ -23,7 +23,7 @@ const NeuralCanvas = dynamic(
 
 export default function Home() {
   const { lang } = useLang();
-  const { recruiterMode } = useRecruiterMode();
+  const { recruiterMode, setRecruiterMode } = useRecruiterMode();
   const [ndaOpen, setNdaOpen] = useState(false);
 
   const handleNavigateToProjects = (projectId?: string) => {
@@ -74,29 +74,18 @@ export default function Home() {
   return (
     <PageTransition>
       <main className="relative min-h-screen w-full bg-transparent font-sans text-[var(--ink)] selection:bg-[color:var(--filament)]/20">
-        {!recruiterMode && <NeuralCanvas active />}
+        <NeuralCanvas active />
 
-        {!recruiterMode && (
-          <div className="pointer-events-auto absolute left-[var(--grid-gutter)] top-5 z-20 flex items-center gap-3 safe-pad-t">
-            <span
-              className="font-mono text-[10px] tracking-[0.32em] text-white/40"
-              aria-label={`${siteConfig.monogram} mark`}
-            >
-              {siteConfig.monogram} · CONDUCTION
-            </span>
-          </div>
-        )}
+        <div className="pointer-events-auto absolute left-[var(--grid-gutter)] top-5 z-20 flex items-center gap-3 safe-pad-t">
+          <span
+            className="font-mono text-[10px] tracking-[0.32em] text-white/40"
+            aria-label={`${siteConfig.monogram} mark`}
+          >
+            {siteConfig.monogram} · CONDUCTION
+          </span>
+        </div>
 
-        {recruiterMode && (
-          <RecruiterBrief
-            lang={lang}
-            onNavigate={handleNavigateToProjects}
-            onHoldNda={() => setNdaOpen(true)}
-          />
-        )}
-
-        {!recruiterMode && (
-          <div className="relative z-10">
+        <div className="relative z-10">
             <HeroSurface
               lang={lang}
               role={t.role}
@@ -156,7 +145,12 @@ export default function Home() {
               <FooterMark />
             </footer>
           </div>
-        )}
+
+        <RecruiterBrief
+          lang={lang}
+          open={recruiterMode}
+          onClose={() => setRecruiterMode(false)}
+        />
 
         <NdaRequestOverlay
           open={ndaOpen}
