@@ -215,7 +215,8 @@ export function RecruiterBrief({
             role="dialog"
             aria-modal="true"
             aria-labelledby="ops-brief-title"
-            className="relative z-10 my-auto w-full max-w-2xl overflow-hidden border border-white/[0.12] bg-[#080705] shadow-[0_40px_140px_rgba(0,0,0,0.85)]"
+            className="relative z-10 my-auto w-full max-w-2xl max-h-[min(88vh,760px)] overflow-y-auto border border-white/[0.16] shadow-[0_40px_140px_rgba(0,0,0,0.85)]"
+            style={{ backgroundColor: "#0c0a12" }}
             initial={{ opacity: 0, y: 18, scale: 0.97 }}
             animate={{ opacity: 1, y: 0, scale: 1 }}
             exit={{ opacity: 0, y: 12, scale: 0.98 }}
