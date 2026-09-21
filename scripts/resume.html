@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <title>Rauf Pashabayli — Resume</title>
+  <style>
+    @page { size: letter; margin: 0.48in 0.52in; }
+    * { box-sizing: border-box; }
+    html, body {
+      margin: 0;
+      padding: 0;
+      background: #fff;
+      color: #1a1a1a;
+      font-family: "Calibri", "Segoe UI", Arial, sans-serif;
+      font-size: 10.4pt;
+      line-height: 1.28;
+    }
+    .page {
+      width: 7.46in;
+      min-height: 10.04in;
+      display: grid;
+      grid-template-columns: 2.05in 1fr;
+      gap: 0.28in;
+    }
+    .kicker {
+      font-size: 8.2pt;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+      color: #444;
+      font-weight: 700;
+      margin: 0 0 0.28em;
+    }
+    .left .kicker { margin-top: 0.85em; }
+    .left .kicker:first-child { margin-top: 0; }
+    a { color: #1a1a1a; text-decoration: none; }
+    .name {
+      font-size: 26pt;
+      font-weight: 700;
+      letter-spacing: -0.02em;
+      line-height: 1.05;
+      margin: 0;
+    }
+    .title {
+      font-size: 12pt;
+      font-weight: 600;
+      margin: 0.12em 0 0.55em;
+      color: #222;
+    }
+    .contact p, .skill, .edu {
+      margin: 0 0 0.22em;
+      font-size: 9.6pt;
+      line-height: 1.32;
+    }
+    .skill-group { margin-bottom: 0.45em; }
+    .skill-label { font-weight: 700; display: block; margin-bottom: 0.08em; }
+    .summary { margin: 0 0 0.7em; }
+    .job { margin-bottom: 0.62em; }
+    .job-head {
+      display: flex;
+      justify-content: space-between;
+      gap: 0.4em;
+      align-items: baseline;
+    }
+    .job-role { font-weight: 700; }
+    .job-org { font-style: italic; }
+    .job-dates { white-space: nowrap; font-size: 9.6pt; color: #333; }
+    .muted { color: #333; }
+    ul { margin: 0.22em 0 0; padding-left: 1.05em; }
+    li { margin: 0 0 0.18em; }
+    .subhead {
+      font-weight: 700;
+      margin: 0.38em 0 0.12em;
+      font-size: 10pt;
+    }
+    .rule {
+      border: 0;
+      border-top: 1.25px solid #222;
+      margin: 0 0 0.45em;
+    }
+  </style>
+</head>
+<body>
+  <div class="page">
+    <aside class="left">
+      <p class="kicker">Contact</p>
+      <div class="contact">
+        <p>rauf.pashabayli@outlook.com</p>
+        <p>+1 (860) 863-1609</p>
+        <p>Farmington, CT 06032</p>
+        <p>Authorized to work in the US · No sponsorship</p>
+        <p><a href="https://www.linkedin.com/in/beyli/">linkedin.com/in/beyli</a></p>
+        <p><a href="https://justrj.vercel.app">justrj.vercel.app</a></p>
+      </div>
+
+      <p class="kicker">Skills</p>
+      <div class="skill-group">
+        <span class="skill-label">AI &amp; Build</span>
+        <span class="skill">Cursor, Claude, GPT-4, Playwright, prompt workflows, E2E validation</span>
+      </div>
+      <div class="skill-group">
+        <span class="skill-label">Frontend</span>
+        <span class="skill">React, Next.js, TypeScript, JavaScript, Tailwind CSS</span>
+      </div>
+      <div class="skill-group">
+        <span class="skill-label">Backend</span>
+        <span class="skill">Node.js, REST / JSON, Electron, Firebase, PostgreSQL, Prisma, Drizzle, Socket.IO</span>
+      </div>
+      <div class="skill-group">
+        <span class="skill-label">Ship &amp; Ops</span>
+        <span class="skill">Vercel, GitHub Actions, rapid prototyping, end-to-end ownership</span>
+      </div>
+
+      <p class="kicker">Education</p>
+      <div class="edu">
+        <strong>Bachelor’s degree</strong><br />
+        Azerbaijan State University of Languages<br />
+        2019
+      </div>
+    </aside>
+
+    <main>
+      <h1 class="name">Rauf Pashabayli</h1>
+      <p class="title">AI-Native Product Engineer</p>
+      <hr class="rule" />
+
+      <p class="kicker">Summary</p>
+      <p class="summary">
+        I architect and ship production products with Claude and Cursor — workflow design, structured prompts, and hands-on validation of auth, queues, scoring, and failure handling.
+        Three public systems live at justrj.vercel.app: Price Radar, Pulse, and Middocs. Additional shipped work is under NDA and shown upon interview.
+        Delivered 0→1 in days, not months. Stack: TypeScript, Next.js, React, Node, Electron, Firebase, PostgreSQL, Playwright.
+      </p>
+
+      <p class="kicker">Experience</p>
+
+      <div class="job">
+        <div class="job-head">
+          <div>
+            <span class="job-role">Independent Product Engineer</span>
+            <span class="muted"> · Self-employed</span>
+          </div>
+          <span class="job-dates">Jan 2026 – Present</span>
+        </div>
+        <p class="muted" style="margin:0.12em 0 0">Solo owner from architecture through production deploy using AI-assisted development (Cursor, Claude, GPT-4). Public links below are live and testable.</p>
+
+        <p class="subhead">Public production</p>
+        <ul>
+          <li><strong>Pulse</strong> — Windows instrument: live neuron map of real TCP (Npcap), OS-level cut of a destination. Electron, Next.js · <a href="https://pulse-beryl-one.vercel.app">pulse-beryl-one.vercel.app</a></li>
+          <li><strong>Price Radar</strong> — Paste a product URL; scrape live price, store history, alert when it crosses the floor. Node, Playwright, Prisma, PostgreSQL · <a href="https://price-tracker-psi-red.vercel.app">price-tracker-psi-red.vercel.app</a></li>
+          <li><strong>Middocs</strong> — Realtime collab editor: two accounts, one Y.Doc, live cursors. React, Yjs, Socket.IO, Redis, PostgreSQL · <a href="https://frontend-mauve-psi-fk8zi9x14v.vercel.app">frontend-mauve-psi-fk8zi9x14v.vercel.app</a></li>
+        </ul>
+
+        <p class="subhead">Under NDA — showcase upon interview</p>
+        <ul>
+          <li><strong>Hire Desk</strong> — Job-hunt ops console: multi-source ingest, scoring, daily queue. Next.js, Firebase.</li>
+          <li><strong>Lead Desk</strong> — Lead ops: parsers, score, operator console. Next.js, Firebase, Playwright.</li>
+          <li><strong>FOAMCORE</strong> — B2B portal: 4 role dashboards, RFQ, realtime updates. Next.js, Firebase, Drizzle, PostgreSQL.</li>
+          <li><strong>Orbital C2</strong> — Real-time 3D satellite command dashboard, 6 screens. React, Three.js, Node.js, Socket.IO.</li>
+        </ul>
+      </div>
+
+      <div class="job">
+        <div class="job-head">
+          <div>
+            <span class="job-role">Sterile Processing Technician</span>
+            <span class="muted"> · St. Francis Hospital · Hartford, CT</span>
+          </div>
+          <span class="job-dates">May 2025 – Present</span>
+        </div>
+        <ul>
+          <li>Ensured sterilization protocols, equipment compliance, and inventory management in a high-volume clinical environment.</li>
+          <li>Coordinated with clinical staff to optimize workflow and maintain safety standards under strict process requirements.</li>
+        </ul>
+      </div>
+    </main>
+  </div>
+</body>
+</html>
