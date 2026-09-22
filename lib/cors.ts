@@ -4,6 +4,8 @@ const DEFAULT_ORIGINS = [
   "http://localhost:3000",
   "http://127.0.0.1:3000",
   "https://salontech-ops.vercel.app",
+  "https://salontech-mu.vercel.app",
+  "https://b2b-apex.vercel.app",
   "https://santien-portal.vercel.app",
   "https://santien.leads-club.vercel.app",
 ];
