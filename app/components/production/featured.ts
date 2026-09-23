@@ -2,5 +2,6 @@
 export const FEATURED_IDS = [
   "price_radar",
   "pulse",
+  "freshrail",
   "middocs",
 ] as const;

@@ -55,7 +55,7 @@ export function shot(
 
 /** Public level cases — EN captures used for every language. */
 export function shotEn(
-  folder: "price-radar" | "middocs" | "pulse",
+  folder: "price-radar" | "middocs" | "pulse" | "freshrail",
   name: string
 ): Shot {
   const src = `/showcase-images/${folder}/en/${name}`;
@@ -462,6 +462,137 @@ join(room) → yjs.sync() → persist.toPostgres()`,
     },
     code: `// the site is the plate; the app is the map
 /download → GitHub Release → Pulse-Setup.exe`,
+  },
+  {
+    id: "freshrail",
+    index: "04",
+    title: { en: "Freshrail", ru: "Freshrail", uk: "Freshrail" },
+    accent: { en: "Morning shelf", ru: "Утренняя полка", uk: "Ранкова полиця" },
+    nav: { en: "Freshrail", ru: "Freshrail", uk: "Freshrail" },
+    hook: {
+      en: "A live shelf of remote roles. The hunt reads the boards, scores each posting, and keeps the morning to what is still worth opening.",
+      ru: "Живая полка remote-вакансий. Охота читает доски, ставит оценку и оставляет на утро только то, что ещё стоит открыть.",
+      uk: "Жива полиця remote-вакансій. Полювання читає дошки, ставить оцінку і лишає на ранок лише те, що ще варто відкрити.",
+    },
+    role: {
+      en: "Product · Job shelf",
+      ru: "Продукт · полка вакансий",
+      uk: "Продукт · полиця вакансій",
+    },
+    year: "2026",
+    tech: ["Next.js", "TypeScript", "GSAP"],
+    glow: "radial-gradient(ellipse 90% 75% at 48% 30%, rgba(143, 29, 50, 0.12) 0%, rgba(20, 8, 12, 0.05) 42%, transparent 72%)",
+    image: shotEn("freshrail", "hero-viewport.png"),
+    imageCaption: {
+      en: "Morning shelf — IT, remote US, hunt running",
+      ru: "Утренняя полка — IT, remote US, охота идёт",
+      uk: "Ранкова полиця — IT, remote US, полювання йде",
+    },
+    link: "https://freshrail-pi.vercel.app",
+    problem: {
+      en: "Ten job boards are not a morning. Most rows are the wrong country, the wrong title, or already stale.",
+      ru: "Десять досок — это не утро. Большая часть строк — не та страна, не та роль или уже протухла.",
+      uk: "Десять дошок — це не ранок. Більшість рядків — не та країна, не та роль або вже протухла.",
+    },
+    build: {
+      en: "Next.js harvest across aggregators and ATS boards, a fit score, three profiles. The shelf is written back into the repo, so a closed laptop does not wipe it.",
+      ru: "Next.js снимает агрегаторы и ATS-доски, считает fit и держит три профиля. Полка пишется обратно в репозиторий — закрытый ноутбук её не стирает.",
+      uk: "Next.js знімає агрегатори й ATS-дошки, рахує fit і тримає три профілі. Полиця пишеться назад у репозиторій — закритий ноутбук її не стирає.",
+    },
+    result: {
+      en: "One URL, three shelves. IT keeps a hot rail at 82+ and a sendable band under it. Online and Medical run the same cards with their own gates.",
+      ru: "Один URL, три полки. В IT горячая рейка от 82, ниже — sendable. Online и Medical — те же карточки, свои ворота.",
+      uk: "Один URL, три полиці. В IT гаряча рейка від 82, нижче — sendable. Online і Medical — ті самі картки, свої ворота.",
+    },
+    overview: {
+      en: [
+        "The page is the shelf. Parse starts the hunt. For you is only 82+. Solid 70–81 and sendable 52–69 sit one tab over.",
+        "Online is remote work that does not ask for a degree. Medical is desk and admin healthcare ops. Each profile has its own file.",
+      ],
+      ru: [
+        "Страница и есть полка. Parse запускает охоту. For you — только 82+. Solid 70–81 и sendable 52–69 лежат на соседней вкладке.",
+        "Online — remote без требования диплома. Medical — стол и админка в healthcare. У каждого профиля свой файл.",
+      ],
+      uk: [
+        "Сторінка і є полиця. Parse запускає полювання. For you — лише 82+. Solid 70–81 і sendable 52–69 лежать на сусідній вкладці.",
+        "Online — remote без вимоги диплома. Medical — стіл і адмінка в healthcare. У кожного профілю свій файл.",
+      ],
+    },
+    features: [
+      {
+        id: "hero",
+        title: { en: "Morning shelf", ru: "Утренняя полка", uk: "Ранкова полиця" },
+        body: {
+          en: "IT profile, remote US. The hunt can already be running when the page opens.",
+          ru: "Профиль IT, remote US. Охота может уже идти, когда страница открылась.",
+          uk: "Профіль IT, remote US. Полювання може вже йти, коли сторінка відкрилась.",
+        },
+        image: shotEn("freshrail", "hero-viewport.png"),
+        caption: { en: "Morning shelf", ru: "Утренняя полка", uk: "Ранкова полиця" },
+      },
+      {
+        id: "stats",
+        title: { en: "Live counts", ru: "Живые счётчики", uk: "Живі лічильники" },
+        body: {
+          en: "For you, on shelf, archived, and whether the hunt is moving. The whole board sits under the same strip.",
+          ru: "For you, на полке, в архиве и идёт ли охота. Вся доска — под той же полосой.",
+          uk: "For you, на полиці, в архіві і чи йде полювання. Уся дошка — під тією ж смугою.",
+        },
+        image: shotEn("freshrail", "stats-viewport.png"),
+        caption: { en: "Counts and the shelf", ru: "Счётчики и полка", uk: "Лічильники і полиця" },
+      },
+      {
+        id: "shelf",
+        title: { en: "The board", ru: "Доска", uk: "Дошка" },
+        body: {
+          en: "Company, title, fit, pay, age, and why the row was kept. One tap opens Apply and files the card.",
+          ru: "Компания, роль, fit, оплата, возраст и почему строку оставили. Один тап открывает Apply и убирает карточку в архив.",
+          uk: "Компанія, роль, fit, оплата, вік і чому рядок лишили. Один тап відкриває Apply і прибирає картку в архів.",
+        },
+        image: shotEn("freshrail", "shelf-viewport.png"),
+        caption: { en: "Whole shelf", ru: "Вся полка", uk: "Уся полиця" },
+      },
+      {
+        id: "online",
+        title: { en: "Online profile", ru: "Профиль Online", uk: "Профіль Online" },
+        body: {
+          en: "A second shelf for remote work that does not require commercial experience or a degree.",
+          ru: "Вторая полка: remote-работа, которой не нужен коммерческий опыт и диплом.",
+          uk: "Друга полиця: remote-робота, якій не потрібні комерційний досвід і диплом.",
+        },
+        image: shotEn("freshrail", "online-viewport.png"),
+        caption: { en: "Online · no-exp", ru: "Online · без опыта", uk: "Online · без досвіду" },
+      },
+      {
+        id: "online-shelf",
+        title: { en: "Online cards", ru: "Карточки Online", uk: "Картки Online" },
+        body: {
+          en: "Same card, different gate. Ranked by pay and how close the work sits to the profile.",
+          ru: "Та же карточка, другие ворота. Сортировка по оплате и по тому, насколько работа близка к профилю.",
+          uk: "Та сама картка, інші ворота. Сортування за оплатою і за тим, наскільки робота близька до профілю.",
+        },
+        image: shotEn("freshrail", "online-shelf-viewport.png"),
+        caption: { en: "Online shelf", ru: "Полка Online", uk: "Полиця Online" },
+      },
+      {
+        id: "medical",
+        title: { en: "Medical desk", ru: "Medical desk", uk: "Medical desk" },
+        body: {
+          en: "Coding, billing, prior auth, coordination. Not clinical. Its own snapshot, not the IT file.",
+          ru: "Кодинг, биллинг, prior auth, координация. Не клиника. Свой снимок, не файл IT.",
+          uk: "Кодинг, білінг, prior auth, координація. Не клініка. Свій знімок, не файл IT.",
+        },
+        image: shotEn("freshrail", "medical-viewport.png"),
+        caption: { en: "Medical · desk", ru: "Medical · стол", uk: "Medical · стіл" },
+      },
+    ],
+    architecture: {
+      en: "Next.js. Aggregators and ATS boards feed a fit score. The shelf is committed back to the repo, and a scheduled wake restarts the hunt if the loop died.",
+      ru: "Next.js. Агрегаторы и ATS-доски кормят fit-скор. Полка коммитится обратно в репозиторий, плановый wake поднимает охоту, если цикл умер.",
+      uk: "Next.js. Агрегатори й ATS-дошки годують fit-скор. Полиця комітиться назад у репозиторій, плановий wake піднімає полювання, якщо цикл помер.",
+    },
+    code: `// boards → score → shelf
+harvest.tick() → score.fit() → shelf.commit()`,
   },
   {
     id: "orbital",

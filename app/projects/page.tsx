@@ -786,7 +786,7 @@ function getUi(lang: Lang) {
       pageEyebrow: "Case studies",
       pageTitle: "Проекты",
       pageSub:
-        "Три уровня сложности: Price Radar → Pulse → Middocs. Остальное — на интервью, без имён и экранов.",
+        "Три уровня сложности. Первый — Price Radar. Второй — Pulse и Freshrail. Третий — Middocs. Остальное — на интервью, без имён и экранов.",
       role: "Роль",
       stack: "Стек",
       problem: "Problem",
@@ -814,7 +814,7 @@ function getUi(lang: Lang) {
       pageEyebrow: "Case studies",
       pageTitle: "Проєкти",
       pageSub:
-        "Три рівні складності: Price Radar → Pulse → Middocs. Решту — на інтерв’ю, без імен і екранів.",
+        "Три рівні складності. Перший — Price Radar. Другий — Pulse і Freshrail. Третій — Middocs. Решту — на інтерв’ю, без імен і екранів.",
       role: "Роль",
       stack: "Стек",
       problem: "Problem",
@@ -841,7 +841,7 @@ function getUi(lang: Lang) {
     pageEyebrow: "Case studies",
     pageTitle: "Projects",
     pageSub:
-      "Three complexity levels: Price Radar → Pulse → Middocs. Everything else is walked in the interview — no names, no screens.",
+      "Three complexity levels. Level 1 is Price Radar. Level 2 is Pulse and Freshrail. Level 3 is Middocs. Everything else is walked in the interview — no names, no screens.",
     role: "Role",
     stack: "Stack",
     problem: "Problem",

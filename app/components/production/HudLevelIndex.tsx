@@ -18,6 +18,7 @@ export const LEVELS: { key: LevelKey; title: string }[] = [
 export const PROJECT_LEVEL: Record<string, LevelKey> = {
   price_radar: "l1",
   pulse: "l2",
+  freshrail: "l2",
   middocs: "l3",
 };
 
