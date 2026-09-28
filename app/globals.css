@@ -476,15 +476,31 @@ html.has-instrument-cursor * {
   position: relative;
 }
 
+.axon__scroller {
+  overflow-x: auto;
+  overflow-y: hidden;
+  overscroll-behavior-x: contain;
+  -webkit-overflow-scrolling: touch;
+  touch-action: pan-x pan-y;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+
+.axon__scroller::-webkit-scrollbar {
+  display: none;
+}
+
 .axon__track {
   display: flex;
   gap: clamp(1.25rem, 3vw, 3rem);
-  will-change: transform;
+  width: max-content;
+  scroll-snap-type: x mandatory;
 }
 
 .axon__station {
   flex: 0 0 auto;
-  width: min(78vw, 34rem);
+  width: min(82vw, 22rem);
+  scroll-snap-align: center;
 }
 
 .axon__shot {
@@ -502,12 +518,32 @@ html.has-instrument-cursor * {
   object-position: top;
   filter: saturate(0.7) contrast(1.05);
   transition: filter 0.6s var(--ease-out), transform 0.8s var(--ease-out);
+  pointer-events: none;
+  user-select: none;
+  -webkit-user-drag: none;
 }
 
 .axon__station:hover .axon__shot img,
 .axon__station.is-live .axon__shot img {
   filter: saturate(1) contrast(1.08);
   transform: scale(1.03);
+}
+
+@media (min-width: 768px) {
+  .axon__scroller {
+    overflow: hidden;
+    touch-action: auto;
+  }
+
+  .axon__track {
+    will-change: transform;
+    scroll-snap-type: none;
+  }
+
+  .axon__station {
+    width: min(78vw, 34rem);
+    scroll-snap-align: none;
+  }
 }
 
 /* —— Liquid curtain —— */

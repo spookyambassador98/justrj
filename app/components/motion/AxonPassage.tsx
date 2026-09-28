@@ -17,14 +17,16 @@ export function AxonPassage({
 }) {
   const pin = useRef<HTMLElement>(null);
   const track = useRef<HTMLDivElement>(null);
-  const { reduceMotion, isMobile } = useViewport();
+  const { ready, reduceMotion, isMobile } = useViewport();
 
   const featured = FEATURED_IDS.map((id) =>
     projectsData.find((p) => p.id === id)
   ).filter((p): p is Project => p != null && isPublicProject(p.id));
 
+  // Desktop: scrub-pinned horizontal track. Mobile uses CSS overflow-x swipe
+  // (GSAP pin fights touch; the old overflow-hidden clipped the rail entirely).
   useEffect(() => {
-    if (reduceMotion || isMobile || !pin.current || !track.current) return;
+    if (!ready || reduceMotion || isMobile || !pin.current || !track.current) return;
     registerMotion();
     const ctx = gsap.context(() => {
       const el = track.current;
@@ -45,7 +47,7 @@ export function AxonPassage({
       });
     }, pin);
     return () => ctx.revert();
-  }, [reduceMotion, isMobile]);
+  }, [ready, reduceMotion, isMobile]);
 
   return (
     <section
@@ -67,12 +69,8 @@ export function AxonPassage({
         </p>
       </div>
 
-      <div className="overflow-hidden px-[var(--grid-gutter)]">
-        <div
-          ref={track}
-          className="axon__track pb-8 md:w-max md:pb-16"
-          style={{ display: isMobile ? "flex" : undefined }}
-        >
+      <div className="axon__scroller px-[var(--grid-gutter)]">
+        <div ref={track} className="axon__track pb-8 md:w-max md:pb-16">
           {featured.map((p, i) => (
             <article key={p.id} className="axon__station">
               <button
