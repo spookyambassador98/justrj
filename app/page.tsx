@@ -39,7 +39,7 @@ export default function Home() {
       stackTitle: "Stack I ship with",
       finalTitle: "Open to AI-native product & full-stack builder roles",
       finalSub:
-        "Remote US W2/contract. Live production demos on the public levels. Other systems are walked in the interview. Strongest in Cursor/Claude-assisted 0→1 delivery.",
+        "Remote US W2/contract. Live production demos on the public levels. Under NDA opens on the same desk. Strongest in Cursor/Claude-assisted 0→1 delivery.",
       finalCta: "Start a conversation",
       footer: `© ${new Date().getFullYear()} ${siteConfig.name} · ${siteConfig.monogram}`,
     },
@@ -51,7 +51,7 @@ export default function Home() {
       stackTitle: "Стек, с которым шиплю",
       finalTitle: "Открыт к AI-native product и full-stack builder ролям",
       finalSub:
-        "Remote US W2/contract. Live production demos на публичных уровнях. Остальное разбираем на интервью. Сильнее всего в 0→1 с Cursor/Claude.",
+        "Remote US W2/contract. Live production demos на публичных уровнях. Under NDA открывается на том же столе. Сильнее всего в 0→1 с Cursor/Claude.",
       finalCta: "Начать разговор",
       footer: `© ${new Date().getFullYear()} ${siteConfig.name} · ${siteConfig.monogram}`,
     },
@@ -63,7 +63,7 @@ export default function Home() {
       stackTitle: "Стек, з яким шиплю",
       finalTitle: "Відкритий до AI-native product і full-stack builder ролей",
       finalSub:
-        "Remote US W2/contract. Live production demos на публічних рівнях. Решту розбираємо на інтерв’ю. Найсильніше в 0→1 з Cursor/Claude.",
+        "Remote US W2/contract. Live production demos на публічних рівнях. Under NDA відкривається на тому ж столі. Найсильніше в 0→1 з Cursor/Claude.",
       finalCta: "Почати розмову",
       footer: `© ${new Date().getFullYear()} ${siteConfig.name} · ${siteConfig.monogram}`,
     },
@@ -106,7 +106,6 @@ export default function Home() {
               <ProductionHUD
                 lang={lang}
                 onNavigate={handleNavigateToProjects}
-                onHoldNda={() => setNdaOpen(true)}
               />
             </div>
 

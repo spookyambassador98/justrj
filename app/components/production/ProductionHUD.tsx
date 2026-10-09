@@ -19,12 +19,12 @@ import {
   staggerContainer,
 } from "@/lib/motion";
 import type { BlueprintShot } from "./BlueprintViewer";
-import { FEATURED_IDS } from "./featured";
 import {
   HudLevelIndex,
   isPublicProject,
   levelNumber,
   levelOf,
+  sortByLevel,
   type LevelKey,
 } from "./HudLevelIndex";
 
@@ -130,9 +130,8 @@ function authenticFacts(project: Project, _lang: Lang) {
 }
 
 /**
- * Shown until the visitor picks a system. Deliberately generic: NDA work must
- * never leak (no names, no captions, no numbers). A redacted archive with a
- * cursor-driven "decoder" that only ever reveals random glyphs.
+ * Shown until the visitor picks a system. Generic on purpose:
+ * evidence loads only after a level is opened.
  */
 const GLYPHS = "01ABCDEF23456789#%$&@<>/\\[]{}=+*";
 const ROWS = 11;
@@ -323,20 +322,12 @@ const copy = {
 export function ProductionHUD({
   lang,
   onNavigate,
-  onHoldNda,
 }: {
   lang: Lang;
   onNavigate: (projectId?: string) => void;
-  onHoldNda: () => void;
 }) {
   const t = copy.en;
-  const featured = useMemo(
-    () =>
-      FEATURED_IDS.map((id) => projectsData.find((p) => p.id === id)).filter(
-        (p): p is Project => p != null && isPublicProject(p.id)
-      ),
-    []
-  );
+  const featured = useMemo(() => sortByLevel(projectsData), []);
   const [active, setActive] = useState<number | null>(null);
   const [shotIndex, setShotIndex] = useState(0);
   const [openLevel, setOpenLevel] = useState<LevelKey | null>(null);
@@ -400,32 +391,39 @@ export function ProductionHUD({
             </h2>
           </div>
           <p className="max-w-sm font-mono text-[9px] leading-relaxed tracking-[0.16em] text-white/30">
-            LEVEL 1–3 LIVE · THE REST IS WALKED IN THE INTERVIEW — real captures ·
+            LEVEL 1–3 LIVE · UNDER NDA OPENS HERE — real captures ·
             real stack · no invented metrics
           </p>
         </motion.div>
 
         <motion.div variants={fadeRise} className="mb-6 flex flex-wrap gap-2">
-          {featured.map((p, i) => (
-            <button
-              key={p.id}
-              type="button"
-              onClick={() => selectProject(i)}
-              data-cursor="cta"
-              className={`border px-4 py-2 font-mono text-[10px] tracking-[0.22em] transition-colors ${
-                i === active
-                  ? "border-[color:var(--filament)]/50 bg-white/[0.04] text-white"
-                  : "border-white/[0.08] text-white/40 hover:border-white/20 hover:text-white/70"
-              }`}
-            >
-              L{levelNumber(p.id) ?? "?"} · {L(p.title, lang).toUpperCase()}
-            </button>
-          ))}
+          {featured.map((p, i) =>
+            isPublicProject(p.id) ? (
+              <button
+                key={p.id}
+                type="button"
+                onClick={() => selectProject(i)}
+                data-cursor="cta"
+                className={`border px-4 py-2 font-mono text-[10px] tracking-[0.22em] transition-colors ${
+                  i === active
+                    ? "border-[color:var(--filament)]/50 bg-white/[0.04] text-white"
+                    : "border-white/[0.08] text-white/40 hover:border-white/20 hover:text-white/70"
+                }`}
+              >
+                L{levelNumber(p.id)} · {L(p.title, lang).toUpperCase()}
+              </button>
+            ) : null
+          )}
           <button
             type="button"
-            onClick={onHoldNda}
+            onClick={() => setOpenLevel((cur) => (cur === "nda" ? null : "nda"))}
             data-cursor="cta"
-            className="border border-orange-300/20 px-4 py-2 font-mono text-[10px] tracking-[0.22em] text-orange-200/55 transition-colors hover:border-orange-300/40 hover:text-orange-100"
+            aria-expanded={openLevel === "nda"}
+            className={`border px-4 py-2 font-mono text-[10px] tracking-[0.22em] transition-colors ${
+              openLevel === "nda"
+                ? "border-orange-300/50 bg-orange-300/[0.08] text-orange-100"
+                : "border-orange-300/20 text-orange-200/55 hover:border-orange-300/40 hover:text-orange-100"
+            }`}
           >
             UNDER NDA
           </button>
@@ -451,7 +449,6 @@ export function ProductionHUD({
                 lang={lang}
                 onToggleLevel={setOpenLevel}
                 onSelect={selectProject}
-                onHoldNda={onHoldNda}
               />
               <p className="mt-8 font-mono text-[9px] leading-relaxed tracking-[0.14em] text-white/25">
                 {t.evidence}

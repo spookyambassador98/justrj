@@ -28,11 +28,10 @@ import { useViewport } from "../hooks/useViewport";
 import { PageTransition } from "../components/motion/PageTransition";
 import { FOCUS_PROJECT_KEY, requestCurtain } from "@/lib/motion/curtain";
 import {
-  isPublicProject,
   levelNumber,
+  levelOf,
   sortByLevel,
 } from "../components/production/HudLevelIndex";
-import { NdaRequestOverlay } from "../components/NdaRequestOverlay";
 import { ProjectsScrollHero } from "../components/motion/ProjectsScrollHero";
 import {
   L,
@@ -598,7 +597,7 @@ function ProjectCase({
         <div className="space-y-6 lg:col-span-5">
           <div className="flex items-center gap-3 text-[10px] uppercase tracking-[0.28em] text-white/35 sm:text-[11px]">
             <span className="font-mono text-violet-300/70">
-              L{levelNumber(project.id) ?? project.index}
+              {levelOf(project.id) === "nda" ? "NDA" : `L${levelNumber(project.id)}`}
             </span>
             <span className="h-px w-8 shrink-0 bg-white/15" aria-hidden />
             <span>{project.year}</span>
@@ -786,7 +785,7 @@ function getUi(lang: Lang) {
       pageEyebrow: "Case studies",
       pageTitle: "Проекты",
       pageSub:
-        "Три уровня сложности. Первый — Price Radar. Второй — Pulse и Freshrail. Третий — Middocs. Остальное — на интервью, без имён и экранов.",
+        "Три публичных уровня, дальше тот же каталог. Первый — Price Radar. Второй — Pulse и Freshrail. Третий — Middocs. Under NDA лежит здесь же.",
       role: "Роль",
       stack: "Стек",
       problem: "Problem",
@@ -814,7 +813,7 @@ function getUi(lang: Lang) {
       pageEyebrow: "Case studies",
       pageTitle: "Проєкти",
       pageSub:
-        "Три рівні складності. Перший — Price Radar. Другий — Pulse і Freshrail. Третій — Middocs. Решту — на інтерв’ю, без імен і екранів.",
+        "Три публічні рівні, далі той самий каталог. Перший — Price Radar. Другий — Pulse і Freshrail. Третій — Middocs. Under NDA лежить тут же.",
       role: "Роль",
       stack: "Стек",
       problem: "Problem",
@@ -841,7 +840,7 @@ function getUi(lang: Lang) {
     pageEyebrow: "Case studies",
     pageTitle: "Projects",
     pageSub:
-      "Three complexity levels. Level 1 is Price Radar. Level 2 is Pulse and Freshrail. Level 3 is Middocs. Everything else is walked in the interview — no names, no screens.",
+      "Three public levels, then the same catalog. Level 1 is Price Radar. Level 2 is Pulse and Freshrail. Level 3 is Middocs. Under NDA sits on this page.",
     role: "Role",
     stack: "Stack",
     problem: "Problem",
@@ -866,17 +865,13 @@ function getUi(lang: Lang) {
 export default function ProjectsPage() {
   const { lang } = useLang();
   const ui = getUi(lang);
-  const catalog = useMemo(
-    () => sortByLevel(projectsData.filter((p) => isPublicProject(p.id))),
-    []
-  );
+  const catalog = useMemo(() => sortByLevel(projectsData), []);
   const [routing, setRouting] = useState(false);
   const [activeId, setActiveId] = useState(catalog[0]?.id ?? "");
   const [demoId, setDemoId] = useState<string | null>(null);
   const [lightboxItems, setLightboxItems] = useState<GalleryItem[]>([]);
   const [lightboxIndex, setLightboxIndex] = useState(0);
   const [lightboxOpen, setLightboxOpen] = useState(false);
-  const [ndaHold, setNdaHold] = useState(false);
 
   const glow = catalog.find((p) => p.id === activeId)?.glow ?? catalog[0]?.glow;
   const landingLock = useRef<string | null>(null);
@@ -896,12 +891,6 @@ export default function ProjectsPage() {
     }
 
     const candidates = [query, hash, stored].filter(Boolean);
-    if (params.get("hold") === "nda" || candidates.some((id) => !isPublicProject(id))) {
-      setNdaHold(true);
-      history.replaceState(null, "", "/projects");
-      return;
-    }
-
     const target = candidates.find((id) => catalog.some((p) => p.id === id));
     if (!target) return;
 
@@ -1098,7 +1087,7 @@ export default function ProjectsPage() {
                   )}
                   <span className="relative z-10 flex items-center gap-3">
                     <span className="font-mono text-[9px] tracking-[0.2em] text-violet-300/50">
-                      L{levelNumber(p.id) ?? p.index}
+                      {levelOf(p.id) === "nda" ? "NDA" : `L${levelNumber(p.id)}`}
                     </span>
                     <span className="max-w-[12rem] truncate text-[11px] tracking-[0.04em] lg:max-w-none">
                       {L(p.nav, lang)}
@@ -1132,11 +1121,6 @@ export default function ProjectsPage() {
           ))}
         </main>
       </div>
-      <NdaRequestOverlay
-        open={ndaHold}
-        onClose={() => setNdaHold(false)}
-        lang={lang}
-      />
     </div>
     </PageTransition>
   );

@@ -65,7 +65,7 @@ export function AxonPassage({
           </h2>
         </div>
         <p className="hidden max-w-xs text-right font-mono text-[9px] leading-relaxed tracking-[0.16em] text-white/30 md:block">
-          Three live systems. Everything else is walked in the interview — no names, no screens.
+          Public levels on this rail. Under NDA opens in the production HUD.
         </p>
       </div>
 

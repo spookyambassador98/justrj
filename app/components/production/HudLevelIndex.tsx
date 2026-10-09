@@ -1,7 +1,7 @@
 "use client";
 
 import { AnimatePresence, motion } from "framer-motion";
-import { CaretDown, LockSimple } from "@phosphor-icons/react";
+import { CaretDown } from "@phosphor-icons/react";
 import { L, type Project } from "@/app/projects/data";
 import type { Lang } from "@/app/components/LanguageProvider";
 
@@ -54,7 +54,6 @@ export function HudLevelIndex({
   lang,
   onToggleLevel,
   onSelect,
-  onHoldNda,
 }: {
   featured: Project[];
   active: number | null;
@@ -62,7 +61,6 @@ export function HudLevelIndex({
   lang: Lang;
   onToggleLevel: (key: LevelKey | null) => void;
   onSelect: (index: number) => void;
-  onHoldNda: () => void;
 }) {
   const grouped: Record<LevelKey, { p: Project; i: number }[]> = {
     l1: [],
@@ -83,17 +81,11 @@ export function HudLevelIndex({
           <div key={key}>
             <button
               type="button"
-              onClick={() => {
-                if (isNda) {
-                  onHoldNda();
-                  return;
-                }
-                onToggleLevel(open ? null : key);
-              }}
-              aria-expanded={isNda ? false : open}
+              onClick={() => onToggleLevel(open ? null : key)}
+              aria-expanded={open}
               data-cursor="cta"
               className={`hud-node relative flex items-center justify-between gap-2 overflow-hidden ${
-                open && !isNda ? "is-open" : ""
+                open ? "is-open" : ""
               } ${isNda ? "is-nda" : ""}`}
             >
               <motion.span
@@ -115,24 +107,20 @@ export function HudLevelIndex({
               </span>
               <span className="relative z-10 flex shrink-0 items-center gap-2">
                 <span className="text-white/30">
-                  {isNda ? "HOLD" : String(items.length).padStart(2, "0")}
+                  {String(items.length).padStart(2, "0")}
                 </span>
-                {isNda ? (
-                  <LockSimple size={11} weight="light" className="text-orange-200/50" />
-                ) : (
-                  <motion.span
-                    animate={{ rotate: open ? 180 : 0 }}
-                    transition={{ duration: 0.5, ease: curtainEase }}
-                    className="flex"
-                  >
-                    <CaretDown size={11} weight="light" />
-                  </motion.span>
-                )}
+                <motion.span
+                  animate={{ rotate: open ? 180 : 0 }}
+                  transition={{ duration: 0.5, ease: curtainEase }}
+                  className="flex"
+                >
+                  <CaretDown size={11} weight="light" />
+                </motion.span>
               </span>
             </button>
 
             <AnimatePresence initial={false}>
-              {open && !isNda && (
+              {open && (
                 <motion.div
                   key="curtain"
                   initial={{ height: 0, opacity: 0, clipPath: "inset(0 0 100% 0)" }}
