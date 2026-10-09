@@ -1,6 +1,7 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { createPortal } from "react-dom";
 import { X } from "@phosphor-icons/react";
 import type { Lang } from "./LanguageProvider";
 import { submitNdaSignature } from "@/lib/nda/sign";
@@ -188,15 +189,54 @@ export function NdaAgreement({
 
   if (mode === "inline") return form;
 
-  return (
-    <div className="pointer-events-auto fixed inset-0 z-[400] flex items-center justify-center px-4 py-8">
-      <button
-        type="button"
-        aria-label={t.close}
-        className="absolute inset-0 bg-black/88 backdrop-blur-xl"
-        onClick={onClose}
-      />
-      <div className="relative z-10 w-full max-w-lg">{form}</div>
-    </div>
+  return <NdaModal onClose={onClose} closeLabel={t.close} form={form} />;
+}
+
+function NdaModal({
+  onClose,
+  closeLabel,
+  form,
+}: {
+  onClose?: () => void;
+  closeLabel: string;
+  form: React.ReactNode;
+}) {
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => setMounted(true), []);
+
+  useEffect(() => {
+    if (!mounted) return;
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === "Escape") onClose?.();
+    };
+    window.addEventListener("keydown", onKey);
+    const prev = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+    return () => {
+      window.removeEventListener("keydown", onKey);
+      document.body.style.overflow = prev;
+    };
+  }, [mounted, onClose]);
+
+  if (!mounted) return null;
+
+  return createPortal(
+    <div
+      role="dialog"
+      aria-modal="true"
+      className="pointer-events-auto fixed inset-0 z-[500] overflow-y-auto overscroll-contain [isolation:isolate]"
+    >
+      <div className="relative flex min-h-full items-center justify-center px-4 py-10">
+        <button
+          type="button"
+          aria-label={closeLabel}
+          className="absolute inset-0 bg-black/88 backdrop-blur-xl"
+          onClick={onClose}
+        />
+        <div className="relative z-10 w-full max-w-lg">{form}</div>
+      </div>
+    </div>,
+    document.body
   );
 }
