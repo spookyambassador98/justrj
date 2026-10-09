@@ -27,11 +27,13 @@ import { useLang, type Lang } from "../components/LanguageProvider";
 import { useViewport } from "../hooks/useViewport";
 import { PageTransition } from "../components/motion/PageTransition";
 import { FOCUS_PROJECT_KEY, requestCurtain } from "@/lib/motion/curtain";
+import { NdaAgreement } from "../components/NdaAgreement";
 import {
   levelNumber,
   levelOf,
   sortByLevel,
 } from "../components/production/HudLevelIndex";
+import { ndaSigned } from "@/lib/nda/sign";
 import { ProjectsScrollHero } from "../components/motion/ProjectsScrollHero";
 import {
   L,
@@ -586,6 +588,42 @@ function ProjectCase({
     }
     return items;
   }, [project, lang]);
+
+  const nda = levelOf(project.id) === "nda";
+  const [gate, setGate] = useState<"check" | "sign" | "open">("check");
+  useEffect(() => {
+    setGate(!nda || ndaSigned(project.id) ? "open" : "sign");
+  }, [nda, project.id]);
+
+  if (nda && gate !== "open") {
+    return (
+      <section
+        id={project.id}
+        data-project-id={project.id}
+        className="scroll-mt-28 space-y-8 border-b border-white/[0.05] py-16 last:border-b-0 sm:py-24"
+      >
+        <div className="flex items-center gap-3 text-[10px] uppercase tracking-[0.28em] text-white/35">
+          <span className="font-mono text-orange-200/70">NDA</span>
+          <span className="h-px w-8 shrink-0 bg-white/15" aria-hidden />
+          <span>{project.year}</span>
+        </div>
+        <h2 className="font-serif text-[clamp(2.1rem,5.2vw,3.85rem)] italic leading-[1.05] tracking-[-0.03em] text-white">
+          {L(project.title, lang)}
+        </h2>
+        {gate === "sign" ? (
+          <NdaAgreement
+            mode="inline"
+            lang={lang}
+            projectId={project.id}
+            projectTitle={L(project.title, lang)}
+            onSigned={() => setGate("open")}
+          />
+        ) : (
+          <div className="h-16" />
+        )}
+      </section>
+    );
+  }
 
   return (
     <section

@@ -19,6 +19,8 @@ import {
   staggerContainer,
 } from "@/lib/motion";
 import type { BlueprintShot } from "./BlueprintViewer";
+import { NdaAgreement } from "@/app/components/NdaAgreement";
+import { ndaSigned, ndaSignedIds } from "@/lib/nda/sign";
 import {
   HudLevelIndex,
   isPublicProject,
@@ -331,6 +333,9 @@ export function ProductionHUD({
   const [active, setActive] = useState<number | null>(null);
   const [shotIndex, setShotIndex] = useState(0);
   const [openLevel, setOpenLevel] = useState<LevelKey | null>(null);
+  const [cleared, setCleared] = useState<Set<string>>(new Set());
+  const [pendingNda, setPendingNda] = useState<Project | null>(null);
+  const opened = (id: string) => isPublicProject(id) || cleared.has(id);
   // null = nothing chosen yet → placeholder instead of a screenshot
   const project = active === null ? null : (featured[active] ?? null);
   const facts = project ? authenticFacts(project, lang) : [];
@@ -340,27 +345,38 @@ export function ProductionHUD({
     [project, lang]
   );
 
-  // Preload every featured project's evidence so switching is instant
+  useEffect(() => {
+    setCleared(new Set(ndaSignedIds()));
+  }, []);
+
+  // Preload evidence only for cases already open. NDA shots wait for a signature.
   useEffect(() => {
     let cancelled = false;
     (async () => {
       const mod = await import("./BlueprintViewer");
       if (cancelled) return;
-      const urls = featured.flatMap((p) =>
-        evidenceFromProject(p, "en").map((s) => s.src)
-      );
+      const urls = featured
+        .filter((p) => opened(p.id))
+        .flatMap((p) => evidenceFromProject(p, "en").map((s) => s.src));
       mod.preloadBlueprintShots(urls);
     })();
     return () => {
       cancelled = true;
     };
-  }, [featured]);
+  }, [featured, cleared]);
 
   const selectProject = (i: number) => {
+    const target = featured[i];
+    if (!target) return;
+    if (!isPublicProject(target.id) && !cleared.has(target.id) && !ndaSigned(target.id)) {
+      setOpenLevel("nda");
+      setPendingNda(target);
+      return;
+    }
+    setPendingNda(null);
     setActive(i);
     setShotIndex(0);
-    const target = featured[i];
-    if (target) setOpenLevel(levelOf(target.id));
+    setOpenLevel(levelOf(target.id));
   };
 
   return (
@@ -598,6 +614,27 @@ export function ProductionHUD({
           </div>
         </motion.div>
       </motion.div>
+
+      {pendingNda ? (
+        <NdaAgreement
+          mode="modal"
+          lang={lang}
+          projectId={pendingNda.id}
+          projectTitle={L(pendingNda.title, lang)}
+          onClose={() => setPendingNda(null)}
+          onSigned={() => {
+            const id = pendingNda.id;
+            const index = featured.findIndex((p) => p.id === id);
+            setCleared((prev) => new Set(prev).add(id));
+            setPendingNda(null);
+            if (index >= 0) {
+              setActive(index);
+              setShotIndex(0);
+              setOpenLevel("nda");
+            }
+          }}
+        />
+      ) : null}
     </section>
   );
 }
