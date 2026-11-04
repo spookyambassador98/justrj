@@ -823,7 +823,7 @@ function getUi(lang: Lang) {
       pageEyebrow: "Case studies",
       pageTitle: "Проекты",
       pageSub:
-        "Три публичных уровня, дальше тот же каталог. Первый — Price Radar. Второй — Pulse и Freshrail. Третий — Middocs. Under NDA лежит здесь же.",
+        "Три публичных уровня, дальше тот же каталог. Первый — Price Radar. Второй — Lotwire, Pulse и Freshrail. Третий — Middocs. Under NDA лежит здесь же.",
       role: "Роль",
       stack: "Стек",
       problem: "Problem",
@@ -851,7 +851,7 @@ function getUi(lang: Lang) {
       pageEyebrow: "Case studies",
       pageTitle: "Проєкти",
       pageSub:
-        "Три публічні рівні, далі той самий каталог. Перший — Price Radar. Другий — Pulse і Freshrail. Третій — Middocs. Under NDA лежить тут же.",
+        "Три публічні рівні, далі той самий каталог. Перший — Price Radar. Другий — Lotwire, Pulse і Freshrail. Третій — Middocs. Under NDA лежить тут же.",
       role: "Роль",
       stack: "Стек",
       problem: "Problem",
@@ -878,7 +878,7 @@ function getUi(lang: Lang) {
     pageEyebrow: "Case studies",
     pageTitle: "Projects",
     pageSub:
-      "Three public levels, then the same catalog. Level 1 is Price Radar. Level 2 is Pulse and Freshrail. Level 3 is Middocs. Under NDA sits on this page.",
+      "Three public levels, then the same catalog. Level 1 is Price Radar. Level 2 is Lotwire, Pulse and Freshrail. Level 3 is Middocs. Under NDA sits on this page.",
     role: "Role",
     stack: "Stack",
     problem: "Problem",

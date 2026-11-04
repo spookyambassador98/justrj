@@ -55,7 +55,7 @@ export function shot(
 
 /** Public level cases — EN captures used for every language. */
 export function shotEn(
-  folder: "price-radar" | "middocs" | "pulse" | "freshrail",
+  folder: "price-radar" | "middocs" | "pulse" | "freshrail" | "lotwire",
   name: string
 ): Shot {
   const src = `/showcase-images/${folder}/en/${name}`;
@@ -201,6 +201,84 @@ export const projectsData: Project[] = [
 watch.add(url) → scrape.price() → alert.ifDropped()`,
   },
   {
+    id: "lotwire",
+    index: "04",
+    title: { en: "Lotwire", ru: "Lotwire", uk: "Lotwire" },
+    accent: { en: "Live promo wire", ru: "Живая лента промокодов", uk: "Жива стрічка промокодів" },
+    nav: { en: "Lotwire", ru: "Lotwire", uk: "Lotwire" },
+    hook: {
+      en: "A live wire of heavy promo codes. Photos, the code, the price before and after, and a full-screen pull when you want a random drop.",
+      ru: "Живая лента тяжёлых промокодов. Фото, код, цена до и после, и полноэкранный розыгрыш, если хочешь случайный дроп.",
+      uk: "Жива стрічка важких промокодів. Фото, код, ціна до і після, і повноекранний розіграш, якщо хочеш випадковий дроп.",
+    },
+    role: { en: "Product · Deals radar", ru: "Продукт · радар сделок", uk: "Продукт · радар угод" },
+    year: "2026",
+    tech: ["Next.js", "Three.js", "Framer Motion"],
+    glow: "radial-gradient(ellipse 90% 75% at 48% 30%, rgba(198, 255, 0, 0.08) 0%, rgba(20, 8, 40, 0.05) 42%, transparent 72%)",
+    image: shotEn("lotwire", "home.jpg"),
+    imageCaption: {
+      en: "Home — promo codes, heavy drops, live",
+      ru: "Главная — промокоды, крупные дропы, вживую",
+      uk: "Головна — промокоди, великі дропи, наживо",
+    },
+    link: "https://lotwire-v2.vercel.app",
+    problem: {
+      en: "Coupon blogs are a pile of expired dollars-off. The useful drop is a real code, on a real product, with a photo and a deadline.",
+      ru: "Купонные блоги — куча протухших скидок на доллар. Нужный дроп — живой код, живой товар, фото и срок.",
+      uk: "Купонні блоги — купа прострочених знижок на долар. Потрібний дроп — живий код, живий товар, фото і строк.",
+    },
+    build: {
+      en: "Next.js harvests public deal feeds on a schedule, keeps codes on the card, and sends Try your luck to its own page: a full-screen pull that lands on a real product.",
+      ru: "Next.js собирает публичные ленты по расписанию, держит код на карточке и уводит Try your luck на отдельную страницу: полноэкранный розыгрыш, который падает на живой товар.",
+      uk: "Next.js збирає публічні стрічки за розкладом, тримає код на картці і веде Try your luck на окрему сторінку: повноекранний розіграш, який падає на живий товар.",
+    },
+    result: {
+      en: "The wire opens on promo codes. Luck is /luck, not a spinning thumbnail on the homepage.",
+      ru: "Лента открывается на промокодах. Удача — это /luck, не крутящаяся миниатюра на главной.",
+      uk: "Стрічка відкривається на промокодах. Удача — це /luck, не мініатюра, що крутиться на головній.",
+    },
+    overview: {
+      en: [
+        "Cards carry a photo, a glowing code, price before and after, and the dollars off.",
+        "Pull the lever on /luck and the page flies through the live products until one code stops in front of you.",
+      ],
+      ru: [
+        "На карточке фото, светящийся код, цена до и после и сколько минус.",
+        "На /luck дёргаешь рычаг — страница летит сквозь живые товары, пока один код не останавливается перед тобой.",
+      ],
+    },
+    features: [
+      {
+        id: "home",
+        title: { en: "The wire", ru: "Лента", uk: "Стрічка" },
+        body: {
+          en: "Promo codes first. The ring around the hero is made of products that are actually on the wire.",
+          ru: "Сначала промокоды. Кольцо вокруг первого экрана собрано из товаров, которые сейчас на ленте.",
+          uk: "Спочатку промокоди. Кільце навколо першого екрана зібране з товарів, які зараз на стрічці.",
+        },
+        image: shotEn("lotwire", "home.jpg"),
+        caption: { en: "Promo codes. Heavy drops. Live.", ru: "Промокоды. Крупные дропы. Вживую.", uk: "Промокоди. Великі дропи. Наживо." },
+      },
+      {
+        id: "luck",
+        title: { en: "Try your luck", ru: "Испытай удачу", uk: "Випробуй удачу" },
+        body: {
+          en: "Its own page. Pull the lever and the whole screen is the draw, then the winning product and its code.",
+          ru: "Отдельная страница. Дёргаешь рычаг — весь экран это розыгрыш, потом выигрышный товар и его код.",
+          uk: "Окрема сторінка. Смикаєш важіль — весь екран це розіграш, потім виграшний товар і його код.",
+        },
+        image: shotEn("lotwire", "luck.jpg"),
+        caption: { en: "/luck", ru: "/luck", uk: "/luck" },
+      },
+    ],
+    architecture: {
+      en: "Next.js on Vercel. Deal harvest on a cron, cards rendered from the live list, /luck as its own route.",
+      ru: "Next.js на Vercel. Сбор сделок по cron, карточки из живого списка, /luck отдельным маршрутом.",
+    },
+    code: `// feed → card with a code → /luck pulls one
+harvest() → deals.filter(code) → luck.pull()`,
+  },
+  {
     id: "middocs",
     index: "03",
     title: { en: "Middocs", ru: "Middocs", uk: "Middocs" },
@@ -225,7 +303,7 @@ watch.add(url) → scrape.price() → alert.ifDropped()`,
       ru: "Два аккаунта, один документ — Maya и Alex вживую",
       uk: "Два акаунти, один документ — Maya і Alex наживо",
     },
-    link: "https://frontend-mauve-psi-fk8zi9x14v.vercel.app",
+    link: "https://middocs.vercel.app",
     problem: {
       en: "Realtime docs usually mean “one server, pray it holds”. Two instances and the document splits.",
       ru: "Realtime-дока обычно = один сервер и молитва. Два инстанса — документ расходится.",

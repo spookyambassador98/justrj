@@ -17,6 +17,7 @@ export const LEVELS: { key: LevelKey; title: string }[] = [
 /** Project id → level. Anything not listed falls into NDA. */
 export const PROJECT_LEVEL: Record<string, LevelKey> = {
   price_radar: "l1",
+  lotwire: "l2",
   pulse: "l2",
   freshrail: "l2",
   middocs: "l3",
