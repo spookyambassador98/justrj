@@ -61,7 +61,7 @@ export async function submitNdaSignature(input: {
       {
         type: "nda",
         path: input.path.slice(0, 320),
-        detail: `signed · ${input.projectTitle}`.slice(0, 320),
+        detail: `signed · ${input.projectTitle} · ${name} · ${company}`.slice(0, 320),
         at: new Date().toISOString(),
       },
     ],
@@ -75,15 +75,54 @@ export async function submitNdaSignature(input: {
     durationSec: 1,
   };
 
-  const res = await fetch(ENDPOINT, {
-    method: "POST",
-    headers: { "Content-Type": "text/plain" },
-    body: JSON.stringify(body),
-    mode: "cors",
-  });
-  if (!res.ok) throw new Error("sign_failed");
+  // Logging the signature is best-effort. The SalonTech visits collector has
+  // been failing (its storage is down), and the old code threw on any non-2xx,
+  // which left recruiters stuck on "The signature did not go through" with no
+  // way into the case. Now: try the collector (5 s cap), mirror the event to
+  // this site's own /api/logger, and open the case either way.
+  const payload = JSON.stringify(body);
+  const remote = (async () => {
+    try {
+      const ctrl = new AbortController();
+      const timer = setTimeout(() => ctrl.abort(), 5000);
+      const res = await fetch(ENDPOINT, {
+        method: "POST",
+        headers: { "Content-Type": "text/plain" },
+        body: payload,
+        mode: "cors",
+        signal: ctrl.signal,
+      });
+      clearTimeout(timer);
+      return res.ok;
+    } catch {
+      return false;
+    }
+  })();
+  try {
+    const mirror = JSON.stringify({
+      vid,
+      events: body.events,
+      referrer: body.referrer,
+      landing: body.landing,
+      href: body.href,
+      ua: body.ua,
+      lang: body.lang,
+      tz: body.tz,
+      screen: body.screen,
+    });
+    if (navigator.sendBeacon) {
+      navigator.sendBeacon("/api/logger", new Blob([mirror], { type: "application/json" }));
+    }
+  } catch {
+    /* ignore */
+  }
+  await remote;
 
   const map = readMap();
   map[input.projectId] = name;
-  localStorage.setItem(STORE, JSON.stringify(map));
+  try {
+    localStorage.setItem(STORE, JSON.stringify(map));
+  } catch {
+    /* private mode — the case still opens for this page view */
+  }
 }

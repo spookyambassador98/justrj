@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import { ArrowLeft, ArrowRight, Check, CircleNotch, Lock } from "@phosphor-icons/react";
 import { useLang } from "./LanguageProvider";
+import { siteConfig } from "../site.config";
 
 const STEPS = 5;
 
@@ -44,6 +45,7 @@ export default function BriefForm({ referralCode = "" }: Props) {
   const hasReferral = lockedCode.length > 0;
 
   const [step, setStep] = useState(0);
+  const [mailed, setMailed] = useState(false);
   const [form, setForm] = useState<FormState>(() => ({
     ...empty,
     specialist_code: lockedCode,
@@ -238,7 +240,32 @@ export default function BriefForm({ referralCode = "" }: Props) {
       if (!res.ok) throw new Error("fail");
       setDone(true);
     } catch {
-      setError(t.err);
+      // The leads store is unreachable (no storage configured / server down).
+      // Don't lose the brief: hand it to the visitor's mail app, prefilled,
+      // and show the thank-you state.
+      try {
+        const lines = [
+          `Name: ${form.name}`,
+          `Company: ${form.company}`,
+          `Contact: ${form.contact_method}`,
+          `Project type: ${form.project_type}`,
+          `Goal: ${form.business_goal}`,
+          `Key features: ${form.key_features}`,
+          `References: ${form.references}`,
+          `Deadline: ${form.deadline}`,
+          `Budget: ${form.budget}`,
+          (hasReferral ? lockedCode : form.specialist_code.trim())
+            ? `Code: ${hasReferral ? lockedCode : form.specialist_code.trim()}`
+            : "",
+        ].filter(Boolean);
+        setMailed(true);
+        window.location.href = `mailto:${siteConfig.links.email}?subject=${encodeURIComponent(
+          `Project brief — ${form.company || form.name}`,
+        )}&body=${encodeURIComponent(lines.join("\n"))}`;
+        setDone(true);
+      } catch {
+        setError(t.err);
+      }
     } finally {
       setSending(false);
     }
@@ -258,7 +285,15 @@ export default function BriefForm({ referralCode = "" }: Props) {
           <Check className="text-white/80" size={28} weight="light" />
         </div>
         <h2 className="font-serif text-2xl italic text-white sm:text-3xl">{t.thanks}</h2>
-        <p className="mt-3 text-white/50">{t.thanksSub}</p>
+        <p className="mt-3 text-white/50">
+          {mailed
+            ? lang === "en"
+              ? "Your mail app opened with the brief filled in — just hit send."
+              : lang === "uk"
+                ? "Відкрився ваш поштовий клієнт із заповненим брифом — просто натисніть «Надіслати»."
+                : "Открылась ваша почта с заполненным брифом — просто нажмите «Отправить»."
+            : t.thanksSub}
+        </p>
       </motion.div>
     );
   }
