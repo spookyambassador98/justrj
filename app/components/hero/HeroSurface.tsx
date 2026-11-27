@@ -39,7 +39,7 @@ export function HeroSurface({
   onNda,
 }: HeroSurfaceProps) {
   const root = useRef<HTMLElement>(null);
-  const { reduceMotion } = useViewport();
+  const { reduceMotion, lite } = useViewport();
   const [lit, setLit] = useState(isIntroReady());
   const given = siteConfig.name.split(" ")[0] ?? "Rauf";
   const family = siteConfig.name.split(" ").slice(1).join(" ");
@@ -67,7 +67,9 @@ export function HeroSurface({
       gsap.to(stencil, {
         yPercent: -8,
         scale: 0.86,
-        filter: "blur(8px)",
+        // Scroll-scrubbed blur on a giant stencil is a full-layer filter
+        // every frame — fine on desktop GPUs, a stutter on phones.
+        ...(lite ? {} : { filter: "blur(8px)" }),
         ease: "none",
         scrollTrigger: {
           trigger: root.current,
@@ -78,13 +80,13 @@ export function HeroSurface({
       });
     }, root);
     return () => ctx.revert();
-  }, [lit, reduceMotion]);
+  }, [lit, reduceMotion, lite]);
 
   return (
     <section
       ref={root}
       id="engineering-core"
-      className="pointer-events-auto relative flex min-h-[100dvh] w-full flex-col justify-end pb-28 pt-8 sm:pb-32"
+      className="pointer-events-auto relative flex min-h-[100svh] w-full flex-col justify-end pb-28 pt-8 sm:pb-32"
     >
       <h1 className="sr-only">
         {siteConfig.name}. {HEADLINE[lang]}

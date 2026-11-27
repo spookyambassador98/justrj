@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef } from "react";
+import { useRef } from "react";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { useGSAP } from "@gsap/react";
@@ -59,11 +59,9 @@ export function ProjectsScrollHero({ eyebrow, title, sub }: Props) {
     { scope: root, dependencies: [reduceMotion, title, sub] }
   );
 
-  useEffect(() => {
-    return () => {
-      ScrollTrigger.getAll().forEach((t) => t.kill());
-    };
-  }, []);
+  // useGSAP reverts only this component's tweens/triggers on unmount.
+  // (The old global ScrollTrigger.getAll().kill() also destroyed the home
+  // page's pinned rail and hero scrub after visiting /projects.)
 
   const chars = title.split("");
 

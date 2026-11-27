@@ -152,6 +152,14 @@ html.has-instrument-cursor * {
   opacity: 1;
 }
 
+/* —— Neural backdrop ——
+   Large-viewport height so the WebGL buffer is not resized each time the
+   mobile URL bar shows/hides during scroll. */
+.neural-backdrop {
+  height: 100vh;
+  height: 100lvh;
+}
+
 /* —— Grain —— */
 .site-grain {
   position: fixed;
@@ -175,6 +183,38 @@ html.has-instrument-cursor * {
 @media (prefers-reduced-motion: reduce) {
   .site-grain {
     animation: none;
+  }
+}
+
+/* —— Touch / phone mode ——
+   Phones and tablets (any coarse pointer or narrow screen) get a light
+   compositor path: no full-screen animated SVG grain blended over WebGL,
+   and no live backdrop blur on top of the moving neural canvas. Both force
+   a full-viewport re-composite every frame on iOS Safari and were the main
+   source of scroll jank / tab reloads on phones. Surfaces keep their look
+   with a solid tinted fill instead. */
+@media (max-width: 767px), (pointer: coarse) {
+  .site-grain {
+    display: none;
+  }
+
+  *,
+  *::before,
+  *::after {
+    -webkit-backdrop-filter: none !important;
+    backdrop-filter: none !important;
+  }
+
+  .hire-rail {
+    background: color-mix(in srgb, var(--bg) 94%, transparent);
+  }
+
+  /* No tap flash; keep taps instant. */
+  a,
+  button,
+  [role="button"] {
+    -webkit-tap-highlight-color: transparent;
+    touch-action: manipulation;
   }
 }
 
@@ -482,6 +522,8 @@ html.has-instrument-cursor * {
   overscroll-behavior-x: contain;
   -webkit-overflow-scrolling: touch;
   touch-action: pan-x pan-y;
+  scroll-snap-type: x mandatory;
+  scroll-padding-inline: var(--grid-gutter);
   scrollbar-width: none;
   -ms-overflow-style: none;
 }
@@ -494,13 +536,12 @@ html.has-instrument-cursor * {
   display: flex;
   gap: clamp(1.25rem, 3vw, 3rem);
   width: max-content;
-  scroll-snap-type: x mandatory;
 }
 
 .axon__station {
   flex: 0 0 auto;
   width: min(82vw, 22rem);
-  scroll-snap-align: center;
+  scroll-snap-align: start;
 }
 
 .axon__shot {
@@ -529,10 +570,13 @@ html.has-instrument-cursor * {
   transform: scale(1.03);
 }
 
-@media (min-width: 768px) {
+/* Desktop pinned rail only for a real mouse. Tablets and phones in
+   landscape (>=768px but touch) keep the native swipe rail. */
+@media (min-width: 768px) and (pointer: fine) {
   .axon__scroller {
     overflow: hidden;
     touch-action: auto;
+    scroll-snap-type: none;
   }
 
   .axon__track {

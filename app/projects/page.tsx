@@ -40,6 +40,7 @@ import {
   LList,
   projectsData,
   resolveShot,
+  shotSrcSet,
   type Localized,
   type Project,
   type Shot,
@@ -278,7 +279,7 @@ function ImageLightbox({
 
             <div
               ref={trackRef}
-              className="flex h-full w-full snap-x snap-mandatory gap-5 overflow-x-auto px-[6vw] pb-6 [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
+              className="flex h-full w-full snap-x snap-mandatory gap-5 overflow-x-auto overflow-y-hidden overscroll-x-contain px-[6vw] pb-6 [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
               onScroll={(e) => {
                 if (syncing.current) return;
                 const scroller = e.currentTarget;
@@ -386,7 +387,7 @@ function ProjectGallery({
 
       <div
         ref={scrollerRef}
-        className="flex snap-x snap-mandatory gap-4 overflow-x-auto pb-3 [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
+        className="flex snap-x snap-mandatory gap-4 overflow-x-auto overflow-y-hidden overscroll-x-contain pb-3 [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
         role="list"
         aria-label="Gallery"
       >
@@ -403,8 +404,6 @@ function ProjectGallery({
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true, margin: "-5% 0px" }}
               transition={{ duration: 0.7, ease, delay: Math.min(i * 0.04, 0.28) }}
-              whileHover={{ y: -4 }}
-              whileTap={{ scale: 0.985 }}
               className="group relative w-[min(82vw,28rem)] shrink-0 snap-center overflow-hidden rounded-2xl bg-white/[0.02] text-left outline-none focus-visible:ring-2 focus-visible:ring-violet-300/40 sm:w-[min(70vw,32rem)]"
               style={{ boxShadow: "inset 0 0 0 1px rgba(255,255,255,0.08)" }}
               aria-label={`${L(item.alt, lang)} — enlarge`}
@@ -412,6 +411,8 @@ function ProjectGallery({
               <div className="relative aspect-[16/10] overflow-hidden">
                 <img
                   src={src}
+                  srcSet={shotSrcSet(src)}
+                  sizes="(max-width: 639px) 82vw, 32rem"
                   alt={L(item.alt, lang)}
                   className="h-full w-full object-cover object-top transition-transform duration-700 ease-[cubic-bezier(0.22,1,0.36,1)] group-hover:scale-[1.03] will-change-transform"
                   loading="lazy"
@@ -510,7 +511,7 @@ function DemoStage({
               </div>
             </div>
 
-            <div className="relative aspect-[16/10] w-full bg-[#070707] sm:aspect-[16/9]">
+            <div className="relative h-[72svh] max-h-[760px] w-full bg-[#070707] sm:h-auto sm:aspect-[16/9]">
               {!loaded && (
                 <div className="absolute inset-0 z-10 flex flex-col items-center justify-center gap-3 bg-[#070707]">
                   <div className="h-px w-40 overflow-hidden bg-white/5">
@@ -805,7 +806,7 @@ function ProjectCase({
           <div className="rounded-xl bg-black/35 p-5 sm:p-6" style={{ boxShadow: "inset 0 0 0 1px rgba(255,255,255,0.05)" }}>
             <p className="mb-3 text-[10px] uppercase tracking-[0.24em] text-white/30">{ui.architecture}</p>
             <p className="font-mono text-sm leading-relaxed text-violet-100/50">{L(project.architecture, lang)}</p>
-            <pre className="mt-4 overflow-x-auto rounded-lg bg-black/50 p-4 font-mono text-[12px] leading-7 text-white/60">
+            <pre className="mt-4 overflow-x-auto overflow-y-hidden rounded-lg bg-black/50 p-4 font-mono text-[12px] leading-7 text-white/60">
               <code>{project.code}</code>
             </pre>
           </div>
@@ -1102,7 +1103,7 @@ export default function ProjectsPage() {
 
           <nav
             aria-label={ui.indexLabel}
-            className="mb-8 flex gap-2 overflow-x-auto pb-2 [-ms-overflow-style:none] [scrollbar-width:none] lg:mb-0 lg:max-h-[calc(100dvh-10rem)] lg:flex-col lg:gap-1 lg:overflow-y-auto lg:overflow-x-visible lg:pb-0 [&::-webkit-scrollbar]:hidden"
+            className="mb-8 flex gap-2 overflow-x-auto overflow-y-hidden overscroll-x-contain pb-2 [-ms-overflow-style:none] [scrollbar-width:none] lg:mb-0 lg:max-h-[calc(100dvh-10rem)] lg:flex-col lg:gap-1 lg:overflow-y-auto lg:overflow-x-visible lg:pb-0 [&::-webkit-scrollbar]:hidden"
           >
             {catalog.map((p) => {
               const active = p.id === activeId;

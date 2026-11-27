@@ -3,7 +3,7 @@
 import { useEffect, useRef } from "react";
 import { gsap, registerMotion } from "@/lib/motion/register";
 import { useViewport } from "../../hooks/useViewport";
-import { L, resolveShot, projectsData, type Project } from "../../projects/data";
+import { L, resolveShot, shotSrcSet, projectsData, type Project } from "../../projects/data";
 import { FEATURED_IDS } from "../production/featured";
 import { isPublicProject } from "../production/HudLevelIndex";
 import type { Lang } from "../LanguageProvider";
@@ -17,7 +17,7 @@ export function AxonPassage({
 }) {
   const pin = useRef<HTMLElement>(null);
   const track = useRef<HTMLDivElement>(null);
-  const { ready, reduceMotion, isMobile } = useViewport();
+  const { ready, reduceMotion, isMobile, isCoarse } = useViewport();
 
   const featured = FEATURED_IDS.map((id) =>
     projectsData.find((p) => p.id === id)
@@ -26,7 +26,7 @@ export function AxonPassage({
   // Desktop: scrub-pinned horizontal track. Mobile uses CSS overflow-x swipe
   // (GSAP pin fights touch; the old overflow-hidden clipped the rail entirely).
   useEffect(() => {
-    if (!ready || reduceMotion || isMobile || !pin.current || !track.current) return;
+    if (!ready || reduceMotion || isMobile || isCoarse || !pin.current || !track.current) return;
     registerMotion();
     const ctx = gsap.context(() => {
       const el = track.current;
@@ -47,12 +47,12 @@ export function AxonPassage({
       });
     }, pin);
     return () => ctx.revert();
-  }, [ready, reduceMotion, isMobile]);
+  }, [ready, reduceMotion, isMobile, isCoarse]);
 
   return (
     <section
       ref={pin}
-      className="axon pointer-events-auto relative z-10 py-16 md:py-0"
+      className="axon pointer-events-auto relative z-10 py-16 [@media(min-width:768px)_and_(pointer:fine)]:py-0"
       aria-label="Live systems"
     >
       <div className="flex items-end justify-between px-[var(--grid-gutter)] pb-8">
@@ -83,6 +83,10 @@ export function AxonPassage({
                   {/* eslint-disable-next-line @next/next/no-img-element */}
                   <img
                     src={resolveShot(p.image, lang)}
+                    srcSet={shotSrcSet(resolveShot(p.image, lang))}
+                    sizes="(max-width: 767px) 82vw, 34rem"
+                    loading="lazy"
+                    decoding="async"
                     alt={L(p.title, lang)}
                     draggable={false}
                   />

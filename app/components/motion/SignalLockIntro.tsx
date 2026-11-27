@@ -19,6 +19,14 @@ type Phase = "void" | "fly" | "hit" | "hold" | "out";
 export function SignalLockIntro({ onDone }: Props) {
   const reduced = useReducedMotion();
   const [phase, setPhase] = useState<Phase>("void");
+  // Phones: same fly-in, but no CSS blur on a 4.5× scaled headline (a huge
+  // offscreen filter layer per frame on mobile GPUs).
+  const [touch] = useState(
+    () =>
+      typeof window !== "undefined" &&
+      window.matchMedia("(max-width: 767px), (pointer: coarse)").matches,
+  );
+  const blur = (px: number) => ({ filter: `blur(${touch ? 0 : px}px)` });
   const finished = useRef(false);
 
   const finish = useCallback(() => {
@@ -116,7 +124,7 @@ export function SignalLockIntro({ onDone }: Props) {
             opacity: 0,
             z: -1100,
             scale: 4.5,
-            filter: "blur(28px)",
+            ...blur(28),
             rotateX: 28,
           }}
           animate={
@@ -124,7 +132,7 @@ export function SignalLockIntro({ onDone }: Props) {
               ? {
                   opacity: 0,
                   scale: 1.15,
-                  filter: "blur(18px)",
+                  ...blur(18),
                   y: -24,
                   rotateX: 0,
                 }
@@ -133,7 +141,7 @@ export function SignalLockIntro({ onDone }: Props) {
                     opacity: 1,
                     z: 0,
                     scale: phase === "hold" ? 1.02 : 1,
-                    filter: "blur(0px)",
+                    ...blur(0),
                     rotateX: 0,
                     y: 0,
                   }
@@ -142,7 +150,7 @@ export function SignalLockIntro({ onDone }: Props) {
                       opacity: 1,
                       z: -80,
                       scale: 1.4,
-                      filter: "blur(6px)",
+                      ...blur(6),
                       rotateX: 8,
                     }
                   : {

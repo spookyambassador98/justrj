@@ -296,7 +296,7 @@ function HudPlaceholder() {
         </div>
       </div>
       <p className="border-t border-white/[0.06] px-4 py-3 font-mono text-[9px] tracking-[0.2em] text-white/30">
-        Open a level on the left — evidence loads only for the system you choose.
+        Open a level <span className="lg:hidden">above</span><span className="hidden lg:inline">on the left</span> — evidence loads only for the system you choose.
       </p>
     </motion.div>
   );
@@ -313,7 +313,7 @@ const copy = {
     architecture: "ARCHITECTURE",
     open: "Open case",
     demo: "Live demo",
-    evidence: "Interactive blueprints — hover to inspect",
+    evidence: "Interactive blueprints — tap or hover to inspect",
   },
 } as const;
 
@@ -449,7 +449,7 @@ export function ProductionHUD({
           variants={hudPulse}
           className="hud-frame relative overflow-hidden"
         >
-          <div className="relative z-20 grid lg:grid-cols-[220px_1fr]">
+          <div className="relative z-20 grid grid-cols-[minmax(0,1fr)] lg:grid-cols-[220px_minmax(0,1fr)]">
             <aside className="border-b border-white/[0.08] p-5 lg:border-b-0 lg:border-r lg:border-white/[0.08]">
               <div className="mb-5 flex items-center justify-between font-mono text-[9px] tracking-[0.25em] text-white/35">
                 <span>{t.index}</span>

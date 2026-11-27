@@ -2,6 +2,7 @@
 
 import { AnimatePresence, motion } from "framer-motion";
 import { useCallback, useEffect, useRef, useState } from "react";
+import { shotSrcSet } from "@/app/projects/data";
 
 export type BlueprintShot = {
   src: string;
@@ -15,6 +16,12 @@ export function preloadBlueprintShots(urls: string[]) {
     if (!url) continue;
     const img = new Image();
     img.decoding = "async";
+    // Warm the same candidate the <img srcSet> will pick (phone → WebP).
+    const set = shotSrcSet(url);
+    if (set) {
+      img.sizes = "(max-width: 1023px) 92vw, 60vw";
+      img.srcset = set;
+    }
     img.src = url;
   }
 }
@@ -224,6 +231,10 @@ export function BlueprintViewer({
     <>
       <div
         className="relative aspect-[16/10] w-full overflow-hidden border border-white/[0.1] bg-[#050505]"
+        style={{ touchAction: "pan-y" }}
+        onPointerCancel={() => {
+          drag.current.active = false;
+        }}
         onPointerDown={(e) => {
           if ((e.target as HTMLElement).closest("button")) return;
           drag.current = { x: e.clientX, active: true };
@@ -254,6 +265,8 @@ export function BlueprintViewer({
           {/* eslint-disable-next-line @next/next/no-img-element */}
           <img
             src={current.src}
+            srcSet={shotSrcSet(current.src)}
+            sizes="(max-width: 1023px) 92vw, 60vw"
             alt={current.label}
             draggable={false}
             className="h-full w-full object-cover object-top"
@@ -300,7 +313,7 @@ export function BlueprintViewer({
               style={{ width: `${progress}%` }}
             />
           </div>
-          <div className="flex gap-1 overflow-x-auto p-2 [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
+          <div className="flex gap-1 overflow-x-auto overflow-y-hidden overscroll-x-contain p-2 [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
             {shots.map((shot, i) => (
               <button
                 key={shot.src}

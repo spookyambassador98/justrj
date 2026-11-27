@@ -62,6 +62,23 @@ export function shotEn(
   return { ru: src, en: src, uk: src };
 }
 
+/**
+ * Phone-weight variant of a capture: public/showcase-images/<f>/en/m/<name>.webp
+ * (960px wide WebP, ~15× lighter than the 1440–1920px PNG). Phones decode
+ * these instead of the full PNGs — dozens of full captures on /projects was
+ * enough decoded bitmap memory to make iOS Safari kill the tab.
+ */
+export function mobileShot(src: string): string | null {
+  const m = src.match(/^(\/showcase-images\/[^/]+\/en)\/([^/]+)\.(png|jpe?g)$/i);
+  return m ? `${m[1]}/m/${m[2]}.webp` : null;
+}
+
+/** srcSet for a capture: 960w WebP for phones, original for desktop. */
+export function shotSrcSet(src: string): string | undefined {
+  const m = mobileShot(src);
+  return m ? `${m} 960w, ${src} 1920w` : undefined;
+}
+
 /** English-first portfolio copy + EN screenshots (justrj.vercel.app). */
 export function resolveShot(image: Shot | string, lang?: Lang): string {
   if (typeof image === "string") return image;
